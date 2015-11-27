@@ -2,21 +2,24 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="three.js-master/build/three.min.js"></script>
+<script src="three.js-master/examples/js/controls/TrackballControls.js"></script>
 <script src="happah.js"></script>
 <script>
 $(document).ready(function(){
     $("button[id=123]").click(function() {
 
           happah.init();
-
-          $("*").hide();
+          var pointsarray = [ [1,1,22], [10,10,10] ];
+          happah.drawPointCloud(pointsarray);
+          happah.render();
           })
     });
 </script>
 </head>
 <body>
 
-<button id=123> click me! </button>
+<button id=123> Init </button>
 <button> click me </button>
 <p> paragraph </p>
 <h2> header </h2>
