@@ -7,14 +7,42 @@
 <script src="happah.js"></script>
 <script>
 $(document).ready(function(){
-    $("button[id=123]").click(function() {
+  // Create viewport from default values.
+  var h = happah;
+  h._scene = happah.scene();
+  h._cam = DEFAULTS.getCamera();
+  h._renderer = DEFAULTS.getRenderer();
+  h._controls = DEFAULTS.getControls(happah._cam);
+  h._scene.add(DEFAULTS.getGrid());
+  h._cam.position.z = 20;
+  h._controls.target.set(0,0,0);
+  h._renderer.setSize(400,400);
 
-          happah.init();
-          var pointsarray = [ [1,1,22], [10,10,10] ];
-          happah.drawPointCloud(pointsarray);
-          happah.render();
-          })
-    });
+  // Test array of 2 points.
+  var pointsarray = [[1,1,1],[1,2,3]];
+  h.drawPointCloud(pointsarray);
+
+  // Append the first viewport to the document.
+  document.body.appendChild(h._renderer.domElement);
+  h.render();
+
+  // Get a new default renderer.
+  var rend = DEFAULTS.getRenderer();
+  rend.setSize(400,400);
+
+  // Append the second viewport to the document.
+  document.body.appendChild(rend.domElement);
+
+  // Render function for our new renderer.
+  var render = function() {
+    requestAnimationFrame(render);
+    h._controls.update();
+
+    // Will render the exact same scene.
+    rend.render(happah._scene, happah._cam);
+  };
+  render();
+});
 </script>
 </head>
 <body>

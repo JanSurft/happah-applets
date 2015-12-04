@@ -50,7 +50,7 @@ var happah = {
       console.log("pushing point at: " + points[i][0] + points[i][1] + points[i][2]);
       pointGeometry.vertices.push(new THREE.Vector3(points[i][0], points[i][1], points[i][2]));
     }
-    _scene.add(pointCloud);
+    happah._scene.add(pointCloud);
 
   },
 
@@ -60,8 +60,8 @@ var happah = {
 
   render: function(objects) {
     requestAnimationFrame( happah.render );
-    _controls.update();
-    _renderer.render(_scene, _cam);
+    happah._controls.update();
+    happah._renderer.render(happah._scene, happah._cam);
   },
 
   addObjectToScene: function(object) {
