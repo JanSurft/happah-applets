@@ -1,3 +1,5 @@
+var controls;
+
 var happah = {
   scene: function(/*options*/) {
     // Create new scene.
@@ -35,6 +37,8 @@ var happah = {
     console.log("happah initialized.");
   },
 
+
+
   /**
    * Draws an array of points.
    */
@@ -44,14 +48,15 @@ var happah = {
     var material = new THREE.PointCloudMaterial( { size: 3, sizeAttenuation: false });
     var pointCloud = new THREE.PointCloud(pointGeometry, material);
 
+    // Adds all the points to pointgeometry.
     for (i = 0; i < points.length; i++) {
       pointGeometry.vertices.push(new THREE.Vector3(points[i][0],
-                                                    points[i][1],
-                                                    points[i][2]));
+            points[i][1],
+            points[i][2]));
     }
     // Connect the points with lines.
     var line = new THREE.Line(pointGeometry,
-               new THREE.LineBasicMaterial({color:0xccafff, opacity: 0.5 }));
+        new THREE.LineBasicMaterial({color:0xccafff, opacity: 0.5 }));
 
     // Add to scene:
     happah.scene.add(line);
@@ -59,23 +64,23 @@ var happah = {
 
   },
 
-  drawLines: function() {
-    //this.pointGeometry.vertices.push(1,1,1);
-  },
   objects: function() {
     //TODO: get objects from memory somehow
   },
 
-  render: function(c, s, x) {
-    requestAnimationFrame( happah.render );
+  // Renders the scene in each renderer.
+  render: function(renderer, controls) {
+    requestAnimationFrame(happah.render);
 
-    happah.renderer.render(s, x);
-  },
+    // Update the controls. FIXME: works only @ first call.
+    // probably something with 'requestAnimationFrame'
+    // (render does not take arguments there..)
+    this.controls.update();
 
-  addObjectToScene: function(object) {
-    //scene.add(object);
+    for (i = 0; i < renderer.length; i++) {
+      renderer[i].render(happah.scene, happah.cam);
+    }
   }
-
 }
 
 /**
