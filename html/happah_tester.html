@@ -9,26 +9,31 @@
 $(document).ready(function(){
   // Create viewport from default values.
   var h = happah;
-  h._scene = happah.scene();
-  h._cam = DEFAULTS.getCamera();
-  h._renderer = DEFAULTS.getRenderer();
-  h._controls = DEFAULTS.getControls(happah._cam);
-  h._scene.add(DEFAULTS.getGrid());
-  h._cam.position.z = 20;
-  h._controls.target.set(0,0,0);
-  h._renderer.setSize(400,400);
+  h.scene = happah.scene();
+  h.cam = DEFAULTS.getCamera();
+  h.renderer = DEFAULTS.getRenderer();
+  h.controls = DEFAULTS.getControls(happah.cam);
+  h.scene.add(DEFAULTS.getGrid());
+  h.cam.position.z = 20;
+  h.controls.target.set(0,0,0);
+  h.renderer.setSize(600,600);
 
   // Test array of 2 points.
-  var pointsarray = [[1,1,1],[1,2,3]];
-  h.drawPointCloud(pointsarray);
+//  var pointsarray = [[1,1,1],[1,2,3], [3,3,3],[4,4,4],[5,5,5],[4,3,2]];
+  var array = new Array();
+  var maxVal = 100;
+  for (i = 0; i < 100; i++) {
+    array[i] = [[maxVal*Math.random(maxVal)],[maxVal*Math.random(maxVal)],[maxVal*Math.random(maxVal)]];
+  }
 
-  // Append the first viewport to the document.
-  document.body.appendChild(h._renderer.domElement);
-  h.render();
+  h.drawPointCloud(array);
+  h.drawLines();
 
   // Get a new default renderer.
   var rend = DEFAULTS.getRenderer();
-  rend.setSize(400,400);
+  rend.setSize(800,800);
+
+
 
   // Append the second viewport to the document.
   document.body.appendChild(rend.domElement);
@@ -36,10 +41,10 @@ $(document).ready(function(){
   // Render function for our new renderer.
   var render = function() {
     requestAnimationFrame(render);
-    h._controls.update();
+    h.controls.update();
 
     // Will render the exact same scene.
-    rend.render(happah._scene, happah._cam);
+    rend.render(happah.scene, happah.cam);
   };
   render();
 });
