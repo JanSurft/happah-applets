@@ -1,51 +1,204 @@
-var controls;
+happah = function() {
+     var scene;
+     var camera;
+     var renderer;
+     var controls;
+     var grid;
+     var light;
+     var box;
 
-var happah = {
-     scene: function(/*options*/) {
-          // Create new scene.
-          var scene = new THREE.Scene();
+     // Helper arrow to show players view direction.
+     var arrow;
 
-          // Add optional values
-          // scene.add();
+     // The selected joint we want to drag around:
+     var selected;
+     var targetposition;
+     var projector;
+     var p3subp1;
 
-          // Return the final scene.
-          return scene;
-     },
+     // For plane intersection
+     var raycaster;
+
+     // For moving the points:
+     var mouseVec;
+     var offset;
+     var mouseDown;
 
      /**
       * Initializes with standard settings,
       * such as: 1 camera, 1 scene, 1 renderer.
       */
-     init: function() {
-          var scene = this.scene();
-          var camera = DEFAULTS.getCamera();
-          var renderer = DEFAULTS.getRenderer();
-          var controls = DEFAULTS.getControls(camera);
+     this.init = function() {
+          scene = DEFAULTS.getScene();
+          camera = DEFAULTS.getCamera();
+          renderer = DEFAULTS.getRenderer();
+          controls = DEFAULTS.getControls(camera);
+          mouseVec = new THREE.Vector3();
+          offset = new THREE.Vector3();
+          targetposition = new THREE.Vector3();
+          p3subp1 = new THREE.Vector3();
+          raycaster = new THREE.Raycaster();
 
-          // Grid for testing purposes.
-          var grid = DEFAULTS.getGrid();
+          // Default values.
+          grid = DEFAULTS.getGrid();
+          light = DEFAULTS.getLight(0x404040);
+
+          // Arrow helper for orientation.
+          arrow = new THREE.ArrowHelper(camera.getWorldDirection(), camera.getWorldPosition(), 10, 0xffff00, 3,2);
+          projector = new THREE.Projector();
+
+          // Box for testing movement of objects.
+          var boxGeo = new THREE.BoxGeometry(5,5,5);
+          var boxMesh = new THREE.MeshBasicMaterial({color:0x0fff0f});
+          box = new THREE.Mesh(boxGeo, boxMesh);
+          scene.add(box);
+
           scene.add(grid);
+          scene.add(light);
+          scene.add(arrow);
 
-          // Standard settings
+          // Standard settings.
           camera.position.z = 20;
           controls.target.set( 0,0,0);
-
+          mouseDown = false;
           renderer.setSize(window.innerWidth, window.innerHeight);
 
           // Append to document.
           document.body.appendChild(renderer.domElement);
+
+          // Success message.
           console.log("happah initialized.");
-     },
+
+          renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+          renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+          renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+     };
+
+     /**
+      * Returns the position of our HTML element
+      */
+     function getElementPosition(element) {
+          var position = new THREE.Vector2(0, 0);
+
+          while (element) {
+               position.x += (element.offsetLeft - element.scrollLeft
+                         + element.clientLeft);
+               position.y += (element.offsetTop - element.scrollTop
+                         + element.clientTop);
+               element = element.offsetParent;
+          }
+          return position;
+     }
+
+     /**
+      * Updates position of mouse.
+      */
+     function onDocumentMouseMove(event) {
+          event.preventDefault();
+
+          // Position of our renderer
+          var pos = getElementPosition(this);
+
+          // Original mouse position
+          mouseVec.x = ( (event.clientX - pos.x) / window.innerWidth) * 2 - 1;
+          mouseVec.y = - ( (event.clientY - pos.y) / window.innerHeight) * 2 + 1;
+
+          // Origin: mouseVec, direction: camera view
+          raycaster.setFromCamera(mouseVec.clone(), camera);
+          var ray = raycaster.ray;
+
+          if (selected) {
+               var normal = selected.normal;
+
+               // Prevent camera movement
+               controls.noRotate = true;
+
+               var denom = normal.dot(ray.direction);
+               if (denom == 0) {
+                    return;
+               }
+
+               // Calculate the distance from camera plane to object.
+               var num = normal.dot( p3subp1.copy(selected.point).sub(ray.origin));
+               var distance = num / denom;
+
+               targetposition.copy(ray.direction).multiplyScalar(distance).add(ray.origin).sub(offset);
+
+               // TODO Lock the different axis so we can only move along one
+               // axis at once. -> maybe different arrows for each direction?
+               var xLock, yLock, zLock = false;
+
+               if (xLock) {
+                    selected.object.position.x = targetposition.x;
+               } else if (yLock) {
+                    selected.object.position.y = targetposition.y;
+               } else {
+                    selected.object.position.z = targetposition.z;
+                    selected.object.position.y = targetposition.y;
+                    selected.object.position.x = targetposition.x;
+               }
+
+               console.log("target z: " + targetposition.z);
+               return;
+          } else {
+               // Allow camera rotation
+               controls.noRotate = false;
+          }
+     }
+
+     /**
+      * When MOUSE1 is pressed,
+      * we apply the position to mouseVec.
+      */
+     function onDocumentMouseDown(event) {
+          event.preventDefault();
 
 
+          var intersects = raycaster.intersectObjects(scene.children);
+          var ray = raycaster.ray;
+          scene.remove(arrow);
+          arrow = new THREE.ArrowHelper(ray.direction, camera.getWorldPosition(),100, 0xfff00, 3, 3);
+          scene.add(arrow);
+          var normal = ray.direction;
+
+          if (intersects.length > 0) {
+               selected = intersects[0];
+               if (selected.object == grid) {
+                    selected = null;
+                    console.log("Attempted to drag grid!");
+                    return;
+               }
+               selected.ray = ray;
+               selected.normal = normal;
+               offset.copy(selected.point).sub(selected.object.position);
+               renderer.domElement.style.cursor = 'move';
+               // notify('dragstart', selected);
+               console.log("drag");
+          }
+          mouseDown = true;
+          console.log("mousedown");
+     }
+
+     /**
+      * When MOUSE1 is released, we don't want to drag anything.
+      */
+     function onDocumentMouseUp(event) {
+          event.preventDefault();
+
+          if (selected) {
+               selected = null;
+          }
+          renderer.domElement.style.cursor = 'auto';
+          mouseDown = false;
+          console.log("mouseUp");
+     }
 
      /**
       * Draws an array of points.
       */
-     drawPointCloud: function(points) {
-          //TODO: points should be circles not squares
+     this.drawPointCloud = function(points) {
           var pointGeometry = new THREE.Geometry();
-          var material = new THREE.PointCloudMaterial( { size: 3, sizeAttenuation: false });
+          var material = new THREE.PointCloudMaterial( { size: 6, sizeAttenuation: false });
           var pointCloud = new THREE.PointCloud(pointGeometry, material);
 
           // Adds all the points to pointgeometry.
@@ -62,24 +215,14 @@ var happah = {
           happah.scene.add(line);
           happah.scene.add(pointCloud);
 
-     },
+     }
 
-     objects: function() {
-          //TODO: get objects from memory somehow
-     },
+     // Renders the scene in each renderer (only one currently).
+     this.render = function() {
+          requestAnimationFrame( this.render.bind(this) );
 
-     // Renders the scene in each renderer.
-     render: function(renderer, controls) {
-          requestAnimationFrame(happah.render);
-
-          // Update the controls. FIXME: works only @ first call.
-          // probably something with 'requestAnimationFrame'
-          // (render does not take arguments there..)
-          this.controls.update();
-
-          for (i = 0; i < renderer.length; i++) {
-               renderer[i].render(happah.scene, happah.cam);
-          }
+          controls.update();
+          renderer.render(scene, camera);
      }
 }
 
@@ -87,6 +230,10 @@ var happah = {
  * Holds default values for simple viewport setup.
  */
 var DEFAULTS = {
+     getScene: function() {
+          return new THREE.Scene();
+     },
+
      getCamera: function(/* options */) {
           return new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
      },
@@ -107,20 +254,3 @@ var DEFAULTS = {
           return new THREE.AmbientLight(color);
      }
 };
-
-/* // Different approach
-   var DEFAULTS = [
-// Default perspective camera.
-"new THREE.PerspectiveCamera(75, window.innerWidth /window.innerHeight, 0.1, 1000)",
-
-// Default renderer.
-"new THREE.WebGLRenderer()",
-
-// Default controls
-"new THREE.TrackballControls(camera)",
-
-// Default grid.
-"new THREE.GridHelper(100, 10)"
-
-];
-*/
