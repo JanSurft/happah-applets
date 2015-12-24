@@ -5,13 +5,18 @@ happah = function() {
      var controls;
      var grid;
      var light;
-     var box;
+     var sphere;
 
      // Helper arrow to show players view direction.
-     var arrow;
+     // var arrow;
 
-     // The selected joint we want to drag around:
+     // Arrows to show the moving plane.
+     var arrow1, arrow2;
+
+     // The selected object we want to drag around:
      var selected;
+
+     // The new position we want the object to move to.
      var targetposition;
      var projector;
      var p3subp1;
@@ -44,18 +49,21 @@ happah = function() {
           light = DEFAULTS.getLight(0x404040);
 
           // Arrow helper for orientation.
-          arrow = new THREE.ArrowHelper(camera.getWorldDirection(), camera.getWorldPosition(), 10, 0xffff00, 3,2);
+          // arrow = new THREE.ArrowHelper(camera.getWorldDirection(), camera.getWorldPosition(), 3, 0xffff00, 3,2);
           projector = new THREE.Projector();
 
-          // Box for testing movement of objects.
-          var boxGeo = new THREE.BoxGeometry(5,5,5);
-          var boxMesh = new THREE.MeshBasicMaterial({color:0x0fff0f});
-          box = new THREE.Mesh(boxGeo, boxMesh);
-          scene.add(box);
+          var sphereGeo = new THREE.SphereGeometry(2,16,16);
+          var sphereMat = new THREE.MeshBasicMaterial({color:0x0fff0f});
+          sphere = new THREE.Mesh(sphereGeo, sphereMat);
 
+          var boundingBox = new THREE.BoundingBoxHelper(sphere, 0xff0000);
+          boundingBox.update();
+          scene.add(boundingBox);
+
+          scene.add(sphere);
           scene.add(grid);
           scene.add(light);
-          scene.add(arrow);
+          // scene.add(arrow);
 
           // Standard settings.
           camera.position.z = 20;
@@ -66,13 +74,13 @@ happah = function() {
           // Append to document.
           document.body.appendChild(renderer.domElement);
 
-          // Success message.
-          console.log("happah initialized.");
-
           renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
           renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
           renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
-     };
+
+          // Success message.
+          console.log("happah initialized.");
+     }
 
      /**
       * Returns the position of our HTML element
@@ -91,7 +99,7 @@ happah = function() {
      }
 
      /**
-      * Updates position of mouse.
+      * Moves objects around, if selected.
       */
      function onDocumentMouseMove(event) {
           event.preventDefault();
@@ -107,8 +115,12 @@ happah = function() {
           raycaster.setFromCamera(mouseVec.clone(), camera);
           var ray = raycaster.ray;
 
-          if (selected) {
+          // If it doesn't have a face, we don't want to move it.
+          if (selected && selected.face != null) {
+               // In order to drag around spheres, we need the bounding box.
+               // TODO
                var normal = selected.normal;
+               var intersectFaceNormal = selected.face.normal;
 
                // Prevent camera movement
                controls.noRotate = true;
@@ -124,21 +136,35 @@ happah = function() {
 
                targetposition.copy(ray.direction).multiplyScalar(distance).add(ray.origin).sub(offset);
 
-               // TODO Lock the different axis so we can only move along one
-               // axis at once. -> maybe different arrows for each direction?
-               var xLock, yLock, zLock = false;
+               // Only move within the plane the camera is facing.
+               // => Lock one axis at a time.
+               var xLock, yLock, zLock;
+               xLock = intersectFaceNormal.x;
+               yLock = intersectFaceNormal.y;
+               zLock = intersectFaceNormal.z;
 
                if (xLock) {
-                    selected.object.position.x = targetposition.x;
+                    // Move within ZY-plane
+                    selected.object.position.y = targetposition.y;
+                    selected.object.position.z = targetposition.z;
                } else if (yLock) {
+                    // Move within XZ-Plane
+                    selected.object.position.x = targetposition.x;
+                    selected.object.position.z = targetposition.z;
+               } else if (zLock) {
+                    // Move within XY-Plane
+                    selected.object.position.x = targetposition.x;
                     selected.object.position.y = targetposition.y;
                } else {
+                    // Default case.
                     selected.object.position.z = targetposition.z;
                     selected.object.position.y = targetposition.y;
                     selected.object.position.x = targetposition.x;
                }
+               // Update the plane arrows.
+               setArrows(selected.object.position, intersectFaceNormal);
 
-               console.log("target z: " + targetposition.z);
+               console.log("xLock: " + xLock + " yLock: " + yLock + " zLock: " + zLock);
                return;
           } else {
                // Allow camera rotation
@@ -146,6 +172,28 @@ happah = function() {
           }
      }
 
+     function setArrows(origin, normal) {
+          scene.remove(arrow1);
+          scene.remove(arrow2);
+          if (normal.x) {
+               arrow1 = new THREE.ArrowHelper(new THREE.Vector3(0,0,1),
+                         origin, 5, 0xffff00);
+               arrow2 = new THREE.ArrowHelper(new THREE.Vector3(0,1,0),
+                         origin, 5, 0xffff00);
+          } else if (normal.y) {
+               arrow1 = new THREE.ArrowHelper(new THREE.Vector3(1,0,0),
+                         origin, 5, 0xffff00);
+               arrow2 = new THREE.ArrowHelper(new THREE.Vector3(0,0,1),
+                         origin, 5, 0xffff00);
+          } else {
+               arrow1 = new THREE.ArrowHelper(new THREE.Vector3(0,1,0),
+                         origin, 5, 0xffff00);
+               arrow2 = new THREE.ArrowHelper(new THREE.Vector3(1,0,0),
+                         origin, 5, 0xffff00);
+          }
+          scene.add(arrow1);
+          scene.add(arrow2);
+     }
      /**
       * When MOUSE1 is pressed,
       * we apply the position to mouseVec.
@@ -153,12 +201,11 @@ happah = function() {
      function onDocumentMouseDown(event) {
           event.preventDefault();
 
-
           var intersects = raycaster.intersectObjects(scene.children);
           var ray = raycaster.ray;
-          scene.remove(arrow);
-          arrow = new THREE.ArrowHelper(ray.direction, camera.getWorldPosition(),100, 0xfff00, 3, 3);
-          scene.add(arrow);
+          // scene.remove(arrow);
+          // arrow = new THREE.ArrowHelper(ray.direction, camera.getWorldPosition(),30, 0xfff00, 3, 3);
+          // scene.add(arrow);
           var normal = ray.direction;
 
           if (intersects.length > 0) {
@@ -172,7 +219,7 @@ happah = function() {
                selected.normal = normal;
                offset.copy(selected.point).sub(selected.object.position);
                renderer.domElement.style.cursor = 'move';
-               // notify('dragstart', selected);
+
                console.log("drag");
           }
           mouseDown = true;
@@ -190,6 +237,10 @@ happah = function() {
           }
           renderer.domElement.style.cursor = 'auto';
           mouseDown = false;
+
+          // Remove plane arrows from the scene.
+          // scene.remove(planeArrows);
+
           console.log("mouseUp");
      }
 
