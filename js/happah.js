@@ -55,10 +55,19 @@ happah = function() {
           var sphereGeo = new THREE.SphereGeometry(2,16,16);
           var sphereMat = new THREE.MeshBasicMaterial({color:0x0fff0f});
           sphere = new THREE.Mesh(sphereGeo, sphereMat);
+          sphere.z = 3;
 
           var boundingBox = new THREE.BoundingBoxHelper(sphere, 0xff0000);
           boundingBox.update();
           scene.add(boundingBox);
+
+          // TEST TEST TEST
+          var points = new Array();
+          for (i = 0; i < 30; i++) {
+               points[i] = new THREE.Vector3(i/4, Math.cos(i), Math.sin(i));
+          }
+          insertSegmetStrip(points, true);
+          // ENDTEST.
 
           scene.add(sphere);
           scene.add(grid);
@@ -125,6 +134,7 @@ happah = function() {
                // Prevent camera movement
                controls.noRotate = true;
 
+
                var denom = normal.dot(ray.direction);
                if (denom == 0) {
                     return;
@@ -176,20 +186,20 @@ happah = function() {
           scene.remove(arrow1);
           scene.remove(arrow2);
           if (normal.x) {
-               arrow1 = new THREE.ArrowHelper(new THREE.Vector3(0,0,1),
-                         origin, 5, 0xffff00);
-               arrow2 = new THREE.ArrowHelper(new THREE.Vector3(0,1,0),
-                         origin, 5, 0xffff00);
+               arrow1 = new ArrowHelperSelectable(new THREE.Vector3(0,0,1),
+                         origin, 5, 0xffff00, 1.5, .5);
+               arrow2 = new ArrowHelperSelectable(new THREE.Vector3(0,1,0),
+                         origin, 5, 0xffff00, 1.5, .5);
           } else if (normal.y) {
-               arrow1 = new THREE.ArrowHelper(new THREE.Vector3(1,0,0),
-                         origin, 5, 0xffff00);
-               arrow2 = new THREE.ArrowHelper(new THREE.Vector3(0,0,1),
-                         origin, 5, 0xffff00);
+               arrow1 = new ArrowHelperSelectable(new THREE.Vector3(1,0,0),
+                         origin, 5, 0xffff00, 1.5, .5);
+               arrow2 = new ArrowHelperSelectable(new THREE.Vector3(0,0,1),
+                         origin, 5, 0xffff00, 1.5, .5);
           } else {
-               arrow1 = new THREE.ArrowHelper(new THREE.Vector3(0,1,0),
-                         origin, 5, 0xffff00);
-               arrow2 = new THREE.ArrowHelper(new THREE.Vector3(1,0,0),
-                         origin, 5, 0xffff00);
+               arrow1 = new ArrowHelperSelectable(new THREE.Vector3(0,1,0),
+                         origin, 5, 0xffff00, 1.5, .5);
+               arrow2 = new ArrowHelperSelectable(new THREE.Vector3(1,0,0),
+                         origin, 5, 0xffff00, 1.5, .5);
           }
           scene.add(arrow1);
           scene.add(arrow2);
@@ -210,10 +220,15 @@ happah = function() {
 
           if (intersects.length > 0) {
                selected = intersects[0];
-               if (selected.object == grid) {
-                    selected = null;
-                    console.log("Attempted to drag grid!");
-                    return;
+               // TODO: Prevent selecting the line geometry.
+               //if (selected.object == grid || selected.object.id == 123) {
+
+               console.log("selected: " + selected);
+               if (!(selected.object instanceof THREE.BoxGeometry)){
+                    // In case our object is under the grid.
+                    if (intersects.length > 1) {
+                         selected = intersects[1];
+                    }
                }
                selected.ray = ray;
                selected.normal = normal;
@@ -242,6 +257,35 @@ happah = function() {
           // scene.remove(planeArrows);
 
           console.log("mouseUp");
+     }
+
+     /**
+      * Takes a bunch of points and connects them with lines.
+      */
+     function insertSegmetStrip(points, showPoints) {
+          var lineGeometry = new THREE.Geometry();
+          var lineMaterial = new THREE.LineBasicMaterial( { color:0xCC0000 } );
+
+          if (showPoints) {
+               for (i = 0; i < points.length; i++) {
+                    lineGeometry.vertices.push(points[i]);
+                    var boxG = new THREE.Geometry();
+                    boxG.translate(points[i].x, points[i].y, points[i].z);
+                    var boxM = new THREE.MeshBasicMaterial({color:0x00ff00});
+                    var box = new THREE.Mesh(boxG, boxM);
+                    scene.add(box);
+               }
+          } else {
+               for (i = 0; i < points.length; i++) {
+                    lineGeometry.vertices.push(points[i]);
+               }
+          }
+          lineGeometry.computeLineDistances();
+          var line = new THREE.Line(lineGeometry, lineMaterial);
+
+          scene.add(line);
+
+
      }
 
      /**
