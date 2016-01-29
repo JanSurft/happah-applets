@@ -4,6 +4,7 @@
  * @author bhouston / http://clara.io
  *
  * Creates an arrow for visualizing directions
+ * EDIT: Modified the arrow to be selectable.
  *
  * Parameters:
  *  dir - Vector3
@@ -16,8 +17,10 @@
 
 ArrowHelperSelectable = ( function () {
      var arrowGeometry = new THREE.Geometry();
+     var tag;
 
-	return function ArrowHelper( dir, origin, length, color, headLength, headWidth ) {
+
+	return function ArrowHelperSelectable( dir, origin, length, color, headLength, headWidth ) {
 
 		// dir is assumed to be normalized
 
@@ -42,6 +45,9 @@ ArrowHelperSelectable = ( function () {
 		}
 
 		this.cone = new THREE.Mesh( arrowGeometry, new THREE.MeshBasicMaterial( { color: color } ) );
+
+		// Set name for further reference:
+		this.cone.name = "arrowSelector";
 		this.cone.matrixAutoUpdate = false;
 		this.add( this.cone );
 
