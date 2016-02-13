@@ -1,0 +1,9 @@
+[
+     "src/happah.js",
+     "src/objects/SphericalImpostor.js",
+     "src/renderers/shaders/ShaderChunk.js",
+     "src/renderers/shaders/ShaderChunk/spherical_impostor_fragment.glsl",
+     "src/renderers/shaders/ShaderChunk/spherical_impostor_pars_fragment.glsl",
+     "src/renderers/shaders/ShaderChunk/spherical_impostor_pars_vertex.glsl",
+     "src/renderers/shaders/ShaderChunk/spherical_impostor_vertex.glsl"
+]
