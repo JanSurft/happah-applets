@@ -7,11 +7,16 @@ HAPPAH.GUI_DEFAULTS = {
      },
 
      getCamera: function( /* options */ ) {
-          return new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+          var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+          //camera.position.y = 20;
+
+          return camera;
      },
 
      getRenderer: function( /* options */ ) {
-          return new THREE.WebGLRenderer();
+          renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(0xFFFFFF);
+          return renderer;
      },
 
      getGrid: function() {
@@ -22,6 +27,12 @@ HAPPAH.GUI_DEFAULTS = {
           // TODO: Remove all references to THREE->Examples!
           //return new THREE.TrackballControls(camera);
           return new THREE.TrackballControls(camera);
+     },
+
+     getDummyAlgorithm: function() {
+          return function(points, value) {
+               return points;
+          };
      },
 
      getLights: function() {

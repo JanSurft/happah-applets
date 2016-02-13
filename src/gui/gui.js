@@ -4,7 +4,6 @@ HAPPAH.gui = function() {
      var renderer;
      var grid;
      var light;
-     var spheres = [];
 
      // Controls:
      var controls;
@@ -26,12 +25,17 @@ HAPPAH.gui = function() {
      var raycaster;
 
      // For moving the points:
+     var algorithm;
      var mouseVec;
      var offset;
      var mouseDown;
-     var points = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(7, 6, 8), new THREE.Vector3(10, 0, 0), new THREE.Vector3(10, 10, 0), new THREE.Vector3(5, 10, 0), new THREE.Vector3(0, 4, 6)];
-     var decasteljaupoints = [];
+     var algorithmPoints = [];
+     var algorithmLine;
+     var controlLine;
+     var controlPoints = [];
+     var controlPointImpostors;
 
+     var dragcontrols;
      var group;
      /**
       * Initializes with standard settings,
@@ -49,23 +53,15 @@ HAPPAH.gui = function() {
           p3subp1 = new THREE.Vector3();
           raycaster = new THREE.Raycaster();
 
+          // Get a dummy algorithm
+          algorithm = HAPPAH.GUI_DEFAULTS.getDummyAlgorithm();
+          controlPointImpostors = new THREE.Object3D();
 
-          group = new THREE.Object3D();
-
-
-          for (point in points) {
-               var mySphere = new HAPPAH.SphericalImpostor(1);
-               mySphere.position = new THREE.Vector3();
-               mySphere.position.x = points[point].x;
-               mySphere.position.y = points[point].y;
-               mySphere.position.z = points[point].z;
-               spheres.push(mySphere);
-               group.add(mySphere);
+          for (i = 0; i < 6; i++) {
+               addControlPoint(new THREE.Vector3(i / 2, i * 3, Math.sin(i)));
           }
 
           transformControls = new THREE.TransformControls(camera, renderer.domElement);
-          var dragcontrols = new THREE.DragControls(camera, spheres,
-               renderer.domElement);
 
           //HAPPAH.transform(transformControls, controls);
           scene.add(transformControls);
@@ -77,15 +73,51 @@ HAPPAH.gui = function() {
           projector = new THREE.Projector();
 
 
-          scene.add(group);
+          //scene.add(group);
           scene.add(grid);
 
           scene.add(lights);
 
+          // Standard settings.
+          camera.position.z = 20;
+          controls.target.set(0, 0, 0);
+          mouseDown = false;
+          renderer.setSize(window.innerWidth, window.innerHeight);
 
-          decasteljaupoints = deCasteljau(points, 100);
-          insertSegmetStrip(decasteljaupoints);
+          // Append to document.
+          document.body.appendChild(renderer.domElement);
 
+          renderer.domElement.addEventListener('mousemove', controls.onDocumentMouseMove, false);
+          renderer.domElement.addEventListener('mousedown', controls.onDocumentMouseDown, false);
+          renderer.domElement.addEventListener('mouseup', controls.onDocumentMouseUp, false);
+
+          // Success message.
+          console.log("happah initialized.");
+     }
+
+     /**
+      * Set the algorithm
+      */
+     this.setAlgorithm = function(algorithm) {
+          this.algorithm = algorithm;
+     }
+
+     /**
+      * Add new control point.
+      */
+     function addControlPoint(point) {
+          var sphere = new HAPPAH.SphericalImpostor(1);
+          sphere.material.uniforms.diffuse.value.set(new THREE.Color(0x888888));
+          sphere.position.x = point.x;
+          sphere.position.y = point.y;
+          sphere.position.z = point.z;
+          controlPointImpostors.add(sphere);
+          controlPoints.push(point);
+
+          scene.add(controlPointImpostors);
+          // Update drag controls
+          dragcontrols = new THREE.DragControls(camera, controlPointImpostors.children,
+               renderer.domElement);
           dragcontrols.on('hoveron', function(e) {
 
                transformControls.attach(e.object);
@@ -136,26 +168,6 @@ HAPPAH.gui = function() {
                if (hiding) clearTimeout(hiding);
 
           }
-
-
-
-          //scene.add(axisHelper);
-
-          // Standard settings.
-          camera.position.z = 20;
-          controls.target.set(0, 0, 0);
-          mouseDown = false;
-          renderer.setSize(window.innerWidth, window.innerHeight);
-
-          // Append to document.
-          document.body.appendChild(renderer.domElement);
-
-          renderer.domElement.addEventListener('mousemove', controls.onDocumentMouseMove, false);
-          renderer.domElement.addEventListener('mousedown', controls.onDocumentMouseDown, false);
-          renderer.domElement.addEventListener('mouseup', controls.onDocumentMouseUp, false);
-
-          // Success message.
-          console.log("happah initialized.");
      }
 
      /**
@@ -173,48 +185,15 @@ HAPPAH.gui = function() {
      }
 
      /**
-      * DeCasteljau algorithm
-      */
-     function deCasteljau(controlPoints, recursiveDepth) {
-          // Resulting point-array after every iteration.
-          var points = [];
-
-          // Fill in the control points for first iteration.
-          for (i = 0; i < controlPoints.length; i++) {
-               points[i] = controlPoints[i];
-          }
-
-          // The actual algorithm
-          for (j = 0; j < recursiveDepth; j++) {
-               // Temporary array.
-               var tempPoints = [];
-
-               // The first control point does not change.
-               tempPoints[0] = points[0];
-
-               // Get the middle of each segment and make it a new point.
-               for (i = 0; i < points.length - 1; i++) {
-                    tempPoints[i + 1] = new THREE.Vector3(
-                         (points[i + 1].x + points[i].x) / 2, (points[i + 1].y + points[i].y) / 2, (points[i + 1].z + points[i].z) / 2);
-               }
-               // The last control point remains unchanged.
-               tempPoints[tempPoints.length] = points[points.length - 1];
-
-               // Set points array for next iteration.
-               points = tempPoints;
-          }
-          return points;
-     }
-
-     /**
       * Takes a bunch of points and connects them with lines.
       */
-     function insertSegmetStrip(points, showPoints) {
+     function insertSegmetStrip(points, color) {
           var lineGeometry = new THREE.Geometry();
-          var lineMaterial = new THREE.LineBasicMaterial({
-               color: 0xCC0000
-          });
+          var lineMaterial = new THREE.LineBasicMaterial();
+          lineMaterial.color = color;
+          lineMaterial.linewidth = 2;
 
+          var showPoints = false;
           if (showPoints) {
                for (i = 0; i < points.length; i++) {
                     lineGeometry.vertices.push(points[i]);
@@ -235,8 +214,6 @@ HAPPAH.gui = function() {
           var line = new THREE.Line(lineGeometry, lineMaterial);
 
           return line;
-
-
      }
 
      /**
@@ -270,19 +247,32 @@ HAPPAH.gui = function() {
      }
 
      // Renders the scene in each renderer (only one currently).
-
-     var line = deCasteljau(points);
-     var controlLine = insertSegmetStrip(points);
-
      this.animate = function() {
           requestAnimationFrame(this.animate.bind(this));
 
-          scene.remove(line);
+          // Remove the algorithm's line from the scene so we can edit it.
+          scene.remove(algorithmLine);
+
+          // Same goes for the control line.
           scene.remove(controlLine);
-          decasteljaupoints = deCasteljau(points, 50);
-          line = insertSegmetStrip(decasteljaupoints);
-          controlLine = insertSegmetStrip(points);
-          scene.add(line);
+
+          // Update control points from current impostor positions.
+          for (i = 0; i < controlPoints.length; i++) {
+               controlPoints[i].copy(controlPointImpostors.children[i].position);
+          }
+
+          // Apply algorithm
+          algorithmPoints = this.algorithm({
+               controlPoints1D: controlPoints,
+               recursionDepth: 20
+          });
+
+          // Connect the calculated points to a line.
+          algorithmLine = insertSegmetStrip(algorithmPoints, new THREE.Color(0x009D82));
+          controlLine = insertSegmetStrip(controlPoints, new THREE.Color(0xFF0000));
+
+          // Add them to the scene.
+          scene.add(algorithmLine);
           scene.add(controlLine);
 
 
