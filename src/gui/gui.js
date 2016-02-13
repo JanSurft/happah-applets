@@ -49,19 +49,12 @@ HAPPAH.gui = function() {
           p3subp1 = new THREE.Vector3();
           raycaster = new THREE.Raycaster();
 
-          var sphereGeo = new THREE.SphereGeometry(2, 16, 16);
-          var sphereMat = new THREE.MeshBasicMaterial({
-               color: 0x0fff0f
-          });
-
-          sphere = new THREE.Mesh(sphereGeo, sphereMat);
 
           group = new THREE.Object3D();
 
-          sphere.z = 3;
 
           for (point in points) {
-               var mySphere = new THREE.Mesh(sphereGeo, sphereMat);
+               var mySphere = new HAPPAH.SphericalImpostor(1);
                mySphere.position = new THREE.Vector3();
                mySphere.position.x = points[point].x;
                mySphere.position.y = points[point].y;
@@ -79,14 +72,15 @@ HAPPAH.gui = function() {
 
           // Default values.
           grid = HAPPAH.GUI_DEFAULTS.getGrid();
-          light = HAPPAH.GUI_DEFAULTS.getLight(0x404040);
+          lights = HAPPAH.GUI_DEFAULTS.getLights();
 
           projector = new THREE.Projector();
 
 
           scene.add(group);
           scene.add(grid);
-          scene.add(light);
+
+          scene.add(lights);
 
 
           decasteljaupoints = deCasteljau(points, 100);
@@ -143,8 +137,6 @@ HAPPAH.gui = function() {
 
           }
 
-          var boundingBox = new THREE.BoundingBoxHelper(sphere, 0xff0000);
-          boundingBox.update();
 
 
           //scene.add(axisHelper);
@@ -287,7 +279,6 @@ HAPPAH.gui = function() {
 
           scene.remove(line);
           scene.remove(controlLine);
-          points[2].copy(sphere.position);
           decasteljaupoints = deCasteljau(points, 50);
           line = insertSegmetStrip(decasteljaupoints);
           controlLine = insertSegmetStrip(points);
