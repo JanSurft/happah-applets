@@ -1,5 +1,8 @@
 [
      "src/happah.js",
+     "src/algorithms/algorithms.js",
+     "src/algorithms/defaults.js",
+     "src/algorithms/decasteljau.js",
      "src/gui/gui.js",
      "src/gui/gui_defaults.js",
      "src/objects/SphericalImpostor.js",
