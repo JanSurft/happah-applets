@@ -1,31 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://threejs.org/build/three.min.js"></script>
-<script src="http://threejs.org/examples/js/controls/TrackballControls.js"></script>
-<script src="http://threejs.org/examples/js/renderers/Projector.js"></script>
-<script src="happah.js"></script>
-<script src="ArrowHelperSelectable.js"></script>
-<script>
-$(document).ready(function(){
-          $("button").click(function() {
-               h.onDocumentMouseDown();
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+     <script src="http://threejs.org/build/three.min.js"></script>
+     <script src="http://threejs.org/examples/js/controls/TrackballControls.js"></script>
+     <script src="http://threejs.org/examples/js/renderers/Projector.js"></script>
+     <script src="http://threejs.org/examples/js/controls/TransformControls.js"></script>
+     <script src="http://threejs.org/examples/js/controls/DragControls.js"></script>
+     <script src="../build/happah.js"></script>
+     <script>
+          $(document).ready(function()
+          {
+               $("button").click(function()
+               {
+                    h.onDocumentMouseDown();
+               });
+               var h = new HAPPAH.gui();
+               h.init();
+               h.animate();
           });
-          var h = new happah();
-          h.init();
-          h.render();
-});
-</script>
+     </script>
 </head>
+
 <body>
 
-<button id=123> Init </button>
-<button> click me </button>
-<p> paragraph </p>
-<h2> header </h2>
+     <button id=123>Init</button>
+     <button>click me</button>
+     <p>paragraph</p>
+     <h2> header </h2>
 
 </body>
+
 </html>
-
-

@@ -1,5 +1,7 @@
 [
      "src/happah.js",
+     "src/gui/gui.js",
+     "src/gui/gui_defaults.js",
      "src/objects/SphericalImpostor.js",
      "src/renderers/shaders/ShaderChunk.js",
      "src/renderers/shaders/ShaderChunk/spherical_impostor_fragment.glsl",
