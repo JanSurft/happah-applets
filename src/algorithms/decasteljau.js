@@ -1,3 +1,10 @@
+HAPPAH.algorithms = {};
+
+HAPPAH.algorithms.DEFAULTS = {
+     controlPoints1D: [],
+     recursionDepth: 1,
+}
+
 HAPPAH.algorithms.deCasteljau = function(params) {
      // if no parameters are given use dafaults
      var par = $.extend(HAPPAH.algorithms.DEFAULTS, params);
