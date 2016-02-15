@@ -1,4 +1,6 @@
 HAPPAH.gui = function() {
+     globalRecursionDepth = 0;
+
      var scene;
      var camera;
      var renderer;
@@ -57,7 +59,7 @@ HAPPAH.gui = function() {
           algorithm = HAPPAH.GUI_DEFAULTS.getDummyAlgorithm();
           controlPointImpostors = new THREE.Object3D();
 
-          for (i = 0; i < 6; i++) {
+          for (i = 0; i < 3; i++) {
                addControlPoint(new THREE.Vector3(i / 2, i * 3, Math.sin(i)));
           }
 
@@ -191,7 +193,7 @@ HAPPAH.gui = function() {
           var lineGeometry = new THREE.Geometry();
           var lineMaterial = new THREE.LineBasicMaterial();
           lineMaterial.color = color;
-          lineMaterial.linewidth = 2;
+          lineMaterial.linewidth = 5;
 
           var showPoints = false;
           if (showPoints) {
@@ -264,7 +266,7 @@ HAPPAH.gui = function() {
           // Apply algorithm
           algorithmPoints = this.algorithm({
                controlPoints1D: controlPoints,
-               recursionDepth: 20
+               recursionDepth: text.Rekursionstiefe
           });
 
           // Connect the calculated points to a line.

@@ -2,13 +2,34 @@
 <html>
 
 <head>
+     <link rel="stylesheet" type="text/css" href="../css/happah.css"></link>
+
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
      <script src="http://threejs.org/build/three.js"></script>
+     <script src="../js/controls/dat.gui.min.js"></script>
      <script src="http://threejs.org/examples/js/controls/TrackballControls.js"></script>
      <script src="http://threejs.org/examples/js/renderers/Projector.js"></script>
      <script src="http://threejs.org/examples/js/controls/TransformControls.js"></script>
      <script src="http://threejs.org/examples/js/controls/DragControls.js"></script>
+
      <script src="../build/happah.js"></script>
+
+     <script>
+          var Controls = function()
+          {
+               this.algorithm = 'De Casteljau';
+               this.Rekursionstiefe = 0;
+          };
+
+          window.onload = function()
+          {
+               text = new Controls();
+               var gui = new dat.GUI();
+               gui.add(text, 'algorithm');
+               gui.add(text, 'Rekursionstiefe', 0, 100);
+          };
+     </script>
+
      <script>
           $(document).ready(function()
           {
@@ -18,9 +39,16 @@
                h.animate();
           });
      </script>
+
 </head>
 
 <body>
+
+     <div class="controls">
+          <div class="slider">
+
+          </div>
+     </div>
 
 
 </body>
