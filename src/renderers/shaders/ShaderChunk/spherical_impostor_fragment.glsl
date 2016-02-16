@@ -5,6 +5,7 @@ if(distanceFromCenter >= uRadius ) {
 float normalizedDepth = sqrt(uRadius * uRadius
           - distanceFromCenter * distanceFromCenter);
 float depthOfFragment = 0.5 * uRadius * normalizedDepth;
+gl_FragDepthEXT = depthOfFragment;
 vec3 transformedNormal = vec3(impostorSpaceCoordinate, normalizedDepth);
 
 //////////////////////////////////////////////////////////////////////////////

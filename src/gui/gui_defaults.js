@@ -14,7 +14,11 @@ HAPPAH.GUI_DEFAULTS = {
      },
 
      getRenderer: function( /* options */ ) {
-          renderer = new THREE.WebGLRenderer();
+          var canvas = $('#happah')[0];
+          var context = canvas.getContext('webgl2');
+          context.getExtension('EXT_frag_depth');
+          var parameters = { canvas: canvas, context: context };
+          renderer = new THREE.WebGLRenderer(parameters);
           renderer.setClearColor(0xFFFFFF);
           return renderer;
      },

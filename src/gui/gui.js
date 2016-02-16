@@ -87,7 +87,7 @@ HAPPAH.gui = function() {
           renderer.setSize(window.innerWidth, window.innerHeight);
 
           // Append to document.
-          document.body.appendChild(renderer.domElement);
+          //document.body.appendChild(renderer.domElement);
 
           renderer.domElement.addEventListener('mousemove', controls.onDocumentMouseMove, false);
           renderer.domElement.addEventListener('mousedown', controls.onDocumentMouseDown, false);
