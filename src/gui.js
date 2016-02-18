@@ -56,7 +56,7 @@ HAPPAH.GUI_DEFAULTS = {
      }
 };
 
-HAPPAH.gui = function() {
+(function(happah, $, undefined) {
      globalRecursionDepth = 0;
 
      var scene;
@@ -101,7 +101,7 @@ HAPPAH.gui = function() {
       * Initializes with standard settings,
       * such as: 1 camera, 1 scene, 1 renderer.
       */
-     this.init = function() {
+     happah.init = function() {
           scene = HAPPAH.GUI_DEFAULTS.getScene();
           camera = HAPPAH.GUI_DEFAULTS.getCamera();
           renderer = HAPPAH.GUI_DEFAULTS.getRenderer();
@@ -158,8 +158,8 @@ HAPPAH.gui = function() {
      /**
       * Set the algorithm
       */
-     this.setAlgorithm = function(algorithm) {
-          this.algorithm = algorithm;
+     happah.setAlgorithm = function(a) {
+          algorithm = a;
      }
 
      /**
@@ -279,7 +279,7 @@ HAPPAH.gui = function() {
      /**
       * Draws an array of points.
       */
-     this.drawPointCloud = function(points) {
+     happah.drawPointCloud = function(points) {
           var pointGeometry = new THREE.Geometry();
           var material = new THREE.PointCloudMaterial({
                size: 6,
@@ -307,7 +307,7 @@ HAPPAH.gui = function() {
      }
 
      // Renders the scene in each renderer (only one currently).
-     this.animate = function() {
+     happah.animate = function() {
           requestAnimationFrame(this.animate.bind(this));
 
           // Remove the algorithm's line from the scene so we can edit it.
@@ -322,9 +322,9 @@ HAPPAH.gui = function() {
           }
 
           // Apply algorithm
-          algorithmPoints = this.algorithm({
+          algorithmPoints = algorithm({
                controlPoints1D: controlPoints,
-               recursionDepth: text.Rekursionstiefe
+               recursionDepth: 3//TODO: text.Rekursionstiefe
           });
 
           // Connect the calculated points to a line.
@@ -341,7 +341,8 @@ HAPPAH.gui = function() {
           transformControls.update();
      }
 
-     this.render = function() {
+     happah.render = function() {
           renderer.render(scene, camera);
      }
-}
+}(window.happah = window.happah || {}, jQuery ));
+
