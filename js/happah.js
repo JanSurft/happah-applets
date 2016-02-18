@@ -1,62 +1,5 @@
-/**
- * Holds default values for simple viewport setup.
- */
-HAPPAH.GUI_DEFAULTS = {
-     getScene: function() {
-          return new THREE.Scene();
-     },
-
-     getCamera: function( /* options */ ) {
-          var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-          //camera.position.y = 20;
-
-          return camera;
-     },
-
-     getRenderer: function( /* options */ ) {
-          var canvas = $('#happah')[0];
-          var context = canvas.getContext('webgl2');
-          context.getExtension('EXT_frag_depth');
-          var parameters = { canvas: canvas, context: context };
-          renderer = new THREE.WebGLRenderer(parameters);
-          renderer.setClearColor(0xFFFFFF);
-          return renderer;
-     },
-
-     getGrid: function() {
-          return new THREE.GridHelper(100, 10);
-     },
-
-     getControls: function(camera) {
-          // TODO: Remove all references to THREE->Examples!
-          //return new THREE.TrackballControls(camera);
-          return new THREE.TrackballControls(camera);
-     },
-
-     getDummyAlgorithm: function() {
-          return function(points, value) {
-               return points;
-          };
-     },
-
-     getLights: function() {
-          var lights = new THREE.Object3D();
-          var light = new THREE.PointLight(0xffffff, 1, 0);
-          light.position.set(0, 200, 0);
-          lights.add(light);
-          light = new THREE.PointLight(0xffffff, 1, 0);
-          light.position.set(100, 200, 100);
-          lights.add(light);
-          light = new THREE.PointLight(0xffffff, 1, 0);
-          light.position.set(-100, -200, -100);
-          lights.add(light);
-          lights.add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
-          lights.add(new THREE.AmbientLight(0x000000));
-          return lights;
-     }
-};
-
-(function(happah, $, undefined) {
+define([ 'jquery', 'three', 'TrackballControls', 'Projector', 'TransformControls', 'DragControls' ], function($, THREE) {
+     function GUI() {
      globalRecursionDepth = 0;
 
      var scene;
@@ -101,11 +44,16 @@ HAPPAH.GUI_DEFAULTS = {
       * Initializes with standard settings,
       * such as: 1 camera, 1 scene, 1 renderer.
       */
-     happah.init = function() {
-          scene = HAPPAH.GUI_DEFAULTS.getScene();
-          camera = HAPPAH.GUI_DEFAULTS.getCamera();
-          renderer = HAPPAH.GUI_DEFAULTS.getRenderer();
-          controls = HAPPAH.GUI_DEFAULTS.getControls(camera);
+     this.init = function() {
+          scene = new THREE.Scene();
+          camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+          var canvas = $('#happah')[0];
+          var context = canvas.getContext('webgl2');
+          context.getExtension('EXT_frag_depth');
+          var parameters = { canvas: canvas, context: context };
+          renderer = new THREE.WebGLRenderer(parameters);
+          renderer.setClearColor(0xFFFFFF);
+          controls = new THREE.TrackballControls(camera);
           //axisHelper = new THREE.AxisHelper(10);
           mouseVec = new THREE.Vector3();
           offset = new THREE.Vector3();
@@ -114,7 +62,9 @@ HAPPAH.GUI_DEFAULTS = {
           raycaster = new THREE.Raycaster();
 
           // Get a dummy algorithm
-          algorithm = HAPPAH.GUI_DEFAULTS.getDummyAlgorithm();
+          algorithm = function(points, value) {
+               return points;
+          };
           controlPointImpostors = new THREE.Object3D();
 
           for (i = 0; i < 3; i++) {
@@ -127,8 +77,19 @@ HAPPAH.GUI_DEFAULTS = {
           scene.add(transformControls);
 
           // Default values.
-          grid = HAPPAH.GUI_DEFAULTS.getGrid();
-          lights = HAPPAH.GUI_DEFAULTS.getLights();
+          grid = new THREE.GridHelper(100, 10);
+          lights = new THREE.Object3D();
+          var light = new THREE.PointLight(0xffffff, 1, 0);
+          light.position.set(0, 200, 0);
+          lights.add(light);
+          light = new THREE.PointLight(0xffffff, 1, 0);
+          light.position.set(100, 200, 100);
+          lights.add(light);
+          light = new THREE.PointLight(0xffffff, 1, 0);
+          light.position.set(-100, -200, -100);
+          lights.add(light);
+          lights.add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
+          lights.add(new THREE.AmbientLight(0x000000));
 
           projector = new THREE.Projector();
 
@@ -158,7 +119,7 @@ HAPPAH.GUI_DEFAULTS = {
      /**
       * Set the algorithm
       */
-     happah.setAlgorithm = function(a) {
+     this.setAlgorithm = function(a) {
           algorithm = a;
      }
 
@@ -279,7 +240,7 @@ HAPPAH.GUI_DEFAULTS = {
      /**
       * Draws an array of points.
       */
-     happah.drawPointCloud = function(points) {
+     this.drawPointCloud = function(points) {
           var pointGeometry = new THREE.Geometry();
           var material = new THREE.PointCloudMaterial({
                size: 6,
@@ -307,7 +268,7 @@ HAPPAH.GUI_DEFAULTS = {
      }
 
      // Renders the scene in each renderer (only one currently).
-     happah.animate = function() {
+     this.animate = function() {
           requestAnimationFrame(this.animate.bind(this));
 
           // Remove the algorithm's line from the scene so we can edit it.
@@ -341,8 +302,10 @@ HAPPAH.GUI_DEFAULTS = {
           transformControls.update();
      }
 
-     happah.render = function() {
+     this.render = function() {
           renderer.render(scene, camera);
      }
-}(window.happah = window.happah || {}, jQuery ));
+     }
+     return { GUI };
+});
 

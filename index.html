@@ -4,15 +4,12 @@
 <head>
      <link rel="stylesheet" type="text/css" href="../css/happah.css"></link>
 
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-     <script src="http://threejs.org/build/three.js"></script>
+     <script src="src/happah.js"></script>
+     <script src="src/objects/SphericalImpostor.js"></script>
+     <script src="build/ShaderChunk.js"></script>
+     <script src="src/decasteljau.js"></script>
+     <script data-main="js/main" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min.js"></script>
-     <script src="http://threejs.org/examples/js/controls/TrackballControls.js"></script>
-     <script src="http://threejs.org/examples/js/renderers/Projector.js"></script>
-     <script src="http://threejs.org/examples/js/controls/TransformControls.js"></script>
-     <script src="http://threejs.org/examples/js/controls/DragControls.js"></script>
-
-     <script src="../build/happah.js"></script>
 
      <script>
           var Controls = function()
@@ -30,27 +27,16 @@
           };
      </script>
 
-     <script>
-          $(document).ready(function()
-          {
-               happah.init();
-               happah.setAlgorithm(HAPPAH.algorithms.deCasteljau);
-               happah.animate();
-          });
-     </script>
-
 </head>
 
 <body>
-
      <div class="controls">
           <div class="slider">
 
           </div>
      </div>
      <canvas id="happah"></canvas>
-
-
 </body>
 
 </html>
+
