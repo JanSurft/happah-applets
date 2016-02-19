@@ -83,4 +83,5 @@ require([ 'happah', 'dat', 'three' ], function (happah, dat, THREE) {
 //TODO: move camera from position 0 to position 1 (use quaternion)
 //TODO: fix annoying timeout on drag controls
 //TODO: check spherical impostor implementation; one billboard for all impostors; use drawarrayinstances from webgl2
+//TODO: shader preprocessor
 
