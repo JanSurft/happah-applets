@@ -1,16 +1,11 @@
-define([ 'jquery', 'three' ], function($, THREE) {
+define([ 'jquery', 'three', 'spherical-impostor' ], function($, THREE, happah) {
      var s_algorithm = Symbol('algorithm');
      var s_grid = Symbol('grid');
      var s_lights = Symbol('lights');
 
      class Scene extends THREE.Scene {
 
-     /*var grid;
-     var lights;
-
-     // For moving the points:
-     var algorithm;
-     var algorithmPoints = [];
+     /*var algorithmPoints = [];
      var algorithmLine;
      var controlLine;
      var controlPoints = [];
@@ -67,7 +62,7 @@ define([ 'jquery', 'three' ], function($, THREE) {
      }
 
      addControlPoint(point) {
-          var sphere = new HAPPAH.SphericalImpostor(1);
+          var sphere = new happah.SphericalImpostor(1);
           sphere.material.uniforms.diffuse.value.set(new THREE.Color(0x888888));
           sphere.position.x = point.x;
           sphere.position.y = point.y;
@@ -133,7 +128,7 @@ define([ 'jquery', 'three' ], function($, THREE) {
           this.add(pointCloud);
      }
 
-     }
+     }//class Scene
 
      return { Scene: Scene };
 });
