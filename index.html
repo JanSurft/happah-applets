@@ -2,40 +2,13 @@
 <html>
 
 <head>
-     <link rel="stylesheet" type="text/css" href="../css/happah.css"></link>
-
-     <script src="src/happah.js"></script>
-     <script src="src/objects/SphericalImpostor.js"></script>
-     <script src="build/ShaderChunk.js"></script>
-     <script src="src/decasteljau.js"></script>
+     <link rel="stylesheet" type="text/css" href="css/happah.css"></link>
+     <script src="build/shaders.js"></script>
      <script data-main="js/main" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min.js"></script>
-
-     <script>
-          var Controls = function()
-          {
-               this.algorithm = 'De Casteljau';
-               this.Rekursionstiefe = 0;
-          };
-
-          window.onload = function()
-          {
-               text = new Controls();
-               var gui = new dat.GUI();
-               gui.add(text, 'algorithm');
-               gui.add(text, 'Rekursionstiefe', 0, 100);
-          };
-     </script>
-
 </head>
 
 <body>
-     <div class="controls">
-          <div class="slider">
-
-          </div>
-     </div>
-     <canvas id="happah"></canvas>
+     <canvas class="hph-canvas"></canvas>
 </body>
 
 </html>

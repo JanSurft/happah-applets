@@ -80,6 +80,7 @@ def main(argv=None):
      if args.amd:
           tmp.write(u'( function ( root, factory ) {\n\n\tif ( typeof define === \'function\' && define.amd ) {\n\n\t\tdefine( [ \'exports\' ], factory );\n\n\t} else if ( typeof exports === \'object\' ) {\n\n\t\tfactory( exports );\n\n\t} else {\n\n\t\tfactory( root );\n\n\t}\n\n}( this, function ( exports ) {\n\n')
 
+     tmp.write(u'shaders = [];\n\n');
      for include in args.include:
           with open('includes/' + include + '.json','r', encoding='utf-8') as f:
                files = json.load(f)
@@ -90,7 +91,7 @@ def main(argv=None):
                sources.append(filename)
                with open(filename, 'r', encoding='utf-8') as f:
                     if filename.endswith(".glsl"):
-                         tmp.write(u'HAPPAH.ShaderChunk[ \'' + os.path.splitext(os.path.basename(filename))[0] + u'\' ] = "')
+                         tmp.write(u'shaders[ \'' + os.path.splitext(os.path.basename(filename))[0] + u'\' ] = "')
                          text = f.read()
                          text = re.sub(r"\t*//.*\n", "", text) # strip comments
                          text = text.replace('\n','\\n') # line breaks to \n
@@ -99,9 +100,6 @@ def main(argv=None):
                     else:
                          tmp.write(f.read())
                          tmp.write(u'\n')
-
-     if args.amd:
-          tmp.write(u'exports.HAPPAH = HAPPAH;\n\n} ) );')
 
      tmp.close()
 

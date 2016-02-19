@@ -1,11 +1,6 @@
 [
-     "src/happah.js",
-     "src/decasteljau.js",
-     "src/gui.js",
-     "src/objects/SphericalImpostor.js",
-     "src/renderers/shaders/ShaderChunk.js",
-     "src/renderers/shaders/ShaderChunk/spherical_impostor_fragment.glsl",
-     "src/renderers/shaders/ShaderChunk/spherical_impostor_pars_fragment.glsl",
-     "src/renderers/shaders/ShaderChunk/spherical_impostor_pars_vertex.glsl",
-     "src/renderers/shaders/ShaderChunk/spherical_impostor_vertex.glsl"
+     "shaders/spherical-impostor.f.glsl",
+     "shaders/spherical-impostor.fh.glsl",
+     "shaders/spherical-impostor.v.glsl",
+     "shaders/spherical-impostor.vh.glsl"
 ]

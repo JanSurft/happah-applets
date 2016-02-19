@@ -1,0 +1,12 @@
+html, body, .hph-canvas {
+     height: 100%;
+     margin: 0px;
+     padding: 0px;
+     width: 100%;
+}
+
+.hph-canvas {
+     height: 100%;
+     width: 100%;
+}
+
