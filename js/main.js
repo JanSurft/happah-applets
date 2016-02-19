@@ -61,6 +61,10 @@ require([ 'happah', 'dat', 'three' ], function (happah, dat, THREE) {
      viewport.animate();
      console.log("happah initialized.");
 
+     var storyboard = new happah.Storyboard();
+     var frame0 = new happah.Storyboard.Frame();
+     storyboard.append(frame0);
+
      var defaults = {
           algorithm: 'De Casteljau',
           Rekursionstiefe: 0
@@ -72,4 +76,11 @@ require([ 'happah', 'dat', 'three' ], function (happah, dat, THREE) {
 
 //TODO: animate? why not just paint?
 //TODO: take algorithm stuff out of scene
+//TODO: take animate out of scene
+//TODO: fix fragDepth
+//TODO: simplify vertex shaders
+//TODO: move shaders into module
+//TODO: move camera from position 0 to position 1 (use quaternion)
+//TODO: fix annoying timeout on drag controls
+//TODO: check spherical impostor implementation; one billboard for all impostors; use drawarrayinstances from webgl2
 

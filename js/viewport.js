@@ -24,7 +24,7 @@ define([ 'jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContr
           context.getExtension('EXT_frag_depth');
           var parameters = { canvas: canvas, context: context };
           this[s_renderer] = new THREE.WebGLRenderer(parameters);
-          this[s_renderer].setClearColor(0xFFFFFF);
+          this[s_renderer].setClearColor(0xFFFFFF);//TODO: can renderer and viewport be separated?
           this[s_renderer].setSize($(canvas).width(), $(canvas).height());
           this[s_renderer].domElement.addEventListener('mousemove', this[s_trackballControls].onDocumentMouseMove, false);
           this[s_renderer].domElement.addEventListener('mousedown', this[s_trackballControls].onDocumentMouseDown, false);
@@ -34,7 +34,7 @@ define([ 'jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContr
           this[s_scene].add(this[s_transformControls]);
      }
 
-     update() {
+     update() {//TODO: make update private
           var hiding;
           var _this = this;
 
