@@ -19,10 +19,9 @@ require.config({
 
 require([ 'happah', 'three' ], function (happah, THREE) {
      var scene = new happah.Scene();
+     var viewport = new happah.Viewport(scene);
      scene.algorithm = HAPPAH.algorithms.deCasteljau;
      for (i = 0; i < 3; i++) scene.addControlPoint(new THREE.Vector3(i / 2, i * 3, Math.sin(i)));//TODO: get rid of THREE
-     var viewport = new happah.Viewport(scene);
-     viewport.update();
      viewport.animate();
      console.log("happah initialized.");
 });

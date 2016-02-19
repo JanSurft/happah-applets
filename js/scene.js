@@ -1,22 +1,15 @@
 define([ 'jquery', 'three' ], function($, THREE) {
-     class Scene {
+     var s_algorithm = Symbol('algorithm');
+     var s_grid = Symbol('grid');
+     var s_lights = Symbol('lights');
 
-     /*var _scene;
-     var grid;
-     var light;
+     class Scene extends THREE.Scene {
 
-     // The new position we want the object to move to.
-     var targetposition;
-     var p3subp1;
-
-     // For plane intersection
-     var raycaster;
+     /*var grid;
+     var lights;
 
      // For moving the points:
      var algorithm;
-     var mouseVec;
-     var offset;
-     var mouseDown;
      var algorithmPoints = [];
      var algorithmLine;
      var controlLine;
@@ -24,54 +17,44 @@ define([ 'jquery', 'three' ], function($, THREE) {
      this._controlPointImpostors = null;*/
 
      constructor() {
-          this._scene = new THREE.Scene();
-          this.mouseVec = new THREE.Vector3();
-          this.offset = new THREE.Vector3();
-          this.targetposition = new THREE.Vector3();
-          this.p3subp1 = new THREE.Vector3();
-          this._algorithm = function(points, value) {
+          super();
+          this[s_algorithm] = function(points, value) {
                return points;
           };
           this.controlPoints = [];
           this.algorithmPoints = [];
           this._controlPointImpostors = new THREE.Object3D();
 
-          this.grid = new THREE.GridHelper(100, 10);
+          this[s_grid] = new THREE.GridHelper(100, 10);
+          this.add(this[s_grid]);
 
-          this.lights = new THREE.Object3D();
+          this[s_lights] = new THREE.Object3D();
           var light = new THREE.PointLight(0xffffff, 1, 0);
           light.position.set(0, 200, 0);
-          this.lights.add(light);
+          this[s_lights].add(light);
           light = new THREE.PointLight(0xffffff, 1, 0);
           light.position.set(100, 200, 100);
-          this.lights.add(light);
+          this[s_lights].add(light);
           light = new THREE.PointLight(0xffffff, 1, 0);
           light.position.set(-100, -200, -100);
-          this.lights.add(light);
-          this.lights.add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
-          this.lights.add(new THREE.AmbientLight(0x000000));
-
-          this._scene.add(this.grid);
-          this._scene.add(this.lights);
-
-          this.mouseDown = false;
+          this[s_lights].add(light);
+          this[s_lights].add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
+          this[s_lights].add(new THREE.AmbientLight(0x000000));
+          this.add(this[s_lights]);
      }
 
-     get algorithm() { return this._algorithm; }
-     set algorithm(algorithm) { this._algorithm = algorithm; }
-     get scene() { return this._scene; }
+     get algorithm() { return this[s_algorithm]; }
+     set algorithm(algorithm) { this[s_algorithm] = algorithm; }
      get controlPointImpostors() { return this._controlPointImpostors; }
 
-     add(o) { this._scene.add(o); }
-
      animate() {
-          this._scene.remove(this.algorithmLine);
-          this._scene.remove(this.controlLine);
+          this.remove(this.algorithmLine);
+          this.remove(this.controlLine);
 
           for(i = 0; i < this.controlPoints.length; i++)
                this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
 
-          this.algorithmPoints = this._algorithm({
+          this.algorithmPoints = this[s_algorithm]({
                controlPoints1D: this.controlPoints,
                recursionDepth: 3//TODO: text.Rekursionstiefe
           });
@@ -79,8 +62,8 @@ define([ 'jquery', 'three' ], function($, THREE) {
           this.algorithmLine = this.insertSegmetStrip(this.algorithmPoints, new THREE.Color(0x009D82));
           this.controlLine = this.insertSegmetStrip(this.controlPoints, new THREE.Color(0xFF0000));
 
-          this._scene.add(this.algorithmLine);
-          this._scene.add(this.controlLine);
+          this.add(this.algorithmLine);
+          this.add(this.controlLine);
      }
 
      addControlPoint(point) {
@@ -91,7 +74,8 @@ define([ 'jquery', 'three' ], function($, THREE) {
           sphere.position.z = point.z;
           this._controlPointImpostors.add(sphere);
           this.controlPoints.push(point);
-          this._scene.add(this._controlPointImpostors);
+          this.add(this._controlPointImpostors);
+          $(this).trigger('update.happah');
      }
 
      insertSegmetStrip(points, color) {
@@ -110,7 +94,7 @@ define([ 'jquery', 'three' ], function($, THREE) {
                          color: 0x00ff00
                     });
                     var box = new THREE.Mesh(boxG, boxM);
-                    this._scene.add(box);
+                    this.add(box);
                }
           } else {
                for (i = 0; i < points.length; i++) {
@@ -123,7 +107,7 @@ define([ 'jquery', 'three' ], function($, THREE) {
           return line;
      }
 
-     drawPointCloud(points) {
+     drawPointCloud(points) {//TODO: do we need this?
           var pointGeometry = new THREE.Geometry();
           var material = new THREE.PointCloudMaterial({
                size: 6,
@@ -145,12 +129,12 @@ define([ 'jquery', 'three' ], function($, THREE) {
                }));
 
           // Add to _scene:
-          this._scene.add(line);
-          this._scene.add(pointCloud);
-
+          this.add(line);
+          this.add(pointCloud);
      }
 
      }
+
      return { Scene: Scene };
 });
 

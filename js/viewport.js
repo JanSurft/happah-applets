@@ -1,34 +1,38 @@
 define([ 'jquery', 'three', 'TrackballControls', 'TransformControls', 'DragControls' ], function($, THREE) {
+     var s_camera = Symbol('camera');
+     var s_dragControls = Symbol('dragControls');
+     var s_renderer = Symbol('renderer');
+     var s_scene = Symbol('scene');
+     var s_trackballControls = Symbol('trackballControls');
+     var s_transformControls = Symbol('transformControls');
+
      class Viewport {
-     /*var camera;
-     var renderer;
 
-     var trackballControls;
-     var dragControls;
-     var transformControls;*/
+     constructor(scene) {
+          var _this = this;
 
-     constructor(s) {
-          this.scene = s;
+          this[s_scene] = scene;
+          $(this[s_scene]).bind('update.happah', function() { _this.update(); });
 
-          this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-          this.camera.position.z = 20;
+          this[s_camera] = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+          this[s_camera].position.z = 20;
 
-          this.trackballControls = new THREE.TrackballControls(this.camera);
-          this.trackballControls.target.set(0, 0, 0);
+          this[s_trackballControls] = new THREE.TrackballControls(this[s_camera]);
+          this[s_trackballControls].target.set(0, 0, 0);
 
           var canvas = $('#happah')[0];
           var context = canvas.getContext('webgl2');
           context.getExtension('EXT_frag_depth');
           var parameters = { canvas: canvas, context: context };
-          this.renderer = new THREE.WebGLRenderer(parameters);
-          this.renderer.setClearColor(0xFFFFFF);
-          this.renderer.setSize(window.innerWidth, window.innerHeight);
-          this.renderer.domElement.addEventListener('mousemove', this.trackballControls.onDocumentMouseMove, false);
-          this.renderer.domElement.addEventListener('mousedown', this.trackballControls.onDocumentMouseDown, false);
-          this.renderer.domElement.addEventListener('mouseup', this.trackballControls.onDocumentMouseUp, false);
+          this[s_renderer] = new THREE.WebGLRenderer(parameters);
+          this[s_renderer].setClearColor(0xFFFFFF);
+          this[s_renderer].setSize(window.innerWidth, window.innerHeight);
+          this[s_renderer].domElement.addEventListener('mousemove', this[s_trackballControls].onDocumentMouseMove, false);
+          this[s_renderer].domElement.addEventListener('mousedown', this[s_trackballControls].onDocumentMouseDown, false);
+          this[s_renderer].domElement.addEventListener('mouseup', this[s_trackballControls].onDocumentMouseUp, false);
 
-          this.transformControls = new THREE.TransformControls(this.camera, this.renderer.domElement);
-          this.scene.add(this.transformControls);
+          this[s_transformControls] = new THREE.TransformControls(this[s_camera], this[s_renderer].domElement);
+          this[s_scene].add(this[s_transformControls]);
      }
 
      update() {
@@ -37,7 +41,7 @@ define([ 'jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContr
 
           function hideTransform() {
                hiding = setTimeout(function() {
-                    _this.transformControls.detach(_this.transformControls.object);
+                    _this[s_transformControls].detach(_this[s_transformControls].object);
                }, 2500)
           }
 
@@ -50,30 +54,28 @@ define([ 'jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContr
                hideTransform();
           }
 
-          this.dragControls = new THREE.DragControls(this.camera, this.scene.controlPointImpostors.children, this.renderer.domElement);
-          this.dragControls.on('hoveron', function(e) {
-               _this.transformControls.attach(e.object);
+          this[s_dragControls] = new THREE.DragControls(this[s_camera], this[s_scene].controlPointImpostors.children, this[s_renderer].domElement);
+          this[s_dragControls].on('hoveron', function(e) {
+               _this[s_transformControls].attach(e.object);
                cancelHideTransform();
           });
-          this.dragControls.on('hoveroff', function(e) {
+          this[s_dragControls].on('hoveroff', function(e) {
                if (e) delayHideTransform();
           });
-          this.trackballControls.addEventListener('start', cancelHideTransform);
-          this.trackballControls.addEventListener('end', delayHideTransform);
+          this[s_trackballControls].addEventListener('start', cancelHideTransform);
+          this[s_trackballControls].addEventListener('end', delayHideTransform);
      }
 
      animate() {
           requestAnimationFrame(this.animate.bind(this));
-          this.scene.animate();
-          this.render();
-          this.trackballControls.update();
-          this.transformControls.update();
+          this[s_scene].animate();
+          this[s_renderer].render(this[s_scene], this[s_camera]);
+          this[s_trackballControls].update();
+          this[s_transformControls].update();
      }
 
-     render() {
-          this.renderer.render(this.scene.scene, this.camera);//TODO: this.scene.scene ewwwwww!!!
-     }
-     }
+     }//class Viewport
+
      return { Viewport: Viewport };
 });
 
