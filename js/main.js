@@ -84,4 +84,13 @@ require([ 'happah', 'dat', 'three' ], function (happah, dat, THREE) {
 //TODO: fix annoying timeout on drag controls
 //TODO: check spherical impostor implementation; one billboard for all impostors; use drawarrayinstances from webgl2
 //TODO: shader preprocessor
+//TODO: trackballcontrols: reimplement removing dep on camera
+//TODO: single insert() method for all inserts with type variable in object classes
+//TODO: webgl2...use features such as instanced arrays
+//TODO: data should be only once in memory with flags about how to render it
+//TODO: remove animate form scene
+//TODO: event-based rendering instead of infinite loop
+//TODO: ray/sphere intersection in fragment shader...also important for point manipulation
+//TODO: interval overlay for choosing ratio in de casteljau algorithm
+//TODO: install and use compass
 

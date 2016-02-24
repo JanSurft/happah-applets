@@ -102,32 +102,6 @@ define([ 'jquery', 'three', 'spherical-impostor' ], function($, THREE, happah) {
           return line;
      }
 
-     drawPointCloud(points) {//TODO: do we need this?
-          var pointGeometry = new THREE.Geometry();
-          var material = new THREE.PointCloudMaterial({
-               size: 6,
-               sizeAttenuation: false
-          });
-          var pointCloud = new THREE.PointCloud(pointGeometry, material);
-
-          // Adds all the points to pointgeometry.
-          for (i = 0; i < points.length; i++) {
-               pointGeometry.vertices.push(new THREE.Vector3(points[i][0],
-                    points[i][1],
-                    points[i][2]));
-          }
-          // Connect the points with lines.
-          var line = new THREE.Line(pointGeometry,
-               new THREE.LineBasicMaterial({
-                    color: 0xccafff,
-                    opacity: 0.5
-               }));
-
-          // Add to _scene:
-          this.add(line);
-          this.add(pointCloud);
-     }
-
      }//class Scene
 
      return { Scene: Scene };
