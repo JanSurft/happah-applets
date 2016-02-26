@@ -10,6 +10,7 @@ require.config({
      paths: {
           dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min",//TODO: remove
           DragControls: "http://threejs.org/examples/js/controls/DragControls",
+          i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
           jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
           three: "http://threejs.org/build/three",
           TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",

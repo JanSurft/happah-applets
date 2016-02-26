@@ -1,5 +1,7 @@
-define([ 'jquery' ], function($) {
+define([ 'jquery', 'translator' ], function($, Translator) {
      var s_frames = Symbol('frames');
+
+     console.log(Translator.t('hello'));
 
      class Storyboard {
 
