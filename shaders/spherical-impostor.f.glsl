@@ -2,13 +2,16 @@ float distanceFromCenter = length(impostorSpaceCoordinate);
 if(distanceFromCenter >= uRadius ) {
      discard;
 }
+
+// calculate true depth of the sphere
+float far=gl_DepthRange.far;
+float near=gl_DepthRange.near;
 float normalizedDepth = sqrt(uRadius * uRadius
           - distanceFromCenter * distanceFromCenter);
-float depthOfFragment = 0.5 * uRadius * normalizedDepth;
-gl_FragDepthEXT = depthOfFragment;
-vec3 transformedNormal = vec3(impostorSpaceCoordinate, normalizedDepth);
+float depthOfFragment = fDepth + normalizedDepth * (fSphereRadiusDepth);
+gl_FragDepthEXT = (((far-near) * depthOfFragment) + near + far) / 2.0;
 
-//////////////////////////////////////////////////////////////////////////////
+vec3 transformedNormal = vec3(impostorSpaceCoordinate, normalizedDepth);
 
 vec3 diffuse = vec3( 1.0 );
 
