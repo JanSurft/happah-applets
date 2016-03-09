@@ -1,12 +1,29 @@
-html, body, .hph-canvas {
+html,
+body {
      height: 100%;
      margin: 0px;
      padding: 0px;
      width: 100%;
+     background-color: #EEE;
 }
-
-.hph-canvas {
-     height: 100%;
+.center {
+     margin-left: auto;
+     margin-right: auto;
+     text-align: center;
+}
+.hph-canvas,
+.hph-controls,
+.hph-description {
      width: 100%;
 }
-
+.hph-canvas {
+     height: 100%;
+     padding: 0px;
+     box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+}
+#hph-canvas-wrapper {
+     margin-top: 10px;
+}
+.container {
+     background-color: #FFF;
+}
