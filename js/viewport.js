@@ -19,9 +19,6 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this[s_camera] = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                this[s_camera].position.z = 20;
 
-               this[s_trackballControls] = new THREE.TrackballControls(this[s_camera]);
-               this[s_trackballControls].target.set(0, 0, 0);
-
                var context = canvas.getContext('webgl2');
                context.getExtension('EXT_frag_depth');
                var parameters = {
@@ -31,6 +28,8 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this[s_renderer] = new THREE.WebGLRenderer(parameters);
                this[s_renderer].setClearColor(0xFFFFFF); //TODO: can renderer and viewport be separated?
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
+               this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
+               this[s_trackballControls].target.set(0, 0, 0);
                this[s_renderer].domElement.addEventListener('mousemove', this[s_trackballControls].onDocumentMouseMove, false);
                this[s_renderer].domElement.addEventListener('mousedown', this[s_trackballControls].onDocumentMouseDown, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_trackballControls].onDocumentMouseUp, false);
