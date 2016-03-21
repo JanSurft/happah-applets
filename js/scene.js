@@ -24,17 +24,27 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this.add(this[s_grid]);
 
                     this[s_lights] = new THREE.Object3D();
-                    var light = new THREE.PointLight(0xffffff, 1, 0);
-                    light.position.set(0, 200, 0);
-                    this[s_lights].add(light);
-                    light = new THREE.PointLight(0xffffff, 1, 0);
-                    light.position.set(100, 200, 100);
-                    this[s_lights].add(light);
-                    light = new THREE.PointLight(0xffffff, 1, 0);
-                    light.position.set(-100, -200, -100);
-                    this[s_lights].add(light);
-                    this[s_lights].add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
-                    this[s_lights].add(new THREE.AmbientLight(0x000000));
+
+                    var ambientLight = new THREE.AmbientLight(0x444444);
+                    this[s_lights].add(ambientLight);
+                    var dirLight = new THREE.DirectionalLight(0xffffff);
+                    dirLight.position.set(200, 200, 1000).normalize();
+                    this[s_lights].add(dirLight);
+                    this[s_lights].add(dirLight.target);
+                    //this.camera.add(dirLight.target);
+
+
+                    //var light = new THREE.PointLight(0xffffff, 1, 0);
+                    //light.position.set(0, 200, 0);
+                    //this[s_lights].add(light);
+                    //light = new THREE.PointLight(0xffffff, 1, 0);
+                    //light.position.set(100, 200, 100);
+                    //this[s_lights].add(light);
+                    //light = new THREE.PointLight(0xffffff, 1, 0);
+                    //light.position.set(-100, -200, -100);
+                    //this[s_lights].add(light);
+                    //this[s_lights].add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
+                    //this[s_lights].add(new THREE.AmbientLight(0x000000));
                     this.add(this[s_lights]);
                }
 
