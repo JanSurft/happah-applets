@@ -80,7 +80,7 @@ for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {
 
 for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 
-     directLight = getDirectionalDirectLight( directionalLights[ i ], geometry );
+     directLight = getDirectionalDirectLightIrradiance( directionalLights[ i ], geometry );
 
      dotNL = dot( geometry.normal, directLight.direction );
      directLightColor_Diffuse = PI * directLight.color;
