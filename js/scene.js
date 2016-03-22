@@ -26,11 +26,13 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_lights] = new THREE.Object3D();
 
                     var ambientLight = new THREE.AmbientLight(0x444444);
-                    this[s_lights].add(ambientLight);
+                    var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, 1);
+                    //this[s_lights].add(ambientLight);
+                    this[s_lights].add(hemisphereLight);
                     var dirLight = new THREE.DirectionalLight(0xffffff);
                     dirLight.position.set(200, 200, 1000).normalize();
                     this[s_lights].add(dirLight);
-                    this[s_lights].add(dirLight.target);
+                    // this[s_lights].add(dirLight.target);
                     //this.camera.add(dirLight.target);
 
 
@@ -62,7 +64,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this.remove(this.algorithmLine);
                     this.remove(this.controlLine);
 
-                    for (i = 0; i < this.controlPoints.length; i++)
+                    for (var i = 0; i < this.controlPoints.length; i++)
                          this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
 
                     this.algorithmPoints = this[s_algorithm]({
@@ -78,7 +80,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                }
 
                addControlPoint(point) { //TODO: addControlPoints (many at once)
-                    var sphere = new happah.SphericalImpostor(1);
+                    var sphere = new happah.SphericalImpostor(3);
                     sphere.material.uniforms.diffuse.value.set(new THREE.Color(0x888888));
                     sphere.position.x = point.x;
                     sphere.position.y = point.y;
