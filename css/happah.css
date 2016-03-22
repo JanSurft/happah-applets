@@ -27,3 +27,6 @@ body {
 .container {
      background-color: #FFF;
 }
+.hph-canvas {
+     position: static;
+}

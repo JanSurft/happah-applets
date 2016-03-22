@@ -1,22 +1,35 @@
 require.config({
      baseUrl: 'js',
      shim: {
-          'dat': { exports: 'dat' },
-          'DragControls': { deps: ['three'], exports: 'THREE' },
-          'three': { exports: 'THREE' },
-          'TrackballControls': { deps: ['three'], exports: 'THREE' },
-          'TransformControls': { deps: ['three'], exports: 'THREE' }
+          'dat': {
+               exports: 'dat'
+          },
+          'DragControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          },
+          'three': {
+               exports: 'THREE'
+          },
+          'TrackballControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          },
+          'TransformControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          }
      },
      paths: {
-          dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min",//TODO: remove
+          dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min", //TODO: remove
           DragControls: "http://threejs.org/examples/js/controls/DragControls",
           i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
           jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
           three: "http://threejs.org/build/three",
           TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
           TransformControls: "http://threejs.org/examples/js/controls/TransformControls"
-          //shader: '../lib/shader',
-          //shaders: '../shaders'
+               //shader: '../lib/shader',
+               //shaders: '../shaders'
      }
 });
 
@@ -54,11 +67,14 @@ function deCasteljau(params) {
 
      return points;
 }
-require([ 'happah', 'dat', 'three' ], function (happah, dat, THREE) {
+require(['happah', 'dat', 'three'], function(happah, dat, THREE) {
      var scene = new happah.Scene();
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene);
      scene.algorithm = deCasteljau;
-     for (i = 0; i < 3; i++) scene.addControlPoint(new THREE.Vector3(i / 2, i * 3, Math.sin(i)));//TODO: get rid of THREE
+     scene.addControlPoint(new THREE.Vector3(-50, 0, -30)); //TODO: get rid of THREE
+     scene.addControlPoint(new THREE.Vector3(-40, 0, 30)); //TODO: get rid of THREE
+     scene.addControlPoint(new THREE.Vector3(40, 0, 30)); //TODO: get rid of THREE
+     scene.addControlPoint(new THREE.Vector3(50, 0, -30)); //TODO: get rid of THREE
      viewport.animate();
      console.log("happah initialized.");
 
@@ -94,4 +110,3 @@ require([ 'happah', 'dat', 'three' ], function (happah, dat, THREE) {
 //TODO: ray/sphere intersection in fragment shader...also important for point manipulation
 //TODO: interval overlay for choosing ratio in de casteljau algorithm
 //TODO: install and use compass
-
