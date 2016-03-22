@@ -1,3 +1,10 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// Drag Controls implementation is based on script-tutorials.com.
+// @url https://www.script-tutorials.com/webgl-with-three-js-lesson-10/
+// @author Tarek Wilkening (tarek_wilkening@web.de)
+//
+//////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragControls'], function($, THREE) {
      var s_camera = Symbol('camera');
      var s_dragControls = Symbol('dragControls');
@@ -16,6 +23,7 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
      var s_mouseMove = Symbol('mousemove');
      var s_mouseUp = Symbol('mouseup');
      var s_impostor = Symbol('impostor');
+     var s_impostors = Symbol('impostors');
 
      class Viewport {
 
@@ -52,12 +60,15 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                 * **********************/
                this[s_raycaster] = new THREE.Raycaster();
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
-                    color: 0xff00ff,
+                    color: 0x00ee22,
                     alphaTest: 0,
-                    visible: false
+                    visible: true
                }));
-               this[s_selectionPlane].lookAt(this[s_camera].position);
+               //this[s_selectionPlane].lookAt(this[s_camera].position);
                this[s_impostor] = new THREE.Vector3();
+
+               // Objects we want to intersect with our ray
+               this[s_impostors] = this[s_scene]._controlPointImpostors.children;
 
                this[s_offset] = new THREE.Vector3();
                this[s_scene].add(this[s_selectionPlane]);
@@ -121,14 +132,17 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                //this[s_raycaster].set(this[s_camera].position, vector.sub(this[s_camera].position).normalize());
 
                // Find all intersected objects
-               var intersects = this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors, true);
-               var asd = this[s_scene];
+               var intersects = this[s_raycaster].intersectObjects(this[s_impostors], true);
+
+               // Filter spherical impostors
+               //
+               var currentScene = this[s_scene];
 
                var intersects2 = this[s_raycaster].intersectObjects([this[s_selectionPlane]]);
-               console.log(intersects2[0].point);
+               //console.log(intersects2[0].point);
                this[s_impostor].z = intersects2[0].point.z;
                this[s_impostor].x = intersects2[0].point.x;
-               this[s_scene].addControlPoint(this[s_impostor].clone());
+               //this[s_scene].addControlPoint(this[s_impostor].clone());
 
                if (intersects.length > 0) {
                     console.log(intersects[0]);
@@ -173,7 +187,7 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                } else {
                     // Update position of the plane if need
                     var intersects =
-                         this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children);
+                         this[s_raycaster].intersectObjects(this[s_impostors], true);
                     if (intersects.length > 0) {
                          this[s_selectionPlane].position.copy(intersects[0].object.position);
                          this[s_selectionPlane].lookAt(this[s_camera].position);
