@@ -3,27 +3,27 @@
 // Drag Controls implementation is based on script-tutorials.com.
 // @url https://www.script-tutorials.com/webgl-with-three-js-lesson-10/
 // @author Tarek Wilkening (tarek_wilkening@web.de)
+// TODO: Export drag controls into separate file.
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragControls'], function($, THREE) {
      var s_camera = Symbol('camera');
-     var s_dragControls = Symbol('dragControls');
+     //var s_dragControls = Symbol('dragControls');
      var s_renderer = Symbol('renderer');
      var s_scene = Symbol('scene');
      var s_trackballControls = Symbol('trackballControls');
      var s_transformControls = Symbol('transformControls');
+
      /**************************
-      * Temporary variable only
+      * Drag control variables
       * ************************/
      var s_raycaster = Symbol('raycaster');
      var s_selectedObject = Symbol('selected');
      var s_selectionPlane = Symbol('plane');
      var s_offset = Symbol('offset');
-     var s_mouseDown = Symbol('mousedown');
-     var s_mouseMove = Symbol('mousemove');
-     var s_mouseUp = Symbol('mouseup');
-     var s_impostor = Symbol('impostor');
-     var s_impostors = Symbol('impostors');
+
+     // TEST TEST TETEST
+     var s_sphere = Symbol('sphere');
 
      class Viewport {
 
@@ -31,6 +31,7 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this.mouseUp = this.mouseUp.bind(this);
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
+               this.mouseWheel = this.mouseWheel.bind(this);
                var _this = this;
 
                this[s_scene] = scene;
@@ -55,25 +56,30 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this[s_camera].position.x = 0;
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
+               this[s_camera].updateProjectionMatrix();
+
                /*************************
-                * Temporary
+                * Initialize drag control
+                * variables
                 * **********************/
                this[s_raycaster] = new THREE.Raycaster();
-               this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
+               // TODO: why can we select and move the plane even though it's invisible?
+               this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(800, 800, 8, 8), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
-                    visible: true
+                    visible: false
                }));
-               //this[s_selectionPlane].lookAt(this[s_camera].position);
-               this[s_impostor] = new THREE.Vector3();
-
-               // Objects we want to intersect with our ray
-               this[s_impostors] = this[s_scene]._controlPointImpostors.children;
-
                this[s_offset] = new THREE.Vector3();
                this[s_scene].add(this[s_selectionPlane]);
 
-               this[s_camera].updateProjectionMatrix();
+               // Sphere for testing
+               var geo = new THREE.SphereGeometry(5, 32, 32);
+               var mat = new THREE.MeshBasicMaterial({
+                    color: 0xdd2222
+               });
+               this[s_sphere] = [];
+               this[s_sphere].push(new THREE.Mesh(geo, mat));
+               this[s_scene].add(this[s_sphere][0]);
 
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].target.set(0, 0, 0);
@@ -83,11 +89,17 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this[s_renderer].domElement.addEventListener('mouseup', this[s_trackballControls].onDocumentMouseUp, false);
 
                /************************
-                * Temporary
+                * Drag control listeners
                 * *********************/
                this[s_renderer].domElement.addEventListener('mousemove', this.mouseMove, false);
                this[s_renderer].domElement.addEventListener('mouseup', this.mouseUp, false);
                this[s_renderer].domElement.addEventListener('mousedown', this.mouseDown, false);
+
+               /************************
+                * Mouse wheel listeners
+                * *********************/
+               this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
+               this[s_renderer].domElement.addEventListener('mousewheel', this.mouseWheel, false);
 
                this[s_transformControls] = new THREE.TransformControls(this[s_camera], this[s_renderer].domElement);
                this[s_scene].add(this[s_transformControls]);
@@ -96,7 +108,6 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
           /**
            * Returns the position of our HTML element
            */
-
           getElementPosition(element) {
                var position = new THREE.Vector2(0, 0);
 
@@ -108,41 +119,48 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                return position;
           }
 
-          mouseDown(event) {
-               // console.log(this[s_scene].controlPointImpostors.children);
-               var element = $('.hph-canvas');
+          mouseWheel(event) {
+               event.preventDefault();
 
+               var delta;
+
+               if (event.wheelDelta) {
+                    delta = event.wheelDeltaY / 40;
+               } else if (event.detail) {
+                    // This works in Firefox
+                    delta = -event.detail / 3;
+               } else {
+                    delta = 0;
+               }
+
+               this[s_camera].zoom += delta;
+               this[s_camera].updateProjectionMatrix();
+               this[s_scene].redraw();
+          }
+
+          mouseDown(event) {
+               event.preventDefault();
+               // TODO: don't calculate the position every time.
                var elementPosition = this.getElementPosition(this[s_renderer].domElement);
                // Get mouse position
                var mouseX = ((event.clientX - elementPosition.x) / this[s_renderer].domElement.width) * 2 - 1;
                var mouseY = -((event.clientY - elementPosition.y) / this[s_renderer].domElement.height) * 2 + 1;
-               //var mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-               //var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-               console.log("x=" + mouseX + " y=" + mouseY);
+
                var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
                this[s_selectionPlane].lookAt(this[s_camera].position);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
                // Get 3D vector from 3D mouse position using 'unproject'
-               // function
-               //mouseVector.unproject(this[s_camera]);
+               // Only in 3D.
 
-               // Set the raycaster position
+               // Set the raycaster position // TODO: only in 3D?
                //this[s_raycaster].set(this[s_camera].position, vector.sub(this[s_camera].position).normalize());
 
                // Find all intersected objects
-               var intersects = this[s_raycaster].intersectObjects(this[s_impostors], true);
-
-               // Filter spherical impostors
-               //
-               var currentScene = this[s_scene];
-
-               var intersects2 = this[s_raycaster].intersectObjects([this[s_selectionPlane]]);
-               //console.log(intersects2[0].point);
-               this[s_impostor].z = intersects2[0].point.z;
-               this[s_impostor].x = intersects2[0].point.x;
-               //this[s_scene].addControlPoint(this[s_impostor].clone());
+               var intersects = this[s_raycaster].intersectObjects(this[s_sphere], true);
+               console.log(intersects);
+               console.log(intersects[0].object.position);
 
                if (intersects.length > 0) {
                     console.log(intersects[0]);
@@ -166,19 +184,20 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                var mouseX = ((event.clientX - elementPosition.x) / this[s_renderer].domElement.width) * 2 - 1;
                var mouseY = -((event.clientY - elementPosition.y) / this[s_renderer].domElement.height) * 2 + 1;
                var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
-               //console.log(mouseVector);
-
 
                // Get 3D vector from 3D mouse position using
                // 'unproject' function
                var vector = new THREE.Vector3(mouseX, mouseY, 1);
-               //vector.unproject(this[s_camera]);
+               // vector.unproject(this[s_camera]);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
-               //     this[s_camera].position, vector.sub(
-               //         this[s_camera].position).normalize());
+               // this[s_camera].position, vector.sub(this[s_camera].position).normalize());
+               // ^Only in 3D.
 
                if (this[s_selectedObject]) {
+                    // Scene has changed so we need to redraw.
+                    this[s_scene].redraw();
+
                     // Check the position where the plane is intersected
                     var intersects =
                          this[s_raycaster].intersectObject(this[s_selectionPlane]);
@@ -187,13 +206,12 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                } else {
                     // Update position of the plane if need
                     var intersects =
-                         this[s_raycaster].intersectObjects(this[s_impostors], true);
+                         this[s_raycaster].intersectObjects(this[s_sphere], true);
                     if (intersects.length > 0) {
                          this[s_selectionPlane].position.copy(intersects[0].object.position);
                          this[s_selectionPlane].lookAt(this[s_camera].position);
                     }
                }
-
           }
 
           mouseUp(event) {
@@ -217,18 +235,19 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                }
 
                function delayHideTransform() {
-                    cancelHideTransform();
-                    hideTransform();
-               }
-
-               this[s_dragControls] = new THREE.DragControls(this[s_camera], this[s_scene].controlPointImpostors.children, this[s_renderer].domElement);
-               this[s_dragControls].on('hoveron', function(e) {
-                    _this[s_transformControls].attach(e.object);
-                    cancelHideTransform();
-               });
-               this[s_dragControls].on('hoveroff', function(e) {
-                    if (e) delayHideTransform();
-               });
+                         cancelHideTransform();
+                         hideTransform();
+                    }
+                    /*
+                    //this[s_dragControls] = new THREE.DragControls(this[s_camera], this[s_scene].controlPointImpostors.children, this[s_renderer].domElement);
+                    this[s_dragControls].on('hoveron', function(e) {
+                         _this[s_transformControls].attach(e.object);
+                         cancelHideTransform();
+                    });
+                    this[s_dragControls].on('hoveroff', function(e) {
+                         if (e) delayHideTransform();
+                    });
+                    */
                this[s_trackballControls].addEventListener('start', cancelHideTransform);
                this[s_trackballControls].addEventListener('end', delayHideTransform);
           }
