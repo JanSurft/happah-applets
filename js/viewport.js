@@ -67,10 +67,11 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(800, 800, 8, 8), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
-                    visible: false
+                    visible: true
                }));
                this[s_offset] = new THREE.Vector3();
                this[s_scene].add(this[s_selectionPlane]);
+               this[s_selectionPlane].lookAt(this[s_camera].position);
 
                // Sphere for testing
                var geo = new THREE.SphereGeometry(5, 32, 32);
@@ -125,14 +126,16 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                var delta;
 
                if (event.wheelDelta) {
-                    delta = event.wheelDeltaY / 40;
+                    delta = event.wheelDeltaY / 35;
                } else if (event.detail) {
                     // This works in Firefox
-                    delta = -event.detail / 3;
+                    delta = -event.detail / 2;
                } else {
                     delta = 0;
                }
 
+               this[s_selectionPlane].scale.x += delta;
+               this[s_selectionPlane].scale.z += delta;
                this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
                this[s_scene].redraw();
@@ -147,7 +150,9 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                var mouseY = -((event.clientY - elementPosition.y) / this[s_renderer].domElement.height) * 2 + 1;
 
                var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
-               this[s_selectionPlane].lookAt(this[s_camera].position);
+
+               // Not needed because the camera orientation does not change.
+               //this[s_selectionPlane].lookAt(this[s_camera].position);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
@@ -187,7 +192,7 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
 
                // Get 3D vector from 3D mouse position using
                // 'unproject' function
-               var vector = new THREE.Vector3(mouseX, mouseY, 1);
+               var vector = new THREE.Vector2(mouseX, mouseY);
                // vector.unproject(this[s_camera]);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
@@ -208,8 +213,9 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                     var intersects =
                          this[s_raycaster].intersectObjects(this[s_sphere], true);
                     if (intersects.length > 0) {
+                         // TODO: is this really necessary?
                          this[s_selectionPlane].position.copy(intersects[0].object.position);
-                         this[s_selectionPlane].lookAt(this[s_camera].position);
+                         //         this[s_selectionPlane].lookAt(this[s_camera].position);
                     }
                }
           }
