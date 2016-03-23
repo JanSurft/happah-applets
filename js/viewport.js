@@ -64,7 +64,7 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                 * **********************/
                this[s_raycaster] = new THREE.Raycaster();
                // TODO: why can we select and move the plane even though it's invisible?
-               this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(800, 800, 8, 8), new THREE.MeshBasicMaterial({
+               this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
                     visible: false
@@ -133,12 +133,13 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                } else {
                     delta = 0;
                }
+               delta = delta * 0.06;
 
-               //this[s_selectionPlane].scale.x += delta;
-               //this[s_selectionPlane].scale.z += delta;
+               if (this[s_camera].zoom + delta < 0) {
+                    delta = 0;
+               }
                this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
-               this[s_scene].redraw();
           }
 
           mouseDown(event) {
