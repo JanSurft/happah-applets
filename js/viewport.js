@@ -67,7 +67,7 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(800, 800, 8, 8), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
-                    visible: true
+                    visible: false
                }));
                this[s_offset] = new THREE.Vector3();
                this[s_scene].add(this[s_selectionPlane]);
@@ -134,8 +134,8 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                     delta = 0;
                }
 
-               this[s_selectionPlane].scale.x += delta;
-               this[s_selectionPlane].scale.z += delta;
+               //this[s_selectionPlane].scale.x += delta;
+               //this[s_selectionPlane].scale.z += delta;
                this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
                this[s_scene].redraw();
@@ -208,6 +208,8 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                          this[s_raycaster].intersectObject(this[s_selectionPlane]);
                     // Reposition the object based on the intersection point with the plane
                     this[s_selectedObject].position.copy(intersects[0].point.sub(this[s_offset]));
+
+                    this[s_selectionPlane].position.copy(this[s_selectedObject].position);
                } else {
                     // Update position of the plane if need
                     var intersects =
