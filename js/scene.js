@@ -3,6 +3,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      var s_grid = Symbol('grid');
      var s_lights = Symbol('lights');
 
+     // Set to true if scene has been altered.
+     var s_altered = Symbol('altered');
+
      class Scene extends THREE.Scene {
 
                /*var algorithmPoints = [];
@@ -48,6 +51,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     //this[s_lights].add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
                     //this[s_lights].add(new THREE.AmbientLight(0x000000));
                     this.add(this[s_lights]);
+                    this[s_altered] = true;
                }
 
                get algorithm() {
@@ -55,28 +59,37 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                }
                set algorithm(algorithm) {
                     this[s_algorithm] = algorithm;
+                    this.redraw();
                }
                get controlPointImpostors() {
                     return this._controlPointImpostors;
                }
+               redraw() {
+                    this[s_altered] = true;
+               }
 
                animate() {
-                    this.remove(this.algorithmLine);
-                    this.remove(this.controlLine);
+                    // Only re-calculate if things have changed.
+                    if (this[s_altered]) {
+                         console.log("redraw impostors/lines");
+                         this.remove(this.algorithmLine);
+                         this.remove(this.controlLine);
 
-                    for (var i = 0; i < this.controlPoints.length; i++)
-                         this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
+                         for (var i = 0; i < this.controlPoints.length; i++)
+                              this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
 
-                    this.algorithmPoints = this[s_algorithm]({
-                         controlPoints1D: this.controlPoints,
-                         recursionDepth: 3 //TODO: text.Rekursionstiefe
-                    });
+                         this.algorithmPoints = this[s_algorithm]({
+                              controlPoints1D: this.controlPoints,
+                              recursionDepth: 3 //TODO: text.Rekursionstiefe
+                         });
 
-                    this.algorithmLine = this.insertSegmetStrip(this.algorithmPoints, new THREE.Color(0x009D82));
-                    this.controlLine = this.insertSegmetStrip(this.controlPoints, new THREE.Color(0xFF0000));
+                         this.algorithmLine = this.insertSegmetStrip(this.algorithmPoints, new THREE.Color(0x009D82));
+                         this.controlLine = this.insertSegmetStrip(this.controlPoints, new THREE.Color(0xFF0000));
 
-                    this.add(this.algorithmLine);
-                    this.add(this.controlLine);
+                         this.add(this.algorithmLine);
+                         this.add(this.controlLine);
+                         this[s_altered] = false;
+                    }
                }
 
                addControlPoint(point) { //TODO: addControlPoints (many at once)
@@ -88,6 +101,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this._controlPointImpostors.add(sphere);
                     this.controlPoints.push(point);
                     this.add(this._controlPointImpostors);
+                    this.redraw();
                     $(this).trigger('update.happah');
                }
 
