@@ -1,6 +1,7 @@
 define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
     var s_algorithm = Symbol('algorithm');
     var s_grid = Symbol('grid');
+    var s_gridEnabled = Symbol('gridenabled');
     var s_lights = Symbol('lights');
 
     // Set to true if scene has been altered.
@@ -24,7 +25,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this._controlPointImpostors = new THREE.Object3D();
 
                 this[s_grid] = new THREE.GridHelper(100, 10);
-                this.add(this[s_grid]);
+                this[s_gridEnabled] = true;
+                this.toggleGrid();
 
                 this[s_lights] = new THREE.Object3D();
 
@@ -68,12 +70,13 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             redraw() {
                 this[s_altered] = true;
             }
-            showGrid(boolean) {
-                if (boolean) {
+            toggleGrid() {
+                if (this[s_gridEnabled]) {
                     this.add(this[s_grid]);
                 } else {
                     this.remove(this[s_grid]);
                 }
+                this[s_gridEnabled] = !this[s_gridEnabled];
             }
 
             animate() {
