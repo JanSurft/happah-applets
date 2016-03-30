@@ -1,99 +1,98 @@
 require.config({
-    baseUrl: 'js',
-    shim: {
-        'dat': {
-            exports: 'dat'
-        },
-        'DragControls': {
-            deps: ['three'],
-            exports: 'THREE'
-        },
-        'three': {
-            exports: 'THREE'
-        },
-        'TrackballControls': {
-            deps: ['three'],
-            exports: 'THREE'
-        },
-        'TransformControls': {
-            deps: ['three'],
-            exports: 'THREE'
-        }
-    },
-    paths: {
-        dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min", //TODO: remove
-        DragControls: "http://threejs.org/examples/js/controls/DragControls",
-        i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
-        jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
-        three: "http://threejs.org/build/three",
-        TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
-        TransformControls: "http://threejs.org/examples/js/controls/TransformControls"
-            //shader: '../lib/shader',
-            //shaders: '../shaders'
-    }
+     baseUrl: 'js',
+     shim: {
+          'dat': {
+               exports: 'dat'
+          },
+          'DragControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          },
+          'three': {
+               exports: 'THREE'
+          },
+          'TrackballControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          },
+          'TransformControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          }
+     },
+     paths: {
+          dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min", //TODO: remove
+          DragControls: "http://threejs.org/examples/js/controls/DragControls",
+          i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
+          jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
+          three: "http://threejs.org/build/three",
+          TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
+          TransformControls: "http://threejs.org/examples/js/controls/TransformControls"
+               //shader: '../lib/shader',
+               //shaders: '../shaders'
+     }
 });
 
 function deCasteljau(params) {
-    var DEFAULTS = {
-        controlPoints1D: [],
-        recursionDepth: 1,
-    }
+     var DEFAULTS = {
+          controlPoints1D: [],
+          recursionDepth: 1,
+     }
 
-    // if no parameters are given use dafaults
-    var par = $.extend({}, DEFAULTS, params);
+     // if no parameters are given use dafaults
+     var par = $.extend({}, DEFAULTS, params);
 
-    var points = [];
+     var points = [];
 
-    // copy control points for first iteration.
-    for (i = 0; i < par['controlPoints1D'].length; i++) {
-        points[i] = par['controlPoints1D'][i];
-    }
+     // copy control points for first iteration.
+     for (i = 0; i < par['controlPoints1D'].length; i++) {
+          points[i] = par['controlPoints1D'][i];
+     }
 
-    for (j = 0; j < par['recursionDepth']; j++) {
-        var tempPoints = [];
-        // The first control point does not change.
-        tempPoints[0] = points[0];
-        // Get the middle of each segment and make it a new point.
-        for (i = 0; i < points.length - 1; i++) {
-            tempPoints[i + 1] = new THREE.Vector3(
-                (points[i + 1].x + points[i].x) / 2, (points[i + 1].y + points[i].y) / 2, (points[i + 1].z + points[i].z) / 2
-            );
-        }
-        // The last control point remains unchanged.
-        tempPoints[tempPoints.length] = points[points.length - 1];
-        // Set points array for next iteration.
-        points = tempPoints;
-    }
+     for (j = 0; j < par['recursionDepth']; j++) {
+          var tempPoints = [];
+          // The first control point does not change.
+          tempPoints[0] = points[0];
+          // Get the middle of each segment and make it a new point.
+          for (i = 0; i < points.length - 1; i++) {
+               tempPoints[i + 1] = new THREE.Vector3(
+                    (points[i + 1].x + points[i].x) / 2, (points[i + 1].y + points[i].y) / 2, (points[i + 1].z + points[i].z) / 2
+               );
+          }
+          // The last control point remains unchanged.
+          tempPoints[tempPoints.length] = points[points.length - 1];
+          // Set points array for next iteration.
+          points = tempPoints;
+     }
 
-    return points;
+     return points;
 }
 require(['happah', 'dat', 'three'], function(happah, dat, THREE) {
-    var scene = new happah.Scene();
-    var viewport = new happah.Viewport($('.hph-canvas')[0], scene);
-    scene.algorithm = deCasteljau;
-    scene.addControlPoint(new THREE.Vector3(-50, 0, -30)); //TODO: get rid of THREE
-    scene.addControlPoint(new THREE.Vector3(-40, 0, 30)); //TODO: get rid of THREE
-    scene.addControlPoint(new THREE.Vector3(40, 0, 30)); //TODO: get rid of THREE
-    scene.addControlPoint(new THREE.Vector3(50, 0, -30)); //TODO: get rid of THREE
-    viewport.animate();
-    console.log("happah initialized.");
+     var scene = new happah.Scene();
+     var viewport = new happah.Viewport($('.hph-canvas')[0], scene);
+     scene.algorithm = deCasteljau;
+     scene.addControlPoint(new THREE.Vector3(-50, 0, -30)); //TODO: get rid of THREE
+     scene.addControlPoint(new THREE.Vector3(-40, 0, 30)); //TODO: get rid of THREE
+     scene.addControlPoint(new THREE.Vector3(40, 0, 30)); //TODO: get rid of THREE
+     scene.addControlPoint(new THREE.Vector3(50, 0, -30)); //TODO: get rid of THREE
+     viewport.animate();
 
-    // TODO: move this to storyboard!
-    $("#hph-grid").click(function() {
-        scene.toggleGrid();
-    });
+     // TEST
+     var i = new happah.Interface(scene);
+     console.log("happah initialized.");
 
-    var storyboard = new happah.Storyboard();
-    var frame0 = new happah.Storyboard.Frame();
-    storyboard.append(frame0);
 
-    var defaults = {
-        algorithm: 'De Casteljau',
-        Rekursionstiefe: 0
-    };
-    var controls = new dat.GUI();
-    controls.add(defaults, 'algorithm');
-    controls.add(defaults, 'Rekursionstiefe', 0, 100);
+     var storyboard = new happah.Storyboard();
+     var frame0 = new happah.Storyboard.Frame();
+     storyboard.append(frame0);
+
+     var defaults = {
+          algorithm: 'De Casteljau',
+          Rekursionstiefe: 0
+     };
+     var controls = new dat.GUI();
+     controls.add(defaults, 'algorithm');
+     controls.add(defaults, 'Rekursionstiefe', 0, 100);
 });
 
 //TODO: animate? why not just paint?
