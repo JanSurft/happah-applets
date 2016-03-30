@@ -22,9 +22,6 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
      var s_selectionPlane = Symbol('plane');
      var s_offset = Symbol('offset');
 
-     // TEST TEST TETEST
-     var s_sphere = Symbol('sphere');
-
      class Viewport {
 
           constructor(canvas, scene) {
@@ -63,7 +60,6 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                 * variables
                 * **********************/
                this[s_raycaster] = new THREE.Raycaster();
-               // TODO: why can we select and move the plane even though it's invisible?
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
@@ -72,15 +68,6 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                this[s_offset] = new THREE.Vector3();
                this[s_scene].add(this[s_selectionPlane]);
                this[s_selectionPlane].lookAt(this[s_camera].position);
-
-               // Sphere for testing
-               var geo = new THREE.SphereGeometry(5, 32, 32);
-               var mat = new THREE.MeshBasicMaterial({
-                    color: 0xdd2222
-               });
-               this[s_sphere] = [];
-               this[s_sphere].push(new THREE.Mesh(geo, mat));
-               this[s_scene].add(this[s_sphere][0]);
 
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].target.set(0, 0, 0);
@@ -164,20 +151,18 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                //this[s_raycaster].set(this[s_camera].position, vector.sub(this[s_camera].position).normalize());
 
                // Find all intersected objects
-               var intersects = this[s_raycaster].intersectObjects(this[s_sphere], true);
-               console.log(intersects);
-               console.log(intersects[0].object.position);
+               var intersects = this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children, true);
 
                if (intersects.length > 0) {
-                    console.log(intersects[0]);
                     // Disable the controls
                     this[s_trackballControls].enabled = false;
 
                     // Set the selection - first intersected object
-                    this[s_selectedObject] = intersects[0].object;
+                    this[s_selectedObject] = intersects[0];
 
                     // Calculate the offset
                     var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
+
                     this[s_offset].copy(intersects[0].point).sub(this[s_selectionPlane].position);
                }
           }
@@ -214,11 +199,11 @@ define(['jquery', 'three', 'TrackballControls', 'TransformControls', 'DragContro
                } else {
                     // Update position of the plane if need
                     var intersects =
-                         this[s_raycaster].intersectObjects(this[s_sphere], true);
+                         this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children, true);
                     if (intersects.length > 0) {
                          // TODO: is this really necessary?
-                         this[s_selectionPlane].position.copy(intersects[0].object.position);
-                         //         this[s_selectionPlane].lookAt(this[s_camera].position);
+                         this[s_selectionPlane].position.copy(intersects[0].position);
+                         // this[s_selectionPlane].lookAt(this[s_camera].position);
                     }
                }
           }
