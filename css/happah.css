@@ -11,6 +11,13 @@ body {
      margin-right: auto;
      text-align: center;
 }
+.right {
+     margin-left: auto;
+     text-align: right;
+}
+.firstrow {
+     margin-top: 7px;
+}
 .hph-canvas,
 .hph-controls,
 .hph-description {

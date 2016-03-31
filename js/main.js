@@ -1,9 +1,10 @@
 require.config({
      baseUrl: 'js',
      shim: {
-          'dat': {
-               exports: 'dat'
+          'bootstrap': {
+               deps: ['jquery']
           },
+
           'DragControls': {
                deps: ['three'],
                exports: 'THREE'
@@ -21,13 +22,14 @@ require.config({
           }
      },
      paths: {
-          dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min", //TODO: remove
+          //          dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min", //TODO: remove
           DragControls: "http://threejs.org/examples/js/controls/DragControls",
           i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
           jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
           three: "http://threejs.org/build/three",
           TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
-          TransformControls: "http://threejs.org/examples/js/controls/TransformControls"
+          TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
+          bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap"
                //shader: '../lib/shader',
                //shaders: '../shaders'
      }
@@ -67,7 +69,7 @@ function deCasteljau(params) {
 
      return points;
 }
-require(['happah', 'dat', 'three'], function(happah, dat, THREE) {
+require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var scene = new happah.Scene();
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene);
      scene.algorithm = deCasteljau;
@@ -78,7 +80,7 @@ require(['happah', 'dat', 'three'], function(happah, dat, THREE) {
      viewport.animate();
 
      // TEST
-     var i = new happah.Interface(scene);
+     var i = new happah.Menu(".dropdown-menu", scene);
      console.log("happah initialized.");
 
 
@@ -90,9 +92,6 @@ require(['happah', 'dat', 'three'], function(happah, dat, THREE) {
           algorithm: 'De Casteljau',
           Rekursionstiefe: 0
      };
-     var controls = new dat.GUI();
-     controls.add(defaults, 'algorithm');
-     controls.add(defaults, 'Rekursionstiefe', 0, 100);
 });
 
 //TODO: animate? why not just paint?
