@@ -2,50 +2,64 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-    crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="css/happah.css"></link>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+     integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+     crossorigin="anonymous">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+     <link rel="stylesheet" type="text/css" href="css/happah.css"></link>
 
-    <script src="build/js/shaders.js"></script>
-    <script data-main="js/main" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+     <script src="build/js/shaders.js"></script>
+     <script data-main="js/main" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12" id="hph-canvas-wrapper">
-                <canvas class="hph-canvas"></canvas>
-            </div>
-        </div>
-        <div class="row center" id="hph-controls">
-            <div class="btn-group">
-                <a class="btn btn-default" id="hph-backward"><i class="fa fa-chevron-left"></i></a>
-                <a class="btn btn-default" id="hph-play"><i class="fa fa-play"></i></a>
-                <a class="btn btn-default hide" id="hph-pause"><i class="fa fa-pause"></i></a>
-                <a class="btn btn-default" id="hph-forward"><i class="fa fa-chevron-right"></i></a>
-                <a class="btn btn-default" id="hph-grid"><i class="fa fa-th"></i></a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12" id="hph-description">
-                <h3>Hier steht eine Erklärung</h3>
-                <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-                    erat, sed diam voluptua. At vero eos et accusam et justo duo
-                    dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-                    sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
-                    amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                    invidunt ut labore et dolore magna aliquyam erat, sed diam
-                    voluptua. At vero eos et accusam et justo duo dolores et ea
-                    rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-                    Lorem ipsum dolor sit amet.</p>
-            </div>
-        </div>
-    </div>
+     <div class="container">
+          <div class="row firstrow">
+               <div class="col-md-12 right">
+                    <div class="btn-group">
+                         <a class="btn btn-default" id="hph-menu" href="#"><i class="fa fa-bars"></i></a>
+                         <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                              <span class="fa fa-caret-down"></span>
+                         </a>
+                         <ul class="dropdown-menu">
+                              <li><a id="grid-toggle">Toggle grid</a>
+                              </li>
+                         </ul>
+                    </div>
+               </div>
+          </div>
+          <div class="row">
+               <div class="col-md-12" id="hph-canvas-wrapper">
+                    <canvas class="hph-canvas"></canvas>
+               </div>
+          </div>
+          <div class="row center" id="hph-controls">
+               <div class="btn-group">
+                    <a class="btn btn-default" id="hph-backward"><i class="fa fa-chevron-left"></i></a>
+                    <a class="btn btn-default" id="hph-play"><i class="fa fa-play"></i></a>
+                    <a class="btn btn-default hide" id="hph-pause"><i class="fa fa-pause"></i></a>
+                    <a class="btn btn-default" id="hph-forward"><i class="fa fa-chevron-right"></i></a>
+               </div>
+          </div>
+          <div class="row">
+               <div class="col-md-12" id="hph-description">
+                    <h3>Hier steht eine Erklärung</h3>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                         diam nonumy eirmod tempor invidunt ut labore et dolore
+                         magna aliquyam erat, sed diam voluptua. At vero eos et
+                         accusam et justo duo dolores et ea rebum. Stet clita kasd
+                         gubergren, no sea takimata sanctus est Lorem ipsum dolor
+                         sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing
+                         elitr, sed diam nonumy eirmod tempor invidunt ut labore
+                         et dolore magna aliquyam erat, sed diam voluptua. At vero
+                         eos et accusam et justo duo dolores et ea rebum. Stet
+                         clita kasd gubergren, no sea takimata sanctus est Lorem
+                         ipsum dolor sit amet.</p>
+               </div>
+          </div>
+     </div>
 </body>
 
 </html>
