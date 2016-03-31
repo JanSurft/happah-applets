@@ -63,6 +63,16 @@ function deCasteljau(params) {
 
      return points;
 }
+
+var subdivideTest = require(['happah', 'three'], function(happah, THREE) {
+     var controlPoints = [
+          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+     ];
+     var curve = new happah.Curve(controlPoints);
+     return curve.subdivide();
+});
+
 require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var scene = new happah.Scene();
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene);

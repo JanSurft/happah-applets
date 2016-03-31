@@ -15,6 +15,7 @@ define(['jquery', 'three'], function($, THREE) {
                this[s_content] = $(selector);
                this[s_scene] = scene;
                this[s_grid] = new THREE.GridHelper(100, 10);
+               this[s_grid].position.y = -0.001;
                this[s_gridEnabled] = true;
 
                this[s_content].find("#grid-toggle").on('click', {
