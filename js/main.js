@@ -5,10 +5,6 @@ require.config({
                deps: ['jquery']
           },
 
-          'DragControls': {
-               deps: ['three'],
-               exports: 'THREE'
-          },
           'three': {
                exports: 'THREE'
           },
@@ -22,8 +18,6 @@ require.config({
           }
      },
      paths: {
-          //          dat: "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min", //TODO: remove
-          DragControls: "http://threejs.org/examples/js/controls/DragControls",
           i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
           jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
           three: "http://threejs.org/build/three",
@@ -81,6 +75,7 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
 
      // TEST
      var i = new happah.Menu(".dropdown-menu", scene);
+     var k = new happah.DragControls();
      console.log("happah initialized.");
 
 
