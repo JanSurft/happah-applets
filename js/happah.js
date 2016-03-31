@@ -1,3 +1,3 @@
-define(['jquery', 'scene', 'storyboard', 'viewport', 'interface'], function($, Scene, Storyboard, Viewport, Interface) {
-     return $.extend({}, Scene, Storyboard, Viewport, Interface);
+define(['jquery', 'scene', 'storyboard', 'viewport', 'menu'], function($, Scene, Storyboard, Viewport, Menu) {
+     return $.extend({}, Scene, Storyboard, Viewport, Menu);
 });
