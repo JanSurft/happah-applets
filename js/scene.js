@@ -58,9 +58,10 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this.redraw();
                }
                get controlPointImpostors() {
-                         return this._controlPointImpostors;
-                    }
-                    /** Redraws the curve in the next animate() cycle */
+                    return this._controlPointImpostors;
+               }
+
+               /** Redraws the curve in the next animate() cycle */
                redraw() {
                     this[s_altered] = true;
                }
