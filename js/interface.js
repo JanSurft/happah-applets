@@ -13,6 +13,7 @@ define(['jquery', 'three'], function($, THREE) {
           constructor(scene) {
                this[s_scene] = scene;
                this[s_grid] = new THREE.GridHelper(100, 10);
+               this[s_grid].position.y = -0.001;
                this[s_gridEnabled] = true;
                $("#hph-grid").click(this.toggleGrid());
                console.log("Init interface...");
