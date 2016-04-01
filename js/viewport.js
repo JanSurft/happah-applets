@@ -48,15 +48,14 @@ define(['dragcontrols', 'jquery', 'three', 'TrackballControls', 'TransformContro
                this[s_controls].target.set(0, 0, 0);
                this[s_controls].noZoom = true;
 
-               // TODO: dragcontrols needs renderer for position only.
-               this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_renderer], this[s_controls], this[s_camera]);
+               this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
 
                // Trackball controls for camera movement
                this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);
                this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
 
-               // Drag controls for drag- and dropping objects
+               // Drag controls for dragging and dropping objects
                this[s_renderer].domElement.addEventListener('mousemove', this[s_dragControls].mouseMove, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_dragControls].mouseUp, false);
                this[s_renderer].domElement.addEventListener('mousedown', this[s_dragControls].mouseDown, false);

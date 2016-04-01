@@ -9,7 +9,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
      var s_camera = Symbol('camera');
      var s_scene = Symbol('scene');
      var s_controls = Symbol('controls');
-     var s_renderer = Symbol('renderer');
 
      // Drag control variables
      var s_raycaster = Symbol('raycaster');
@@ -19,7 +18,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
      class DragControls {
 
-          constructor(scene, renderer, controls, camera) {
+          constructor(scene, controls, camera) {
                this.mouseUp = this.mouseUp.bind(this);
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
@@ -29,7 +28,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                this[s_scene] = scene;
                this[s_controls] = controls;
                this[s_camera] = camera;
-               this[s_renderer] = renderer;
 
                // Initialize drag control variables
                this[s_raycaster] = new THREE.Raycaster();
@@ -37,6 +35,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                // Helper plane in which the objects will move
                // Attention: at any time, the plane must be bigger than the
                // dragged object or it won't work!
+               // TODO: make the size a multiple of the impostor's radius!
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
@@ -50,8 +49,10 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           /** Returns the position of our HTML element */
           getElementPosition(element) {
                var position = new THREE.Vector2(0, 0);
+               //console.log(" --- begin traversing --- ");
 
                while (element) {
+                    //console.log("parent: " + element.className);
                     position.x += (element.offsetLeft - element.scrollLeft + element.clientLeft);
                     position.y += (element.offsetTop - element.scrollTop + element.clientTop);
                     element = element.offsetParent;
@@ -87,10 +88,12 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           mouseDown(event) {
                event.preventDefault();
                // TODO: don't calculate the position every time.
-               var elementPosition = this.getElementPosition(this[s_renderer].domElement);
+               //       -> only on window resize...
+               var elementPosition = this.getElementPosition(event.currentTarget);
+
                // Get mouse position
-               var mouseX = ((event.clientX - elementPosition.x) / this[s_renderer].domElement.width) * 2 - 1;
-               var mouseY = -((event.clientY - elementPosition.y) / this[s_renderer].domElement.height) * 2 + 1;
+               var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
+               var mouseY = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
 
                var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
 
@@ -125,11 +128,11 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           /** Called whenever a mouse button is moved */
           mouseMove(event) {
                event.preventDefault();
-               var elementPosition = this.getElementPosition(this[s_renderer].domElement);
+               var elementPosition = this.getElementPosition(event.currentTarget);
 
                // Get mouse position
-               var mouseX = ((event.clientX - elementPosition.x) / this[s_renderer].domElement.width) * 2 - 1;
-               var mouseY = -((event.clientY - elementPosition.y) / this[s_renderer].domElement.height) * 2 + 1;
+               var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
+               var mouseY = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
                var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
 
                // Get 3D vector from 3D mouse position using
