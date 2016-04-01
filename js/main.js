@@ -63,7 +63,7 @@ function deCasteljau(params) {
     return points;
 }
 
-var subdivideTest = require(['happah', 'three'], function(happah, THREE) {
+var subdivideTest = require(['curve', 'three'], function(happah, THREE) {
     var controlPoints = [
         new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
         new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
@@ -84,7 +84,6 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
 
     // TEST
     var i = new happah.Menu(".dropdown-menu", scene);
-    //var k = new happah.DragControls(scene, viewport[s_camera], viewport[s_controls]);
     console.log("happah initialized.");
 
 
@@ -94,7 +93,7 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
 
     var defaults = {
         algorithm: 'De Casteljau',
-        Rekursionstiefe: 0
+        Rekursionstiefe: 2
     };
 });
 
