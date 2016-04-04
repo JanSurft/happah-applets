@@ -19,6 +19,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
      class DragControls {
 
           constructor(scene, controls, camera) {
+               // TODO: still necessary?
                this.mouseUp = this.mouseUp.bind(this);
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
@@ -49,7 +50,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           /** Returns the position of our HTML element */
           getElementPosition(element) {
                var position = new THREE.Vector2(0, 0);
-               //console.log(" --- begin traversing --- ");
 
                while (element) {
                     //console.log("parent: " + element.className);
@@ -113,7 +113,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                if (intersects.length > 0) {
                     // Disable the controls
-                    this[s_controls].enabled = false;
+                    this[s_controls].disable();
 
                     // Set the selection - first intersected object
                     this[s_selectedObject] = intersects[0];
@@ -176,7 +176,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           /** Called whenever a mouse button is released */
           mouseUp() {
                // Enable the controls
-               this[s_controls].enabled = true;
+               this[s_controls].enable();
                this[s_selectedObject] = null;
           }
 
