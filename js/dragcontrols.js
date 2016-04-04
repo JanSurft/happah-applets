@@ -149,8 +149,14 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                     this[s_scene].redraw();
 
                     // Check the position where the plane is intersected
-                    var intersects =
-                         this[s_raycaster].intersectObject(this[s_selectionPlane]);
+                    var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
+
+                    if (intersects[0] == null) {
+                         console.log("Error: lost selection plane!");
+                         this.mouseUp();
+                         return;
+                    }
+
                     // Reposition the object based on the intersection point with the plane
                     this[s_selectedObject].position.copy(intersects[0].point.sub(this[s_offset]));
 
@@ -168,7 +174,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           }
 
           /** Called whenever a mouse button is released */
-          mouseUp(event) {
+          mouseUp() {
                // Enable the controls
                this[s_controls].enabled = true;
                this[s_selectedObject] = null;
