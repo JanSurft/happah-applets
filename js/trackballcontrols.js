@@ -2,6 +2,8 @@ define(['three', 'happah'], function(THREE, happah) {
     var s_raycaster = Symbol('raycaster');
     var s_target = Symbol('target');
     var s_previousRay = Symbol('previousray');
+    var s_raycaster = Symbol('raycaster');
+    var s_cameraPlane = Symbol('cameraplane');
     var s_mouseVector = Symbol('mousevector');
     var s_mouseRay = Symbol('mouseray');
     var s_sphere = Symbol('sphere');
@@ -34,6 +36,8 @@ define(['three', 'happah'], function(THREE, happah) {
             this[s_cameraVector] = new THREE.Vector3(0, 0, 10);
             this[s_mouseRay] = new THREE.Ray(this[s_mouseVector], this[s_target]);
             this[s_sphere] = new THREE.Sphere(this[s_target], 10);
+            this[s_cameraPlane] = new THREE.Plane(this[s_mouseRay].direction, 10);
+            this[s_raycaster] = new THREE.Raycaster();
             this[s_moving] = false;
             this[s_radius] = 10;
             this[s_oldAngle] = 1;
@@ -78,74 +82,41 @@ define(['three', 'happah'], function(THREE, happah) {
                 currentMouseVec.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
                 currentMouseVec.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
 
-                // Vector between old mouse pos and new mouse pos.
-                var cameraDirection = new THREE.Vector2();
-                cameraDirection.addVectors(this[s_mouseVector], currentMouseVec);
+                // Get the cameras eye direction
+                this[s_mouseRay].set(this[s_camera].position, this[s_camera].getWorldDirection());
+                console.log(this[s_camera].localToWorld(new THREE.Vector3(0, 0, 0)));
 
-                // Transform to 3D world space
-                var cameraWorldDirection = new THREE.Vector3();
-                cameraWorldDirection.x = cameraDirection.x;
-                cameraWorldDirection.y = cameraDirection.y;
-                cameraWorldDirection.z = 0;
-                cameraWorldDirection.applyMatrix4(this[s_camera].matrixWorld);
+                // Create a plane in front of the camera to simulate screen space
+                var cameraPlane = new THREE.Plane(this[s_mouseRay].direction, this[s_camera].position.length());
+                console.log(cameraPlane.normal);
 
+                // Create a ray from mouse vector.
+                this[s_raycaster].setFromCamera(currentMouseVec, this[s_camera]);
+                var currentRay = this[s_raycaster].ray;
 
-                // Factor
-                var accelerator = 0.0015;
+                // Get the intersection points of old and new ray
+                var oldIntersect = this[s_previousRay].intersectPlane(cameraPlane);
+                var newIntersect = currentRay.intersectPlane(cameraPlane);
 
-                // Get the distance from old mouse vector to the current one.
-                var mouseDeltaX = (currentMouseVec.x - this[s_mouseVector].x);
-                var mouseDeltaY = (currentMouseVec.y - this[s_mouseVector].y);
+                // Create vector between both intersects
+                var direction = oldIntersect.add(newIntersect);
 
-                // Before going on, update the mousevector
-                this[s_mouseVector].x = currentMouseVec.x;
-                this[s_mouseVector].y = currentMouseVec.y;
+                // Generate the rotation axis from mouse dir and camera ray
+                var axis = this[s_previousRay].direction.cross(direction);
+                this[s_helper].setDirection(axis);
 
-                /** Create the axis */
-                // Create a vector in camera space
-                var rightVec = new THREE.Vector3(0, 0, 1);
-                var topVec = new THREE.Vector3(1, 0, 0);
-
-                // Transform into world space
-                rightVec = rightVec.applyMatrix4(this[s_camera].matrixWorld);
-                topVec = topVec.applyMatrix4(this[s_camera].matrixWorld);
-                // Helper arrow to visualize directions
-                this[s_helper].setDirection(cameraWorldDirection);
-
-                // Generate a quaternion for vertical movement
-                var verticalQuat = new THREE.Quaternion();
-                var horizontalQuat = new THREE.Quaternion();
-                verticalQuat.setFromAxisAngle(rightVec, mouseDeltaY * 0.00015);
-                horizontalQuat.setFromAxisAngle(topVec, mouseDeltaX * 0.00015);
-
-                // Create a ray from that vectror through the target
-                var rightRay = new THREE.Ray(this[s_target], rightVec);
-                var topRay = new THREE.Ray(this[s_target], topVec);
-
-                // Create the mouse ray
-                this[s_mouseRay].set(this[s_camera].position, this[s_target]);
-                var cameraDirection = this[s_mouseRay].direction.normalize();
-
-                // TEST: MOVE DIRECTION
-                var up = this[s_camera].up.clone();
-                var currentEyeDir = new THREE.Vector3();
-                var axis = new THREE.Vector3();
-                var moveDirection = new THREE.Vector3(mouseDeltaX, mouseDeltaY, 0);
+                // Create quaternion for camera rotation
                 var quaternion = new THREE.Quaternion();
-                quaternion.setFromAxisAngle(cameraWorldDirection, (mouseDeltaX / mouseDeltaY) * accelerator);
 
-                // The new ray through mouse + target
-                var currentMouseRay = new THREE.Ray(new THREE.Vector3(currentMouseVec.x, currentMouseVec.y, 1), this[s_target]);
+                // Set the values
+                quaternion.setFromAxisAngle(axis, direction.length * 0.000015);
 
-                // Get the angle between our mouse rays
-                //var angle = Math.atan2(currentMouseRay.direction.y - mouseRay.direction.y, currentMouseRay.direction.x - mouseRay.direction.x);
+                // Update previous ray
+                this[s_previousRay] = currentRay;
 
+                // Update camera orientation
+                //this[s_camera].position.applyQuaternion(quaternion);
 
-                this[s_camera].position.applyQuaternion(quaternion);
-                //camera.position.applyQuaternion(verticalQuaternion);
-                //this[s_camera].position.applyQuaternion(horizontalQuat);
-                //this[s_camera].position.applyQuaternion(verticalQuat);
-                //camera.position.transformDirection(matrix);
                 this[s_camera].lookAt(this[s_target]);
                 this[s_camera].updateProjectionMatrix();
             }
