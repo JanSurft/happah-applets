@@ -1,3 +1,4 @@
-define(['jquery', 'scene', 'storyboard', 'viewport', 'menu', 'dragcontrols', 'trackballcontrols'], function($, Scene, Storyboard, Viewport, Menu, DragControls, TrackballControls) {
-     return $.extend({}, Scene, Storyboard, Viewport, Menu, DragControls, TrackballControls);
-});
+define(['jquery', 'scene', 'storyboard', 'viewport', 'menu', 'dragcontrols', 'trackballcontrols', 'curve'],
+     function($, Scene, Storyboard, Viewport, Menu, DragControls, TrackballControls, Curve) {
+          return $.extend({}, Scene, Storyboard, Viewport, Menu, DragControls, TrackballControls, Curve);
+     });
