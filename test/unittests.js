@@ -19,14 +19,10 @@ require.config({
      }
 });
 
-// require the unit tests.
 require(
      ['QUnit', 'three', 'curvetest'],
      function(QUnit, THREE, curvetest) {
-          // run the tests.
-          //curvetest.run();
           curvetest.run();
-          // start QUnit.
           QUnit.load();
           QUnit.start();
      }
