@@ -84,7 +84,7 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      viewport.animate();
 
      // TEST
-     var i = new happah.Menu(".dropdown-menu", scene);
+     var i = new happah.Menu(".dropdown-menu", scene, viewport);
      console.log("happah initialized.");
 
 

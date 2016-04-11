@@ -58,7 +58,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                // TODO:
                this[s_controls].addEventListener('change', this.update);
                // Test:
-               this[s_addMode] = true;
+               this[s_addMode] = false;
                //this[s_controls] = new happah.TrackballControls(this[s_camera], this[s_scene]);
 
                this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
