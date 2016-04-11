@@ -37,6 +37,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                // Attention: at any time, the plane must be bigger than the
                // dragged object or it won't work!
                // TODO: make the size a multiple of the impostor's radius!
+               // TODO: don't make the plane a geometry
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
@@ -113,7 +114,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                if (intersects.length > 0) {
                     // Disable the controls
-                    this[s_controls].disable();
+                    this[s_controls].enabled = false;
 
                     // Set the selection - first intersected object
                     this[s_selectedObject] = intersects[0];
@@ -152,7 +153,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                     var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
 
                     if (intersects[0] == null) {
-                         console.log("Error: lost selection plane!");
+                         console.log("Warning: lost selection plane!");
                          this.mouseUp();
                          return;
                     }
@@ -168,7 +169,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                     if (intersects.length > 0) {
                          // TODO: is this really necessary?
                          this[s_selectionPlane].position.copy(intersects[0].position);
-                         // this[s_selectionPlane].lookAt(this[s_camera].position);
+                         //this[s_selectionPlane].lookAt(this[s_camera].position);
                     }
                }
           }
@@ -176,7 +177,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           /** Called whenever a mouse button is released */
           mouseUp() {
                // Enable the controls
-               this[s_controls].enable();
+               this[s_controls].enabled = true;
                this[s_selectedObject] = null;
           }
 
