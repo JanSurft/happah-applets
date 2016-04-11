@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THREE, THREE, happah2) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THREE, THREE, happah) {
      var s_camera = Symbol('camera');
      var s_dragControls = Symbol('dragControls');
      var s_renderer = Symbol('renderer');
@@ -14,12 +14,14 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
      // For testing purposes only
      var s_trackball = Symbol('trackball');
+     var s_addMode = Symbol('addMode');
 
 
      class Viewport {
 
           constructor(canvas, scene) {
                this.update = this.update.bind(this);
+               this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
 
                this[s_scene] = scene;
@@ -56,9 +58,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                // TODO:
                this[s_controls].addEventListener('change', this.update);
                // Test:
+               this[s_addMode] = true;
                //this[s_controls] = new happah.TrackballControls(this[s_camera], this[s_scene]);
 
-               this[s_dragControls] = new happah2.DragControls(this[s_scene], this[s_controls], this[s_camera]);
+               this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
 
                // Trackball controls for camera movement
                this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);
@@ -66,6 +69,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
 
 
+               this[s_renderer].domElement.addEventListener('mousedown', this.addControlPoint, false);
                //this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
                //this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
                //this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
@@ -79,6 +83,47 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
                //this[s_transformControls] = new THREE.TransformControls(this[s_camera], this[s_renderer].domElement);
                //this[s_scene].add(this[s_transformControls]);
+          }
+
+          toggleAddMode() {
+               this[s_addMode] = !this[s_addMode];
+          }
+
+          /** Returns the position of an HTML element */
+          getElementPosition(element) {
+               var position = new THREE.Vector2(0, 0);
+
+               while (element) {
+                    position.x += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+                    position.y += (element.offsetTop - element.scrollTop + element.clientTop);
+                    element = element.offsetParent;
+               }
+               return position
+          }
+
+          addControlPoint(event) {
+               if (this[s_addMode]) {
+                    // Disable the controls
+                    this[s_controls].enabled = false;
+                    this[s_dragControls].enabled = false;
+
+                    var elementPosition = this.getElementPosition(event.currentTarget);
+
+                    // Get current mouse position on screen
+                    var vector = new THREE.Vector2();
+                    vector.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
+                    vector.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
+
+                    // Create a new raycaster
+                    var raycaster = new THREE.Raycaster();
+                    raycaster.setFromCamera(vector, this[s_camera]);
+
+                    // Intersect with XZ-plane
+                    var position = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
+
+                    // Add a new point to the specified position
+                    this[s_scene].addControlPoint(position);
+               }
           }
 
           update() { //TODO: make update private
