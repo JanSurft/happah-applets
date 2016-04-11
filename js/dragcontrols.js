@@ -15,6 +15,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
      var s_selectedObject = Symbol('selected');
      var s_selectionPlane = Symbol('plane');
      var s_offset = Symbol('offset');
+     var s_enabled = Symbol('enabled');
 
      class DragControls {
 
@@ -29,6 +30,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                this[s_scene] = scene;
                this[s_controls] = controls;
                this[s_camera] = camera;
+               this[s_enabled] = true;
 
                // Initialize drag control variables
                this[s_raycaster] = new THREE.Raycaster();
@@ -88,6 +90,10 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           /** Called when a mouse button is pressed */
           mouseDown(event) {
                event.preventDefault();
+
+               if (this[s_enabled] === false) {
+                    return;
+               }
                // TODO: don't calculate the position every time.
                //       -> only on window resize...
                var elementPosition = this.getElementPosition(event.currentTarget);
@@ -129,6 +135,10 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           /** Called whenever a mouse button is moved */
           mouseMove(event) {
                event.preventDefault();
+
+               if (this[s_enabled] === false) {
+                    return;
+               }
                var elementPosition = this.getElementPosition(event.currentTarget);
 
                // Get mouse position
