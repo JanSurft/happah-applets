@@ -20,7 +20,7 @@ define(['jquery', 'three'], function($, THREE) {
           evaluate(t, callback) {
                var segmentLength = this[s_controlPoints].length;
                var points = new Array(segmentLength);
-               var points[0] = new Array(segmentLength);
+               points[0] = new Array(segmentLength);
                for (var i in this[s_controlPoints]) {
                     points[0][i] = this[s_controlPoints][i];
                }
@@ -36,8 +36,7 @@ define(['jquery', 'three'], function($, THREE) {
                          newPoint.add(tmpPoint);
                          points[i + 1][j] = newPoint;
                     }
-                    callback(points[i + 1];
-                    }
+                    callback(points[i + 1]);
                }
                return points[points.length - 1][0];
           }
