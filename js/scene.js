@@ -111,14 +111,14 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     }
                }
 
-               addControlPoint(point) { //TODO: addControlPoints (many at once)
-                    var sphere = new happah.SphericalImpostor(3);
-                    sphere.material.uniforms.diffuse.value.set(new THREE.Color(0x888888));
-                    sphere.position.x = point.x;
-                    sphere.position.y = point.y;
-                    sphere.position.z = point.z;
-                    this._controlPointImpostors.add(sphere);
-                    this.controlPoints.push(point);
+               addControlPoints(points, color = new THREE.Color(0x888888)) {
+                    for (var i in points) {
+                         var sphere = new happah.SphericalImpostor(3);
+                         sphere.material.uniforms.diffuse.value.set(color);
+                         sphere.position.copy(points[i]);
+                         this._controlPointImpostors.add(sphere);
+                         this.controlPoints.push(points[i]);
+                    }
                     this.add(this._controlPointImpostors);
                     this.redraw();
                     $(this).trigger('update.happah');

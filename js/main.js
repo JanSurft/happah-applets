@@ -33,13 +33,14 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var storyboard = new happah.Storyboard();
      var frame0 = new happah.Storyboard.Frame();
      storyboard.append(frame0);
-     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, storyboard);
+     var viewport = new happah.Viewport($('.hph-canvas')[0], scene);
      //scene.algorithm = deCasteljau;
      scene.algorithm = new happah.Curve(scene.controlPoints);
-     scene.addControlPoint(new THREE.Vector3(-50, 0, -30)); //TODO: get rid of THREE
-     scene.addControlPoint(new THREE.Vector3(-40, 0, 30)); //TODO: get rid of THREE
-     scene.addControlPoint(new THREE.Vector3(40, 0, 30)); //TODO: get rid of THREE
-     scene.addControlPoint(new THREE.Vector3(50, 0, -30)); //TODO: get rid of THREE
+
+     scene.addControlPoints([
+          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+     ]);
      viewport.animate();
 
      // TEST

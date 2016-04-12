@@ -20,7 +20,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
      class Viewport {
 
-          constructor(canvas, scene, storyboard) {
+          constructor(canvas, scene) {
                this.update = this.update.bind(this);
                this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
@@ -142,7 +142,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                     var position = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
 
                     // Add a new point to the specified position
-                    this[s_scene].addControlPoint(position);
+                    this[s_scene].addControlPoints([position]);
                }
           }
 
