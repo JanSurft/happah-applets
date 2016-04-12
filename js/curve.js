@@ -57,6 +57,9 @@ define(['jquery', 'three'], function($, THREE) {
                // preCalculate necessary array length to avoid later size
                // changes
                var segmentLength = this[s_controlPoints].length;
+               if (segmentLength == 0) {
+                    return [];
+               }
                var arrayLength = segmentLength;
                for (var i = 0; i < nSubdivisions; i++) {
                     arrayLength = 2 * arrayLength - 1;
