@@ -12,31 +12,34 @@ define(['jquery', 'three'], function($, THREE) {
 
      class Curve {
 
-
           /** Default constructor. */
           constructor(controlPoints) {
                this[s_controlPoints] = controlPoints;
           }
 
           evaluate(t, callback) {
-               this.helper = function(controlPoints, depth, callback) {
-                    if (depth == 0) {
-                         return controlPoints;
-                    }
-
-                    var deCasteljauPoints = deCasteljeu(controlPoints);
-                    var leftControlPoints = [];
-                    var rightControlPoints = [];
-                    for (level in deCasteljauPoints) {
-                         leftControlPoints.push(level[0]);
-                         rightControlPoints = [level[level.length - 1]]
-                              .concat(rightControlPoints);
-                    }
-
-                    return (helper(leftControlPoints, depth - 1, callback))
-                         .concat(helper(rightControlPoints, depth - 1,
-                              callback));
+               var segmentLength = this[s_controlPoints].length;
+               var points = new Array(segmentLength);
+               var points[0] = new Array(segmentLength);
+               for (var i in this[s_controlPoints]) {
+                    points[0][i] = this[s_controlPoints][i];
                }
+               // until only 1 point remains
+               for (var i = 0; i < segmentLength - 1; i++) {
+                    points[i + 1] = new Array(segmentLength - i - 1);
+                    // calc next level points
+                    for (var j = 0; j < points[i].length - 1; j++) {
+                         var newPoint = points[i][j].clone();
+                         newPoint.multiplyScalar(1 - t);
+                         var tmpPoint = points[i][j + 1].clone();
+                         tmpPoint.multiplyScalar(t);
+                         newPoint.add(tmpPoint);
+                         points[i + 1][j] = newPoint;
+                    }
+                    callback(points[i + 1];
+                    }
+               }
+               return points[points.length - 1][0];
           }
 
           /**
