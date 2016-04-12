@@ -1,11 +1,13 @@
 define(['jquery', 'translator'], function($, Translator) {
+     var s_algorithm = Symbol('algorithm');
      var s_frames = Symbol('frames');
 
      console.log(Translator.t('hello'));
 
      class Storyboard {
 
-          constructor() {
+          constructor(algorithm) {
+               this[s_algorithm] = algorithm;
                this[s_frames] = [];
           }
 
@@ -16,6 +18,13 @@ define(['jquery', 'translator'], function($, Translator) {
      } //class Storyboard
 
      Storyboard.Frame = class {
+
+               constructor() {
+                    this.segmentStrips = [];
+                    this.points = [];
+                    this.title = "";
+                    this.description = "";
+               }
 
           } //class Storyboard.Frame
 
