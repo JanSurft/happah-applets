@@ -1,15 +1,17 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// @author: Stephan Engelmann (stephan-engelmann@gmx.de)
+//
+//////////////////////////////////////////////////////////////////////////////
+
+/** Unit tests for curve class. */
+
 "use strict";
 define(
      ['../js/curve'],
-     function(CURVE, dummyLib) {
+     function(CURVE) {
           var run = function() {
-               test('Generated curve points of subdivision using de casteljeu should equal precalced ones.', function() {
-                    var controlpoints = [
-                         new THREE.Vector3(0, 0, 0),
-                         new THREE.Vector3(16, 0, 0),
-                         new THREE.Vector3(16, 16, 0),
-                         new THREE.Vector3(0, 16, 0)
-                    ];
+               test('Generated curve points of subdivision using de casteljau should equal precalced ones.', function() {
                     var expectedResult = [
                          new THREE.Vector3(0, 0, 0),
                          new THREE.Vector3(1, 0, 0),
@@ -61,8 +63,18 @@ define(
                          new THREE.Vector3(1, 16, 0),
                          new THREE.Vector3(0, 16, 0),
                     ];
+
+                    // calc
+                    var controlpoints = [
+                         new THREE.Vector3(0, 0, 0),
+                         new THREE.Vector3(16, 0, 0),
+                         new THREE.Vector3(16, 16, 0),
+                         new THREE.Vector3(0, 16, 0),
+                    ];
                     var mycurve = new CURVE.Curve(controlpoints);
                     var curveSegments = mycurve.subdivide();
+
+                    // check result
                     for (var i in curveSegments) {
                          equal(curveSegments[i].x, expectedResult[i].x);
                          equal(curveSegments[i].y, expectedResult[i].y);
@@ -70,6 +82,7 @@ define(
                     }
                });
           };
+
           return {
                run: run
           }
