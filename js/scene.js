@@ -65,8 +65,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                get controlPointImpostors() {
                     return this._controlPointImpostors;
                }
-               toggleControlPolygon() {
-                    this[s_showPoly] = !this[s_showPoly];
+               setControlPolygonState(state) {
+                    this[s_showPoly] = state;
                     this.redraw();
 
                     if (this[s_showPoly]) {

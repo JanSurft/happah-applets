@@ -88,18 +88,16 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                //this[s_scene].add(this[s_transformControls]);
           }
 
-          toggleAddMode() {
-               this[s_addMode] = !this[s_addMode];
+          setAddModeState(state) {
+               this[s_addMode] = state;
 
                if (this[s_addMode]) {
                     //this[s_controls][s_enabled] = false;
-                    this[s_dragControls].disable();
                     this[s_renderer].domElement.style.cursor = "crosshair";
-                    $('#addmode-toggle').parent().addClass('active');
+                    this[s_dragControls].disable();
                } else {
                     this[s_renderer].domElement.style.cursor = "default";
                     this[s_dragControls].enable();
-                    $('#addmode-toggle').parent().removeClass('active');
                }
 
           }

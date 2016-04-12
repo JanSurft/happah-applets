@@ -8,6 +8,8 @@ define(['jquery', 'three'], function($, THREE) {
      var s_scene = Symbol('scene');
      var s_viewport = Symbol('viewport');
      var s_gridEnabled = Symbol('gridenabled');
+     var s_addModeEnabled = Symbol('addmodeenabled');
+     var s_showControlPoly = Symbol('showcontrolpoly');
      var s_content = Symbol('content');
 
      class Menu {
@@ -16,6 +18,9 @@ define(['jquery', 'three'], function($, THREE) {
                this[s_scene] = scene;
                this[s_viewport] = viewport;
                this[s_gridEnabled] = true;
+               this[s_addModeEnabled] = false;
+               this[s_showControlPoly] = true;
+               //this[s_viewport].setAddModeState(false);
                this[s_viewport].setGridState(true);
                $('#grid-toggle').parent().addClass('active');
 
@@ -45,19 +50,35 @@ define(['jquery', 'three'], function($, THREE) {
           }
 
           toggleAddMode(event) {
-               event.data._this[s_viewport].toggleAddMode();
+               event.data._this[s_addModeEnabled] = !event.data._this[s_addModeEnabled];
+               event.data._this[s_viewport].setAddModeState(event.data._this[s_addModeEnabled]);
+
+               if (event.data._this[s_addModeEnabled]) {
+                    $('#addmode-toggle').parent().addClass('active');
+               } else {
+                    $('#addmode-toggle').parent().removeClass('active');
+               }
+
                event.data._this[s_scene].redraw();
           }
 
           toggleControlPolygon(event) {
-               event.data._this[s_scene].toggleControlPolygon();
+               var state = !event.data._this[s_showControlPoly];
+               event.data._this[s_showControlPoly] = state;
+
+               if (state) {
+                    $('#poly-toggle').parent().addClass('active');
+               } else {
+                    $('#poly-toggle').parent().removeClass('active');
+               }
+               event.data._this[s_scene].setControlPolygonState(state);
           }
 
           clearControlPoints(event) {
                event.data._this[s_scene].removeControlPoints();
           }
 
-     } // Class Interface
+     } // Class Menu
 
      return {
           Menu: Menu
