@@ -50,6 +50,13 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                this[s_selectionPlane].lookAt(this[s_camera].position);
           }
 
+          enable() {
+               this[s_enabled] = true;
+          }
+          disable() {
+               this[s_enabled] = false;
+          }
+
           /** Returns the position of our HTML element */
           getElementPosition(element) {
                var position = new THREE.Vector2(0, 0);
@@ -91,7 +98,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           mouseDown(event) {
                event.preventDefault();
 
-               if (this[s_enabled] === false) {
+               if (this[s_enabled] == false) {
                     return;
                }
                // TODO: don't calculate the position every time.
@@ -136,7 +143,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           mouseMove(event) {
                event.preventDefault();
 
-               if (this[s_enabled] === false) {
+               if (this[s_enabled] == false) {
                     return;
                }
                var elementPosition = this.getElementPosition(event.currentTarget);

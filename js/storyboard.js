@@ -1,24 +1,25 @@
-define([ 'jquery', 'translator' ], function($, Translator) {
+define(['jquery', 'translator'], function($, Translator) {
      var s_frames = Symbol('frames');
 
      console.log(Translator.t('hello'));
 
      class Storyboard {
 
-     constructor() {
-          this[s_frames] = [];
-     }
+          constructor() {
+               this[s_frames] = [];
+          }
 
-     append(frame) {
-          this[s_frames].push(frame);
-     }
+          append(frame) {
+               this[s_frames].push(frame);
+          }
 
-     }//class Storyboard
+     } //class Storyboard
 
      Storyboard.Frame = class {
 
-     }//class Storyboard.Frame
+          } //class Storyboard.Frame
 
-     return { Storyboard: Storyboard };
+     return {
+          Storyboard: Storyboard
+     };
 });
-

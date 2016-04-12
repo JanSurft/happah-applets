@@ -2,8 +2,12 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      var s_algorithm = Symbol('algorithm');
      var s_lights = Symbol('lights');
 
+     /** Flags for drawing preferences */
      // Set to true if scene has been altered.
      var s_altered = Symbol('altered');
+
+     // If set: will draw control polygon
+     var s_showPoly = Symbol('showpoly');
 
      class Scene extends THREE.Scene {
 
@@ -48,6 +52,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     //this[s_lights].add(new THREE.AmbientLight(0x000000));
                     this.add(this[s_lights]);
                     this[s_altered] = true;
+                    this[s_showPoly] = true;
                }
 
                get algorithm() {
@@ -60,6 +65,17 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                get controlPointImpostors() {
                     return this._controlPointImpostors;
                }
+               toggleControlPolygon() {
+                    this[s_showPoly] = !this[s_showPoly];
+                    this.redraw();
+
+                    if (this[s_showPoly]) {
+                         this.add(this._controlPointImpostors);
+                    } else {
+                         // Don't draw impostors
+                         this.remove(this._controlPointImpostors);
+                    }
+               }
 
                /** Redraws the curve in the next animate() cycle */
                redraw() {
@@ -71,6 +87,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     if (this[s_altered]) {
                          console.log("redraw impostors/lines");
                          this.remove(this.algorithmLine);
+
                          this.remove(this.controlLine);
 
                          for (var i = 0; i < this.controlPoints.length; i++)
@@ -84,10 +101,12 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                          this.algorithmPoints = this[s_algorithm].subdivide();
 
                          this.algorithmLine = this.insertSegmetStrip(this.algorithmPoints, new THREE.Color(0x009D82));
-                         this.controlLine = this.insertSegmetStrip(this.controlPoints, new THREE.Color(0xFF0000));
+                         if (this[s_showPoly]) {
+                              this.controlLine = this.insertSegmetStrip(this.controlPoints, new THREE.Color(0xFF0000));
+                              this.add(this.controlLine);
+                         }
 
                          this.add(this.algorithmLine);
-                         this.add(this.controlLine);
                          this[s_altered] = false;
                     }
                }
@@ -105,7 +124,20 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     $(this).trigger('update.happah');
                }
 
+               removeControlPoints() {
+                    // Remove everything from the scene
+                    this.remove(this._controlPointImpostors);
+                    this.controlPoints.length = 0;
+                    var sadf = this.controlPoints;
+                    this._controlPointImpostors.children = [];
+
+                    this.redraw();
+               }
+
                insertSegmetStrip(points, color) {
+                    if (points.length === 0)
+                         return new THREE.Line();
+
                     var lineGeometry = new THREE.Geometry();
                     var lineMaterial = new THREE.LineBasicMaterial();
                     lineMaterial.color = color;

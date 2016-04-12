@@ -28,53 +28,12 @@ require.config({
      }
 });
 
-function deCasteljau(params) {
-     var DEFAULTS = {
-          controlPoints1D: [],
-          recursionDepth: 1,
-     }
-
-     // if no parameters are given use dafaults
-     var par = $.extend({}, DEFAULTS, params);
-
-     var points = [];
-
-     // copy control points for first iteration.
-     for (i = 0; i < par['controlPoints1D'].length; i++) {
-          points[i] = par['controlPoints1D'][i];
-     }
-
-     for (j = 0; j < par['recursionDepth']; j++) {
-          var tempPoints = [];
-          // The first control point does not change.
-          tempPoints[0] = points[0];
-          // Get the middle of each segment and make it a new point.
-          for (i = 0; i < points.length - 1; i++) {
-               tempPoints[i + 1] = new THREE.Vector3(
-                    (points[i + 1].x + points[i].x) / 2, (points[i + 1].y + points[i].y) / 2, (points[i + 1].z + points[i].z) / 2
-               );
-          }
-          // The last control point remains unchanged.
-          tempPoints[tempPoints.length] = points[points.length - 1];
-          // Set points array for next iteration.
-          points = tempPoints;
-     }
-
-     return points;
-}
-
-var subdivideTest = require(['curve', 'three'], function(happah, THREE) {
-     var controlPoints = [
-          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
-     ];
-     var curve = new happah.Curve(controlPoints);
-     return curve.subdivide();
-});
-
 require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var scene = new happah.Scene();
-     var viewport = new happah.Viewport($('.hph-canvas')[0], scene);
+     var storyboard = new happah.Storyboard();
+     var frame0 = new happah.Storyboard.Frame();
+     storyboard.append(frame0);
+     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, storyboard);
      //scene.algorithm = deCasteljau;
      scene.algorithm = new happah.Curve(scene.controlPoints);
      scene.addControlPoint(new THREE.Vector3(-50, 0, -30)); //TODO: get rid of THREE
@@ -88,9 +47,6 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      console.log("happah initialized.");
 
 
-     var storyboard = new happah.Storyboard();
-     var frame0 = new happah.Storyboard.Frame();
-     storyboard.append(frame0);
 
      var defaults = {
           algorithm: 'De Casteljau',

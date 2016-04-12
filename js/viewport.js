@@ -11,6 +11,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
      var s_scene = Symbol('scene');
      var s_controls = Symbol('trackballControls');
      var s_transformControls = Symbol('transformControls');
+     var s_grid = Symbol('grid');
 
      // For testing purposes only
      var s_trackball = Symbol('trackball');
@@ -19,7 +20,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
      class Viewport {
 
-          constructor(canvas, scene) {
+          constructor(canvas, scene, storyboard) {
                this.update = this.update.bind(this);
                this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
@@ -35,6 +36,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                     canvas: canvas,
                     context: context
                };
+               this[s_grid] = new THREE.GridHelper(500, 10);
+               this[s_grid].position.y = -0.001;
                this[s_renderer] = new THREE.WebGLRenderer(parameters);
                this[s_renderer].setClearColor(0xFFFFFF); //TODO: can renderer and viewport be separated?
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
@@ -56,7 +59,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                this[s_controls].noZoom = true;
 
                // TODO:
-               this[s_controls].addEventListener('change', this.update);
+               //this[s_controls].addEventListener('change', this.update);
                // Test:
                this[s_addMode] = false;
                //this[s_controls] = new happah.TrackballControls(this[s_camera], this[s_scene]);
@@ -87,6 +90,26 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
           toggleAddMode() {
                this[s_addMode] = !this[s_addMode];
+
+               if (this[s_addMode]) {
+                    //this[s_controls][s_enabled] = false;
+                    this[s_dragControls].disable();
+                    this[s_renderer].domElement.style.cursor = "crosshair";
+                    $('#addmode-toggle').parent().addClass('active');
+               } else {
+                    this[s_renderer].domElement.style.cursor = "default";
+                    this[s_dragControls].enable();
+                    $('#addmode-toggle').parent().removeClass('active');
+               }
+
+          }
+
+          setGridState(state) {
+               if (state) {
+                    this[s_scene].add(this[s_grid]);
+               } else {
+                    this[s_scene].remove(this[s_grid]);
+               }
           }
 
           /** Returns the position of an HTML element */
@@ -103,9 +126,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
           addControlPoint(event) {
                if (this[s_addMode]) {
-                    // Disable the controls
-                    this[s_controls].enabled = false;
-                    this[s_dragControls].enabled = false;
 
                     var elementPosition = this.getElementPosition(event.currentTarget);
 
