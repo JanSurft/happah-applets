@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THREE, THREE, happah) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontrols'], function($, THREE, THREE, happah, happah2) {
      var s_camera = Symbol('camera');
      var s_dragControls = Symbol('dragControls');
      var s_renderer = Symbol('renderer');
@@ -46,28 +46,28 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                this[s_renderer] = new THREE.WebGLRenderer(parameters);
                this[s_renderer].setClearColor(0xFFFFFF); //TODO: can renderer and viewport be separated?
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
-               //this[s_camera] = new THREE.PerspectiveCamera(75, $(canvas).width() / $(canvas).height(), 0.1, 1000);
+               this[s_camera] = new THREE.PerspectiveCamera(45, $(canvas).width() / $(canvas).height(), 1, 1000);
 
-               this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
+               //this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
                //this[s_camera].position.z = 0;
                //this[s_camera].position.y = 10;
                //this[s_camera].position.x = 0;
-               this[s_camera].position.z = 0;
+               this[s_camera].position.z = 2; // 0 for orthographic camera
                this[s_camera].position.y = 1;
-               this[s_camera].position.x = 0;
+               this[s_camera].position.x = 5; // 0 for orthographic camera
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
                this[s_camera].updateProjectionMatrix();
 
-               this[s_controls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
-               this[s_controls].target.set(0, 0, 0);
-               this[s_controls].noZoom = true;
+               //this[s_controls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
+               //this[s_controls].target.set(0, 0, 0);
+               //this[s_controls].noZoom = true;
 
                // TODO:
                //this[s_controls].addEventListener('change', this.update);
                // Test:
                this[s_addMode] = false;
-               //this[s_controls] = new happah.TrackballControls(this[s_camera], this[s_scene]);
+               this[s_controls] = new happah2.TrackballControls(this[s_camera], this[s_scene]);
 
                this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
 
@@ -77,9 +77,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
 
                this[s_renderer].domElement.addEventListener('mousedown', this.addControlPoint, false);
-               //this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
-               //this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
-               //this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
+               this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
+               this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
+               this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
 
                // Drag controls for dragging and dropping objects
                this[s_renderer].domElement.addEventListener('mousemove', this[s_dragControls].mouseMove, false);
@@ -187,7 +187,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
           animate() {
                requestAnimationFrame(this.animate.bind(this));
                this.update();
-               this[s_controls].update();
+               //               this[s_controls].update();
                //this[s_transformControls].update();
           }
 

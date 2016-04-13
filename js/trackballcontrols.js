@@ -72,13 +72,14 @@ define(['three', 'happah'], function(THREE, happah) {
            * 4. ???
            * 5. profit.
            */
+          // TODO: override intersect method of three.sphere so that one can
+          // get an intersect point that is on the sphere.
           onMouseMove(event) {
 
                if (this[s_enabled] === false) return;
 
                if (this[s_moving]) {
                     // TODO: don't calculate the position every time.
-                    //       -> only on window resize...
                     var elementPosition = this.getElementPosition(event.currentTarget);
                     var currentMouseVec = new THREE.Vector2();
 
@@ -89,40 +90,16 @@ define(['three', 'happah'], function(THREE, happah) {
                     // Get the cameras eye direction
                     this[s_raycaster].setFromCamera(new THREE.Vector2(0, 0), this[s_camera]);
 
-                    // Create a plane in front of the camera to simulate screen space
-                    this[s_plane].set(this[s_raycaster].ray.direction, -this[s_camera].position.dot(this[s_raycaster].ray.direction) + 1);
-                    console.log(this[s_camera].position);
+                    // Create sphere in front of the camera
+                    var sphere = new THREE.Sphere(this[s_target], this[s_camera].position.length() - 1);
 
-                    // Create a ray from mouse vector.
-                    this[s_raycaster].setFromCamera(currentMouseVec, this[s_camera]);
-                    var currentRay = this[s_raycaster].ray;
-
-                    // Get the intersection points of old and new ray
-                    var oldIntersect = this[s_previousRay].intersectPlane(cameraPlane);
-                    var newIntersect = currentRay.intersectPlane(cameraPlane);
-
-                    // Create vector between both intersects
-                    var direction = oldIntersect.add(newIntersect);
-                    console.log(direction);
-
-                    // Generate the rotation axis from mouse dir and camera ray
-                    var axis = this[s_previousRay].direction.cross(direction);
-                    this[s_helper].setDirection(axis);
-
-                    // Create quaternion for camera rotation
-                    var quaternion = new THREE.Quaternion();
-
-                    // Set the values
-                    quaternion.setFromAxisAngle(axis, direction.length * 0.000015);
-
-                    // Update previous ray
-                    this[s_previousRay] = currentRay;
-
-                    // Update camera orientation
-                    this[s_camera].position.applyQuaternion(quaternion);
-
-                    //this[s_camera].lookAt(this[s_target]);
-                    this[s_camera].updateProjectionMatrix();
+                    var mat = new THREE.MeshBasicMaterial({
+                         color: 0x336622
+                    });
+                    var geo = new THREE.SphereGeometry(this[s_camera].position.length() - 1);
+                    var mesh = new THREE.Mesh(geo, mat);
+                    this[s_scene].add(mesh);
+                    console.log(this[s_camera].position.length());
                }
 
           }
