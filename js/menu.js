@@ -20,8 +20,7 @@ define(['jquery', 'three'], function($, THREE) {
                this[s_gridEnabled] = true;
                this[s_addModeEnabled] = false;
                this[s_showControlPoly] = true;
-               //this[s_viewport].setAddModeState(false);
-               this[s_viewport].setGridState(true);
+               this[s_viewport].gridState = true;
                $('#grid-toggle').parent().addClass('active');
 
                this[s_content].find("#grid-toggle").on('click', {
@@ -46,12 +45,12 @@ define(['jquery', 'three'], function($, THREE) {
                } else {
                     $('#grid-toggle').parent().removeClass('active');
                }
-               event.data._this[s_viewport].setGridState(event.data._this[s_gridEnabled]);
+               event.data._this[s_viewport].gridState = event.data._this[s_gridEnabled];
           }
 
           toggleAddMode(event) {
                event.data._this[s_addModeEnabled] = !event.data._this[s_addModeEnabled];
-               event.data._this[s_viewport].setAddModeState(event.data._this[s_addModeEnabled]);
+               event.data._this[s_viewport].addModeState = event.data._this[s_addModeEnabled];
 
                if (event.data._this[s_addModeEnabled]) {
                     $('#addmode-toggle').parent().addClass('active');
@@ -71,7 +70,7 @@ define(['jquery', 'three'], function($, THREE) {
                } else {
                     $('#poly-toggle').parent().removeClass('active');
                }
-               event.data._this[s_scene].setControlPolygonState(state);
+               event.data._this[s_scene].controlPolygonState = state;
           }
 
           clearControlPoints(event) {

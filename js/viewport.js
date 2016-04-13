@@ -88,7 +88,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                //this[s_scene].add(this[s_transformControls]);
           }
 
-          setAddModeState(state) {
+          set addModeState(state) {
                this[s_addMode] = state;
 
                if (this[s_addMode]) {
@@ -102,7 +102,18 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
           }
 
-          setGridState(state) {
+          applyFrame(frame) {
+               // Reset all previous modifications
+               this[s_scene].removeControlPoints();
+
+               // Add the points needed for the frame
+               this[s_scene].addControlPoints(frame.points);
+
+               // Set the relevant flags
+               this[s_curve].curveState = frame.showCurve;
+          }
+
+          set gridState(state) {
                if (state) {
                     this[s_scene].add(this[s_grid]);
                } else {
