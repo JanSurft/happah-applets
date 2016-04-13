@@ -30,6 +30,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                this[s_storyboard] = storyboard;
                this[s_currentFrame] = 0;
                this[s_scene] = scene;
+               this[s_scene].algorithm = storyboard.algorithm;
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
                });

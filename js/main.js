@@ -31,6 +31,7 @@ require.config({
 require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var scene = new happah.Scene();
      var storyboard = new happah.Storyboard();
+     storyboard.algorithm = new happah.Curve(scene.controlPoints);
      var frame0 = new happah.Storyboard.Frame();
      var frame1 = new happah.Storyboard.Frame();
      frame0.points = [
@@ -47,7 +48,7 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      storyboard.append(frame1);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, storyboard);
      //scene.algorithm = deCasteljau;
-     scene.algorithm = new happah.Curve(scene.controlPoints);
+     //scene.algorithm = new happah.Curve(scene.controlPoints);
 
      //     scene.addControlPoints([
      //          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
@@ -69,7 +70,6 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
 });
 
 //TODO: animate? why not just paint?
-//TODO: take algorithm stuff out of scene
 //TODO: take animate out of scene
 //TODO: fix fragDepth
 //TODO: simplify vertex shaders
@@ -81,7 +81,6 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
 //TODO: single insert() method for all inserts with type variable in object classes
 //TODO: webgl2...use features such as instanced arrays
 //TODO: data should be only once in memory with flags about how to render it
-//TODO: remove animate form scene
 //TODO: event-based rendering instead of infinite loop
 //TODO: ray/sphere intersection in fragment shader...also important for point manipulation
 //TODO: interval overlay for choosing ratio in de casteljau algorithm

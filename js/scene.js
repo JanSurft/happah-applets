@@ -87,6 +87,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_altered] = true;
                }
 
+               // TODO: only draw segmentstrips specified by the storyboard.
                animate() {
                     // Only re-calculate if things have changed.
                     if (this[s_altered]) {
