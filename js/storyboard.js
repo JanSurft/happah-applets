@@ -15,6 +15,10 @@ define(['jquery', 'translator'], function($, Translator) {
                this[s_frames].push(frame);
           }
 
+          get frame() {
+               return this[s_frames];
+          }
+
      } //class Storyboard
 
      Storyboard.Frame = class {
@@ -24,6 +28,7 @@ define(['jquery', 'translator'], function($, Translator) {
                     this.points = [];
                     this.title = "";
                     this.description = "";
+                    this.showCurve = true;
                }
 
           } //class Storyboard.Frame

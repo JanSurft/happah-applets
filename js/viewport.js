@@ -12,6 +12,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
      var s_controls = Symbol('trackballControls');
      var s_transformControls = Symbol('transformControls');
      var s_grid = Symbol('grid');
+     var s_storyboard = Symbol('storyboard');
+     var s_currentFrame = Symbol('currentframe');
 
      // For testing purposes only
      var s_trackball = Symbol('trackball');
@@ -20,11 +22,13 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
 
      class Viewport {
 
-          constructor(canvas, scene) {
+          constructor(canvas, scene, storyboard) {
                this.update = this.update.bind(this);
                this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
 
+               this[s_storyboard] = storyboard;
+               this[s_currentFrame] = 0;
                this[s_scene] = scene;
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
@@ -71,7 +75,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
 
-
                this[s_renderer].domElement.addEventListener('mousedown', this.addControlPoint, false);
                //this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
                //this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
@@ -110,7 +113,23 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
                this[s_scene].addControlPoints(frame.points);
 
                // Set the relevant flags
-               this[s_curve].curveState = frame.showCurve;
+               this[s_scene].curveState = frame.showCurve;
+
+               this[s_scene].redraw();
+          }
+
+          nextFrame() {
+               if (this[s_storyboard].frame.length == this[s_currentFrame])
+                    return;
+
+               this.applyFrame(this[s_storyboard].frame[this[s_currentFrame]++]);
+          }
+
+          previousFrame() {
+               if (this[s_currentFrame] == 0)
+                    return;
+
+               this.applyFrame(this[s_storyboard].frame[this[s_currentFrame]--]);
           }
 
           set gridState(state) {

@@ -32,19 +32,25 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var scene = new happah.Scene();
      var storyboard = new happah.Storyboard();
      var frame0 = new happah.Storyboard.Frame();
+     frame0.points = [
+          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+     ];
+     frame0.showCurve = true;
      storyboard.append(frame0);
-     var viewport = new happah.Viewport($('.hph-canvas')[0], scene);
+     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, storyboard);
      //scene.algorithm = deCasteljau;
      scene.algorithm = new happah.Curve(scene.controlPoints);
 
-     scene.addControlPoints([
-          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
-     ]);
+     //     scene.addControlPoints([
+     //          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+     //          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+     //     ]);
      viewport.animate();
 
      // TEST
      var i = new happah.Menu(".dropdown-menu", scene, viewport);
+     var l = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");
 
 

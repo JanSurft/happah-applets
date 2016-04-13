@@ -35,6 +35,12 @@ define(['jquery', 'three'], function($, THREE) {
                this[s_content].find("#clear-all").on('click', {
                     _this: this
                }, this.clearControlPoints);
+               this[s_content].find("#hph-forward").on('click', {
+                    _this: this
+               }, this.next);
+               this[s_content].find("#hph-backward").on('click', {
+                    _this: this
+               }, this.previous);
           }
 
           toggleGrid(event) {
@@ -71,6 +77,14 @@ define(['jquery', 'three'], function($, THREE) {
                     $('#poly-toggle').parent().removeClass('active');
                }
                event.data._this[s_scene].controlPolygonState = state;
+          }
+
+          next(event) {
+               event.data._this[s_viewport].nextFrame();
+          }
+
+          previous(event) {
+               event.data._this[s_viewport].previousFrame();
           }
 
           clearControlPoints(event) {
