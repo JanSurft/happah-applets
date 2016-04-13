@@ -41,6 +41,9 @@ define(['jquery', 'three'], function($, THREE) {
                this[s_content].find("#hph-backward").on('click', {
                     _this: this
                }, this.previous);
+               this[s_content].find("#hph-play").on('click', {
+                    _this: this
+               }, this.current);
           }
 
           toggleGrid(event) {
@@ -85,6 +88,10 @@ define(['jquery', 'three'], function($, THREE) {
 
           previous(event) {
                event.data._this[s_viewport].previousFrame();
+          }
+
+          current(event) {
+               event.data._this[s_viewport].currentFrame();
           }
 
           clearControlPoints(event) {

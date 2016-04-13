@@ -119,17 +119,21 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols'], function($, THR
           }
 
           nextFrame() {
-               if (this[s_storyboard].frame.length == this[s_currentFrame])
-                    return;
+               if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
+                    this[s_currentFrame]++;
 
-               this.applyFrame(this[s_storyboard].frame[this[s_currentFrame]++]);
+               this.currentFrame();
+          }
+
+          currentFrame() {
+               this.applyFrame(this[s_storyboard].frame[this[s_currentFrame]]);
           }
 
           previousFrame() {
-               if (this[s_currentFrame] == 0)
-                    return;
+               if (this[s_currentFrame] > 0)
+                    this[s_currentFrame]--;
 
-               this.applyFrame(this[s_storyboard].frame[this[s_currentFrame]--]);
+               this.currentFrame();
           }
 
           set gridState(state) {

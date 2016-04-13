@@ -123,7 +123,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                          this._controlPointImpostors.add(sphere);
                          this.controlPoints.push(points[i]);
                     }
-                    this.add(this._controlPointImpostors);
+                    if (this[s_showPoly])
+                         this.add(this._controlPointImpostors);
+
                     this.redraw();
                     $(this).trigger('update.happah');
                }

@@ -32,12 +32,19 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var scene = new happah.Scene();
      var storyboard = new happah.Storyboard();
      var frame0 = new happah.Storyboard.Frame();
+     var frame1 = new happah.Storyboard.Frame();
      frame0.points = [
           new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
           new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
      ];
+     frame1.points = [
+          new THREE.Vector3(-10, 0, -20), new THREE.Vector3(10, 0, 30),
+          new THREE.Vector3(40, 0, -30),
+     ];
+     frame1.showCurve = true;
      frame0.showCurve = true;
      storyboard.append(frame0);
+     storyboard.append(frame1);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, storyboard);
      //scene.algorithm = deCasteljau;
      scene.algorithm = new happah.Curve(scene.controlPoints);
