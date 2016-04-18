@@ -123,7 +123,6 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
           storyboard() {
                var result = new STORYBOARD.Storyboard();
                var frame0 = new STORYBOARD.Storyboard.Frame();
-               frame0.points = this[s_controlPoints];
                frame0.segmentStrips = this[s_controlPoints];
                frame0.title = "Kontrollpolygon";
                result.append(frame0);
@@ -134,6 +133,10 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                //frame.points =
                //}
 
+               var frameLast = new STORYBOARD.Storyboard.Frame();
+               frameLast.title = "Grenzkurve";
+               frameLast.segmentstrips = this.subdivide();
+               result.append(frameLast);
 
                return result;
           }
