@@ -36,10 +36,10 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      //scene.algorithm = deCasteljau;
      //scene.algorithm = new happah.Curve(scene.controlPoints);
 
-     //     scene.addControlPoints([
-     //          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-     //          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
-     //     ]);
+     scene.addControlPoints([
+          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+     ]);
      viewport.animate();
 
      // TEST

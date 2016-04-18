@@ -30,6 +30,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_storyboard] = algorithm.storyboard();
                this[s_currentFrame] = 0;
                this[s_scene] = scene;
+               this[s_scene].segmentStrips = this[s_storyboard].frame[this[s_currentFrame]].segmentStrips;
                this[s_scene].algorithm = algorithm;
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
@@ -108,10 +109,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
           applyFrame(frame) {
                // Reset all previous modifications
-               this[s_scene].removeControlPoints();
+               //this[s_scene].removeControlPoints();
 
                // Add the points needed for the frame
-               this[s_scene].addControlPoints(frame.points);
+               //this[s_scene].addControlPoints(frame.points);
 
                // Set the relevant flags
                this[s_scene].curveState = frame.showCurve;

@@ -12,6 +12,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
      // If set: will draw control polygon
      var s_showPoly = Symbol('showpoly');
+     var s_segmentStrips = Symbol('segmentstrips');
 
      class Scene extends THREE.Scene {
 
@@ -22,6 +23,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     };
                     this.controlPoints = [];
                     this.algorithmPoints = [];
+                    this[s_segmentStrips] = [];
                     this._controlPointImpostors = new THREE.Object3D();
 
                     this[s_lights] = new THREE.Object3D();
@@ -81,6 +83,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_showCurve] = state;
                     this.redraw();
                }
+               set segmentStrips(segmentStrips) {
+                    this[s_segmentStrips] = segmentStrips;
+               }
 
                /** Redraws the curve in the next animate() cycle */
                redraw() {
@@ -102,8 +107,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                               for (var i = 0; i < this.controlPoints.length; i++)
                                    this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
 
-                              this[s_algorithmPoints] = this[s_algorithm].subdivide();
-                              this[s_algorithmLine] = this.insertSegmetStrip(this[s_algorithmPoints], new THREE.Color(0x009D82));
+                              //this[s_algorithmPoints] = this[s_algorithm].subdivide();
+                              this[s_algorithmLine] = this.insertSegmetStrip(this[s_segmentStrips], new THREE.Color(0x009D82));
                               this.add(this[s_algorithmLine]);
                          }
 
