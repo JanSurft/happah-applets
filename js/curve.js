@@ -4,7 +4,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three'], function($, THREE) {
+define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
 
@@ -119,7 +119,15 @@ define(['jquery', 'three'], function($, THREE) {
                }
                return result;
           }
+
+          storyboard() {
+               var result = new STORYBOARD.Storyboard();
+
+               return result;
+          }
+
      }
+
      return {
           Curve: Curve
      };

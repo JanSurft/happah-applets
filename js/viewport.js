@@ -22,15 +22,15 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
      class Viewport {
 
-          constructor(canvas, scene, storyboard) {
+          constructor(canvas, scene, algorithm) {
                this.update = this.update.bind(this);
                this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
 
-               this[s_storyboard] = storyboard;
+               this[s_storyboard] = algorithm.storyboard();
                this[s_currentFrame] = 0;
                this[s_scene] = scene;
-               this[s_scene].algorithm = storyboard.algorithm;
+               this[s_scene].algorithm = algorithm;
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
                });
