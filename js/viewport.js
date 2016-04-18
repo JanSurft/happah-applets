@@ -117,6 +117,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                // Set the relevant flags
                this[s_scene].curveState = frame.showCurve;
 
+               this[s_scene].segmentStrips = this[s_storyboard].frame[this[s_currentFrame]].segmentStrips;
+               var asd = this[s_scene].segmentStrips;
+
                this[s_scene].redraw();
           }
 
