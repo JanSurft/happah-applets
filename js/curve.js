@@ -122,6 +122,18 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
 
           storyboard() {
                var result = new STORYBOARD.Storyboard();
+               var frame0 = new STORYBOARD.Storyboard.Frame();
+               frame0.points = this[s_controlPoints];
+               frame0.segmentStrips = this[s_controlPoints];
+               frame0.title = "Kontrollpolygon";
+               result.append(frame0);
+
+               //for (var i in this[s_controlPoints]) {
+               //var frame = new STORYBOARD.FRAME();
+               //frame.tite = "Schritt" + (i + 1);
+               //frame.points =
+               //}
+
 
                return result;
           }
