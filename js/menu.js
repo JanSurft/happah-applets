@@ -21,7 +21,7 @@ define(['jquery', 'three'], function($, THREE) {
                this[s_addModeEnabled] = false;
                this[s_showControlPoly] = true;
                this[s_viewport].gridState = true;
-               $('#grid-toggle').parent().addClass('active');
+               $('#grid-toggle').addClass('active');
 
                this[s_content].find("#grid-toggle").on('click', {
                     _this: this
@@ -50,9 +50,9 @@ define(['jquery', 'three'], function($, THREE) {
                event.data._this[s_gridEnabled] = !event.data._this[s_gridEnabled];
 
                if (event.data._this[s_gridEnabled]) {
-                    $('#grid-toggle').parent().addClass('active');
+                    $('#grid-toggle').addClass('active');
                } else {
-                    $('#grid-toggle').parent().removeClass('active');
+                    $('#grid-toggle').removeClass('active');
                }
                event.data._this[s_viewport].gridState = event.data._this[s_gridEnabled];
           }
@@ -62,9 +62,9 @@ define(['jquery', 'three'], function($, THREE) {
                event.data._this[s_viewport].addModeState = event.data._this[s_addModeEnabled];
 
                if (event.data._this[s_addModeEnabled]) {
-                    $('#addmode-toggle').parent().addClass('active');
+                    $('#addmode-toggle').addClass('active');
                } else {
-                    $('#addmode-toggle').parent().removeClass('active');
+                    $('#addmode-toggle').removeClass('active');
                }
 
                event.data._this[s_scene].redraw();
@@ -75,9 +75,9 @@ define(['jquery', 'three'], function($, THREE) {
                event.data._this[s_showControlPoly] = state;
 
                if (state) {
-                    $('#poly-toggle').parent().addClass('active');
+                    $('#poly-toggle').addClass('active');
                } else {
-                    $('#poly-toggle').parent().removeClass('active');
+                    $('#poly-toggle').removeClass('active');
                }
                event.data._this[s_scene].controlPolygonState = state;
           }

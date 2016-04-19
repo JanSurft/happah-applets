@@ -37,3 +37,8 @@ body {
 .hph-canvas {
      position: static;
 }
+.tool-bar-top {
+     bottom: 5px;
+     position: relative;
+     top: 25px;
+}
