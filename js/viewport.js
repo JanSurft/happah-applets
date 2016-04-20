@@ -14,20 +14,25 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
      var s_grid = Symbol('grid');
      var s_storyboard = Symbol('storyboard');
      var s_currentFrame = Symbol('currentframe');
+     var s_algorithm = Symbol('algorithm');
 
      // For testing purposes only
      var s_trackball = Symbol('trackball');
      var s_addMode = Symbol('addMode');
+     var s_isHead = Symbol('ishead');
 
 
      class Viewport {
 
           constructor(canvas, scene, algorithm) {
                this.update = this.update.bind(this);
-               this.addControlPoint = this.addControlPoint.bind(this);
+               this.onMouseDoubleclick = this.onMouseDoubleclick.bind(this);
+               this.onMouseKeyDown = this.onMouseKeyDown.bind(this);
+               //this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
 
                this[s_storyboard] = algorithm.storyboard();
+               this[s_algorithm] = algorithm;
                this[s_currentFrame] = 0;
                this[s_scene] = scene;
                this[s_scene].segmentStrips = this[s_storyboard].frame[this[s_currentFrame]].segmentStrips;
@@ -77,7 +82,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
 
-               this[s_renderer].domElement.addEventListener('mousedown', this.addControlPoint, false);
+               //this[s_renderer].domElement.addEventListener('mousedown', this.addControlPoint, false);
                this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
                this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
@@ -88,6 +93,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_renderer].domElement.addEventListener('mousedown', this[s_dragControls].mouseDown, false);
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this[s_dragControls].mouseWheel, false);
                this[s_renderer].domElement.addEventListener('mousewheel', this[s_dragControls].mouseWheel, false);
+
+               // For adding controlpoints
+               this[s_renderer].domElement.addEventListener('dblclick', this.onMouseDoubleclick, false);
+               this[s_renderer].domElement.addEventListener('mousedown', this.onMouseKeyDown, false);
 
                //this[s_transformControls] = new THREE.TransformControls(this[s_camera], this[s_renderer].domElement);
                //this[s_scene].add(this[s_transformControls]);
@@ -127,6 +136,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
                     this[s_currentFrame]++;
 
+
                this.currentFrame();
           }
 
@@ -139,6 +149,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                     this[s_currentFrame]--;
 
                this.currentFrame();
+          }
+
+          clearScene() {
+               this[s_scene].removeControlPoints();
+               this[s_addMode] = true;
           }
 
           set gridState(state) {
@@ -161,17 +176,48 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                return position
           }
 
-          addControlPoint(event) {
-               if (this[s_addMode]) {
+          onMouseDoubleclick(event) {
+               // Get current mouse position on screen
+               var elementPosition = this.getElementPosition(event.currentTarget);
 
+               var vector = new THREE.Vector2();
+               vector.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
+               vector.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
+
+               // Create new raycaster from mouse position
+               var raycaster = new THREE.Raycaster();
+               raycaster.setFromCamera(vector, this[s_camera]);
+
+               // Check if we hit a sphericalImpostor. If so, save the position
+               // NOTE: only check for first and last impostor (head/tail)
+               var impostors = this[s_scene]._controlPointImpostors.children;
+               var headTail = [impostors[0], impostors[impostors.length - 1]];
+               var intersects = raycaster.intersectObjects(headTail, true);
+               if (intersects[0] == headTail[0]) {
+                    // Dblclick on head
+                    this[s_isHead] = true;
+               } else {
+                    this[s_isHead] = false;
+               }
+
+               // Toggle add mode
+               if (intersects[0]) {
+                    this[s_addMode] = !this[s_addMode];
+               }
+               console.log(this[s_addMode]);
+          }
+
+          // TODO: prevent doubleclick
+          onMouseKeyDown(event) {
+               if (this[s_addMode]) {
+                    // Get current mouse position on screen
                     var elementPosition = this.getElementPosition(event.currentTarget);
 
-                    // Get current mouse position on screen
                     var vector = new THREE.Vector2();
                     vector.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
                     vector.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
 
-                    // Create a new raycaster
+                    // Create new raycaster
                     var raycaster = new THREE.Raycaster();
                     raycaster.setFromCamera(vector, this[s_camera]);
 
@@ -180,6 +226,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                     // Add a new point to the specified position
                     this[s_scene].addControlPoints([position]);
+
+                    this[s_storyboard] = this[s_algorithm].storyboard();
                }
           }
 
