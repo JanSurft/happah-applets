@@ -55,14 +55,24 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                //this[s_camera] = new THREE.PerspectiveCamera(45, $(canvas).width() / $(canvas).height(), 1, 1000);
 
                this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
-               //this[s_camera].position.z = 0;
-               //this[s_camera].position.y = 10;
-               //this[s_camera].position.x = 0;
+               this[s_addMode] = false;
+
                this[s_camera].position.z = 0; // 0 for orthographic camera
                this[s_camera].position.y = 1;
                this[s_camera].position.x = 0; // 0 for orthographic camera
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
+
+               // -------- TEST BAR --------
+               var geo = new THREE.CylinderGeometry(2, 2, 100, 32);
+               var mat = new THREE.MeshBasicMaterial({
+                    color: 0x55dd33
+               });
+               var mes = new THREE.Mesh(geo, mat);
+               mes.position.set(0, 0, -1);
+               //mes.position.applyMatrix4(this[s_camera].matrixWorld);
+               this[s_camera].add(mes);
+               // -------- TEST BAR --------
                this[s_camera].updateProjectionMatrix();
 
                //this[s_controls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
@@ -72,7 +82,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                // TODO:
                //this[s_controls].addEventListener('change', this.update);
                // Test:
-               this[s_addMode] = false;
+
                this[s_controls] = new THREE.TrackballControls(this[s_camera]);
 
                this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
