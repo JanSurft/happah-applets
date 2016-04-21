@@ -96,7 +96,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                // For adding controlpoints
                this[s_renderer].domElement.addEventListener('dblclick', this.onMouseDoubleclick, false);
-               this[s_renderer].domElement.addEventListener('mousedown', this.onMouseKeyDown, false);
+               this[s_renderer].domElement.addEventListener('click', this.onMouseKeyDown, false);
 
                //this[s_transformControls] = new THREE.TransformControls(this[s_camera], this[s_renderer].domElement);
                //this[s_scene].add(this[s_transformControls]);
@@ -221,11 +221,21 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                     var raycaster = new THREE.Raycaster();
                     raycaster.setFromCamera(vector, this[s_camera]);
 
+                    // Intersect with impostors
+                    var impostors = this[s_scene]._controlPointImpostors.children;
+                    var intersects = raycaster.intersectObjects(impostors, true);
+
+                    // Exit add mode.
+                    if (intersects[0]) {
+                         this[s_addMode] = false;
+                         return;
+                    }
+
                     // Intersect with XZ-plane
                     var position = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
 
                     // Add a new point to the specified position
-                    this[s_scene].addControlPoints([position]);
+                    this[s_scene].addControlPoints([position], this[s_isHead]);
 
                     this[s_storyboard] = this[s_algorithm].storyboard();
                }
