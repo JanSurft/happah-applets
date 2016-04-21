@@ -27,7 +27,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
           constructor(canvas, scene, algorithm) {
                this.update = this.update.bind(this);
                this.onMouseDoubleclick = this.onMouseDoubleclick.bind(this);
-               this.onMouseKeyDown = this.onMouseKeyDown.bind(this);
+               this.onMouseClick = this.onMouseClick.bind(this);
                //this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
 
@@ -96,24 +96,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                // For adding controlpoints
                this[s_renderer].domElement.addEventListener('dblclick', this.onMouseDoubleclick, false);
-               this[s_renderer].domElement.addEventListener('click', this.onMouseKeyDown, false);
-
-               //this[s_transformControls] = new THREE.TransformControls(this[s_camera], this[s_renderer].domElement);
-               //this[s_scene].add(this[s_transformControls]);
-          }
-
-          set addModeState(state) {
-               this[s_addMode] = state;
-
-               if (this[s_addMode]) {
-                    //this[s_controls][s_enabled] = false;
-                    this[s_renderer].domElement.style.cursor = "crosshair";
-                    this[s_dragControls].disable();
-               } else {
-                    this[s_renderer].domElement.style.cursor = "default";
-                    this[s_dragControls].enable();
-               }
-
+               this[s_renderer].domElement.addEventListener('click', this.onMouseClick, false);
           }
 
           applyFrame(frame) {
@@ -154,6 +137,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
           clearScene() {
                this[s_scene].removeControlPoints();
                this[s_addMode] = true;
+
+               // Update the cursor
+               this[s_renderer].domElement.style.cursor = "crosshair";
+               this[s_dragControls].disable();
           }
 
           set gridState(state) {
@@ -202,13 +189,14 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                // Toggle add mode
                if (intersects[0]) {
-                    this[s_addMode] = !this[s_addMode];
+                    this[s_addMode] = true;
+                    // Set the cursor
+                    this[s_renderer].domElement.style.cursor = "crosshair";
+                    this[s_dragControls].disable();
                }
-               console.log(this[s_addMode]);
           }
 
-          // TODO: prevent doubleclick
-          onMouseKeyDown(event) {
+          onMouseClick(event) {
                if (this[s_addMode]) {
                     // Get current mouse position on screen
                     var elementPosition = this.getElementPosition(event.currentTarget);
@@ -228,6 +216,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                     // Exit add mode.
                     if (intersects[0]) {
                          this[s_addMode] = false;
+                         this[s_renderer].domElement.style.cursor = "default";
+                         this[s_dragControls].enable();
                          return;
                     }
 
