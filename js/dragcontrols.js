@@ -70,6 +70,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                return position;
           }
 
+          // TODO: move the camera instead of changing FOV!
           /** Called whenever the mouse wheel is moved */
           mouseWheel(event) {
                event.preventDefault();
@@ -87,9 +88,21 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                // Zoom speed
                delta = delta * 0.06;
 
+               // Get the direction in which we want to move the camera
+               var dir = new THREE.Vector3(0, 0, 1);
+               dir.applyQuaternion(this[s_camera].quaternion).normalize();
+
+               // Now use scalar multiplication to get the new position
+               var pos = this[s_camera].position.clone().add(dir.multiplyScalar(delta));
+
+               // Apply to camera
+               //this[s_camera].position.copy(pos);
+               //return;
+
                if (this[s_camera].zoom + delta < 0) {
                     delta = 0;
                }
+
                this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
           }
