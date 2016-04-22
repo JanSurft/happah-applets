@@ -57,33 +57,34 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
                this[s_addMode] = false;
 
-               this[s_camera].position.z = 0; // 0 for orthographic camera
+               this[s_camera].position.z = 2; // 0 for orthographic camera
                this[s_camera].position.y = 1;
-               this[s_camera].position.x = 0; // 0 for orthographic camera
+               this[s_camera].position.x = 2; // 0 for orthographic camera
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
 
                // -------- TEST BAR --------
-               var geo = new THREE.CylinderGeometry(2, 2, 100, 32);
+               var geo = new THREE.CylinderGeometry(2, 2, 500, 32);
+               geo.rotateZ(Math.PI / 2);
                var mat = new THREE.MeshBasicMaterial({
-                    color: 0x55dd33
+                    color: 0x55dd88
                });
                var mes = new THREE.Mesh(geo, mat);
-               mes.position.set(0, 0, -1);
+               mes.position.set(0, -($(canvas).height() / 6), -0.3);
                //mes.position.applyMatrix4(this[s_camera].matrixWorld);
                this[s_camera].add(mes);
+               this[s_scene].add(this[s_camera]);
                // -------- TEST BAR --------
                this[s_camera].updateProjectionMatrix();
 
-               //this[s_controls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
-               //this[s_controls].target.set(0, 0, 0);
-               //this[s_controls].noZoom = true;
+               this[s_controls] = new THREE.TrackballControls(this[s_camera]);
+               this[s_controls].noZoom = true;
 
                // TODO:
-               //this[s_controls].addEventListener('change', this.update);
+               this[s_controls].addEventListener('change', this.update);
                // Test:
 
-               this[s_controls] = new THREE.TrackballControls(this[s_camera]);
+               //this[s_controls] = new THREE.TrackballControls(this[s_camera]);
 
                this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
 
@@ -92,7 +93,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
 
-               //this[s_renderer].domElement.addEventListener('mousedown', this.addControlPoint, false);
                this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
                this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
@@ -249,7 +249,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
           animate() {
                requestAnimationFrame(this.animate.bind(this));
                this.update();
-               //               this[s_controls].update();
+               this[s_controls].update();
                //this[s_transformControls].update();
           }
 
