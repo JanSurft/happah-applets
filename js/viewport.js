@@ -20,6 +20,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
      var s_trackball = Symbol('trackball');
      var s_addMode = Symbol('addMode');
      var s_isHead = Symbol('ishead');
+     var s_bar = Symbol('bar');
+     var s_canvas = Symbol('canvas');
 
 
      class Viewport {
@@ -32,6 +34,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                //this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
 
+               this[s_canvas] = canvas;
                this[s_storyboard] = algorithm.storyboard();
                this[s_algorithm] = algorithm;
                this[s_currentFrame] = 0;
@@ -70,11 +73,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                var mat = new THREE.MeshBasicMaterial({
                     color: 0x55dd88
                });
-               var mes = new THREE.Mesh(geo, mat);
-               mes.position.set(0, -($(canvas).height() / 6), -0.3);
+               this[s_bar] = new THREE.Mesh(geo, mat);
+               this[s_bar].position.set(0, -($(canvas).height() / 6), -0.3);
                //mes.position.applyMatrix4(this[s_camera].matrixWorld);
                var sphere = new happah3.SphericalImpostor(5);
-               this[s_camera].add(mes);
+               this[s_camera].add(this[s_bar]);
                this[s_camera].add(sphere);
                this[s_scene].add(this[s_camera]);
                // -------- TEST BAR --------
@@ -176,7 +179,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                return position
           }
 
-          // TODO: move the camera instead of changing FOV!
           /** Called whenever the mouse wheel is moved */
           mouseWheel(event) {
                event.preventDefault();
@@ -192,13 +194,25 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                     delta = 0;
                }
                // Zoom speed
-               delta = delta * 6;
+               delta = delta * 0.06;
 
                if (this[s_camera].zoom + delta < 0) {
                     delta = 0;
                }
 
-               //this[s_camera].zoom += delta;
+               // Enlarge the control-bar
+               this[s_scene].remove(this[s_camera]);
+               this[s_camera].remove(this[s_bar]);
+               var position = new THREE.Vector3();
+
+               var geometry = new THREE.CylinderGeometry(2, 2, this[s_bar].height * 10, 32);
+               geometry.rotateZ(Math.PI / 2);
+               this[s_bar] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial().clone(this[s_bar].material));
+               this[s_bar].position.set(0, -($(this[s_canvas]).height() / 6), -0.3);
+               this[s_camera].add(this[s_bar]);
+               this[s_scene].add(this[s_camera]);
+               console.log(this[s_scene]);
+               this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
           }
 

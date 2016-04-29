@@ -24,7 +24,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                this.mouseUp = this.mouseUp.bind(this);
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
-               this.mouseWheel = this.mouseWheel.bind(this);
 
                // Initialize viewport variables
                this[s_scene] = scene;
