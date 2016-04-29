@@ -86,24 +86,26 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                     delta = 0;
                }
                // Zoom speed
-               delta = delta * 0.06;
+               delta = delta * 0.006;
 
                // Get the direction in which we want to move the camera
-               var dir = new THREE.Vector3(0, 0, 1);
-               dir.applyQuaternion(this[s_camera].quaternion).normalize();
+               var dir = new THREE.Vector3();
+               dir.copy(this[s_camera].position);
+               console.log("dir :");
+               console.log(dir);
 
                // Now use scalar multiplication to get the new position
                var pos = this[s_camera].position.clone().add(dir.multiplyScalar(delta));
 
                // Apply to camera
-               //this[s_camera].position.copy(pos);
-               //return;
+               this[s_camera].position.copy(pos);
+               return;
 
                if (this[s_camera].zoom + delta < 0) {
                     delta = 0;
                }
 
-               this[s_camera].zoom += delta;
+               //this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
           }
 

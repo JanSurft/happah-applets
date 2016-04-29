@@ -129,7 +129,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                          // Add the point to front/end of the array
                          if (head) {
-                              console.log(this._controlPointImpostors);
                               this._controlPointImpostors.children.unshift(sphere);
                               this.controlPoints.unshift(points[i]);
                          } else {

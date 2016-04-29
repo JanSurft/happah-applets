@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontrols'], function($, THREE, THREE, happah, happah2) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontrols', 'spherical-impostor'], function($, THREE, THREE, happah, happah2, happah3) {
      var s_camera = Symbol('camera');
      var s_dragControls = Symbol('dragControls');
      var s_renderer = Symbol('renderer');
@@ -28,6 +28,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this.update = this.update.bind(this);
                this.onMouseDoubleclick = this.onMouseDoubleclick.bind(this);
                this.onMouseClick = this.onMouseClick.bind(this);
+               this.mouseWheel = this.mouseWheel.bind(this);
                //this.addControlPoint = this.addControlPoint.bind(this);
                var _this = this;
 
@@ -72,7 +73,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                var mes = new THREE.Mesh(geo, mat);
                mes.position.set(0, -($(canvas).height() / 6), -0.3);
                //mes.position.applyMatrix4(this[s_camera].matrixWorld);
+               var sphere = new happah3.SphericalImpostor(5);
                this[s_camera].add(mes);
+               this[s_camera].add(sphere);
                this[s_scene].add(this[s_camera]);
                // -------- TEST BAR --------
                this[s_camera].updateProjectionMatrix();
@@ -101,8 +104,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_renderer].domElement.addEventListener('mousemove', this[s_dragControls].mouseMove, false);
                this[s_renderer].domElement.addEventListener('mouseup', this[s_dragControls].mouseUp, false);
                this[s_renderer].domElement.addEventListener('mousedown', this[s_dragControls].mouseDown, false);
-               this[s_renderer].domElement.addEventListener('DOMMouseScroll', this[s_dragControls].mouseWheel, false);
-               this[s_renderer].domElement.addEventListener('mousewheel', this[s_dragControls].mouseWheel, false);
+               this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
+               this[s_renderer].domElement.addEventListener('mousewheel', this.mouseWheel, false);
 
                // For adding controlpoints
                this[s_renderer].domElement.addEventListener('dblclick', this.onMouseDoubleclick, false);
@@ -171,6 +174,32 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                     element = element.offsetParent;
                }
                return position
+          }
+
+          // TODO: move the camera instead of changing FOV!
+          /** Called whenever the mouse wheel is moved */
+          mouseWheel(event) {
+               event.preventDefault();
+
+               var delta;
+
+               if (event.wheelDelta) {
+                    delta = event.wheelDeltaY / 35;
+               } else if (event.detail) {
+                    // This works with Firefox
+                    delta = -event.detail / 2;
+               } else {
+                    delta = 0;
+               }
+               // Zoom speed
+               delta = delta * 6;
+
+               if (this[s_camera].zoom + delta < 0) {
+                    delta = 0;
+               }
+
+               //this[s_camera].zoom += delta;
+               this[s_camera].updateProjectionMatrix();
           }
 
           onMouseDoubleclick(event) {
