@@ -70,44 +70,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                return position;
           }
 
-          // TODO: move the camera instead of changing FOV!
-          /** Called whenever the mouse wheel is moved */
-          mouseWheel(event) {
-               event.preventDefault();
-
-               var delta;
-
-               if (event.wheelDelta) {
-                    delta = event.wheelDeltaY / 35;
-               } else if (event.detail) {
-                    // This works with Firefox
-                    delta = -event.detail / 2;
-               } else {
-                    delta = 0;
-               }
-               // Zoom speed
-               delta = delta * 0.006;
-
-               // Get the direction in which we want to move the camera
-               var dir = new THREE.Vector3();
-               dir.copy(this[s_camera].position);
-               console.log("dir :");
-               console.log(dir);
-
-               // Now use scalar multiplication to get the new position
-               var pos = this[s_camera].position.clone().add(dir.multiplyScalar(delta));
-
-               // Apply to camera
-               this[s_camera].position.copy(pos);
-               return;
-
-               if (this[s_camera].zoom + delta < 0) {
-                    delta = 0;
-               }
-
-               //this[s_camera].zoom += delta;
-               this[s_camera].updateProjectionMatrix();
-          }
 
           /** Called when a mouse button is pressed */
           mouseDown(event) {
