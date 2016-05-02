@@ -9,7 +9,6 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
      var s_ratio = Symbol('ratio');
 
      /** Encapsulate functionality of De' Casteljau algorithm. */
-
      class Curve {
 
           /** Default constructor. */
@@ -126,16 +125,19 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                frame0.segmentStrips = this[s_controlPoints];
                frame0.title = "Kontrollpolygon";
                result.append(frame0);
+               var i;
 
-               //for (var i in this[s_controlPoints]) {
-               //var frame = new STORYBOARD.FRAME();
-               //frame.tite = "Schritt" + (i + 1);
-               //frame.points =
-               //}
+               // Add a frame for each iteration of decasteljau
+               for (i = 1; i < this[s_controlPoints].length - 1; i++) {
+                    var frame = new STORYBOARD.Storyboard.Frame();
+                    frame.title = "Schritt: " + i;
+                    frame.segmentStrips = this.subdivide(i);
+                    result.append(frame);
+               }
 
                var frameLast = new STORYBOARD.Storyboard.Frame();
                frameLast.title = "Grenzkurve";
-               frameLast.segmentstrips = this.subdivide();
+               frameLast.segmentStrips = this.subdivide(i);
                result.append(frameLast);
 
                return result;
