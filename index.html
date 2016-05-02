@@ -23,9 +23,10 @@
                     </div>
                     <div class="pull-right">
                          <div class="btn-group tool-bar-top">
-                              <a href="#" class="btn btn-default fa fa-th" id="grid-toggle"> Grid</a>
-                              <a href="#" class="btn btn-default fa fa-low-vision" id="poly-toggle"> Control polygon</a>
-                              <a href="#" class="btn btn-default fa fa-trash" id="clear-all"> Clear</a>
+                              <a href="#" class="btn btn-default fa fa-th" title="Toggle grid" id="grid-toggle"> Grid</a>
+                              <a href="#" class="btn btn-default fa fa-low-vision" title="Toggle control-polygon"
+                              id="poly-toggle"> Control polygon</a>
+                              <a title="Remove control-points" href="#" class="btn btn-default fa fa-trash" id="clear-all"> Clear</a>
                          </div>
                     </div>
                </div>
@@ -37,14 +38,17 @@
           </div>
           <div class="row center" id="hph-controls">
                <div class="btn-group">
-                    <a class="btn btn-default" id="hph-backward"><i class="fa fa-chevron-left"></i></a>
-                    <a class="btn btn-default" id="hph-play"><i class="fa fa-play"></i></a>
-                    <a class="btn btn-default hide" id="hph-pause"><i class="fa fa-pause"></i></a>
-                    <a class="btn btn-default" id="hph-forward"><i class="fa fa-chevron-right"></i></a>
+                    <a class="btn btn-default" title="Previous frame" id="hph-backward"><i class="fa fa-chevron-left"></i></a>
+                    <a class="btn btn-default" title="Play" id="hph-play"><i class="fa fa-play"></i></a>
+                    <a class="btn btn-default" title="Pause" id="hph-pause"><i class="fa fa-pause"></i></a>
+                    <a class="btn btn-default" title="Next frame" id="hph-forward"><i class="fa fa-chevron-right"></i></a>
                </div>
           </div>
           <div class="row">
                <div class="col-md-12" id="hph-description">
+                    <td colspan="4">
+                         <label id="hph-label" name="hph-label">Start</label>
+                    </td>
                     <h3>Hier steht eine Erklärung</h3>
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
                          diam nonumy eirmod tempor invidunt ut labore et dolore
