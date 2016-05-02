@@ -22,7 +22,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
      var s_isHead = Symbol('ishead');
      var s_bar = Symbol('bar');
      var s_canvas = Symbol('canvas');
-
+     var s_sequence = Symbol('sequence');
+     var s_counter = Symbol('counter');
 
      class Viewport {
 
@@ -60,10 +61,12 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
                this[s_addMode] = false;
+               this[s_sequence] = false;
+               this[s_counter] = 0;
 
-               this[s_camera].position.z = 2; // 0 for orthographic camera
+               this[s_camera].position.z = 0; // 0 for orthographic camera
                this[s_camera].position.y = 1;
-               this[s_camera].position.x = 2; // 0 for orthographic camera
+               this[s_camera].position.x = 0; // 0 for orthographic camera
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
 
@@ -122,6 +125,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                // Add the points needed for the frame
                //this[s_scene].addControlPoints(frame.points);
 
+               // Set the label text
+               $('#hph-label').text("Frame: " + frame.title);
+
                // Set the relevant flags
                this[s_scene].curveState = frame.showCurve;
 
@@ -134,7 +140,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
           nextFrame() {
                if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
                     this[s_currentFrame]++;
-
 
                this.currentFrame();
           }
@@ -165,6 +170,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                } else {
                     this[s_scene].remove(this[s_grid]);
                }
+          }
+
+          set sequence(state) {
+               this[s_sequence] = state;
           }
 
           /** Returns the position of an HTML element */
@@ -202,7 +211,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                // Enlarge the control-bar
                this[s_scene].remove(this[s_camera]);
-               this[s_camera].remove(this[s_bar]);
+               //this[s_camera].remove(this[s_bar]);
                var position = new THREE.Vector3();
 
                var geometry = new THREE.CylinderGeometry(2, 2, this[s_bar].height * 10, 32);
@@ -210,8 +219,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_bar] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial().clone(this[s_bar].material));
                this[s_bar].position.set(0, -($(this[s_canvas]).height() / 6), -0.3);
                this[s_camera].add(this[s_bar]);
+               console.log(this[s_bar]);
                this[s_scene].add(this[s_camera]);
-               console.log(this[s_scene]);
                this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
           }
@@ -287,12 +296,19 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
           update() { //TODO: make update private
                this[s_scene].animate();
                this[s_renderer].render(this[s_scene], this[s_camera]);
+               this[s_storyboard]
           }
 
           animate() {
                requestAnimationFrame(this.animate.bind(this));
                this.update();
                this[s_controls].update();
+
+               // Handle sequence here
+               this[s_counter]++;
+               if (this[s_sequence] && this[s_counter] % 100 == 0) {
+                    this.nextFrame();
+               }
                //this[s_transformControls].update();
           }
 

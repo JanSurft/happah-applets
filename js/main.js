@@ -30,16 +30,17 @@ require.config({
 
 require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
      var scene = new happah.Scene();
+     scene.addControlPoints([
+          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+     ]);
+
      var storyboard = new happah.Storyboard();
      var algorithm = new happah.Curve(scene.controlPoints);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
      //scene.algorithm = deCasteljau;
      //scene.algorithm = new happah.Curve(scene.controlPoints);
 
-     scene.addControlPoints([
-          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
-     ]);
      viewport.animate();
 
      // TEST

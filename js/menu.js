@@ -11,6 +11,7 @@ define(['jquery', 'three'], function($, THREE) {
      //var s_addModeEnabled = Symbol('addmodeenabled');
      var s_showControlPoly = Symbol('showcontrolpoly');
      var s_content = Symbol('content');
+     var s_sequence = Symbol('sequence');
 
      class Menu {
           constructor(selector, scene, viewport) {
@@ -21,7 +22,9 @@ define(['jquery', 'three'], function($, THREE) {
                // this[s_addModeEnabled] = false;
                this[s_showControlPoly] = true;
                this[s_viewport].gridState = true;
+               this[s_sequence] = false;
                $('#grid-toggle').addClass('active');
+               $('#hph-pause').hide();
 
                this[s_content].find("#grid-toggle").on('click', {
                     _this: this
@@ -44,6 +47,9 @@ define(['jquery', 'three'], function($, THREE) {
                this[s_content].find("#hph-play").on('click', {
                     _this: this
                }, this.current);
+               this[s_content].find("#hph-pause").on('click', {
+                    _this: this
+               }, this.pause);
           }
 
           toggleGrid(event) {
@@ -93,7 +99,20 @@ define(['jquery', 'three'], function($, THREE) {
           }
 
           current(event) {
-               event.data._this[s_viewport].currentFrame();
+               // Switch visibility of play/pause button
+               $('#hph-pause').show();
+               $('#hph-play').hide();
+
+               //event.data._this[s_viewport].currentFrame();
+               event.data._this[s_viewport].sequence = true;
+          }
+
+          pause(event) {
+               // Switch visibility of play/pause button
+               $('#hph-play').show();
+               $('#hph-pause').hide();
+
+               event.data._this[s_viewport].sequence = false;
           }
 
           clearControlPoints(event) {
