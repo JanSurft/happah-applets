@@ -46,8 +46,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                     _this.update();
                });
 
-               var context = canvas.getContext('webgl2');
+               var context = canvas.getContext('webgl');
                context.getExtension('EXT_frag_depth');
+
                var parameters = {
                     canvas: canvas,
                     context: context
@@ -71,7 +72,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_camera].zoom = 2.5;
 
                // -------- TEST BAR --------
-               var geo = new THREE.CylinderGeometry(2, 2, 500, 32);
+               var geo = new THREE.CylinderGeometry(1, 1, 500, 32);
                geo.rotateZ(Math.PI / 2);
                var mat = new THREE.MeshBasicMaterial({
                     color: 0x55dd88
@@ -79,7 +80,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_bar] = new THREE.Mesh(geo, mat);
                this[s_bar].position.set(0, -($(canvas).height() / 6), -0.3);
                //mes.position.applyMatrix4(this[s_camera].matrixWorld);
-               var sphere = new happah3.SphericalImpostor(5);
+               var sphere = new happah3.SphericalImpostor(3);
+               sphere.position.set(-150, -($(canvas).height() / 6), 2);
                this[s_camera].add(this[s_bar]);
                this[s_camera].add(sphere);
                this[s_scene].add(this[s_camera]);
@@ -296,7 +298,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
           update() { //TODO: make update private
                this[s_scene].animate();
                this[s_renderer].render(this[s_scene], this[s_camera]);
-               this[s_storyboard]
+               this[s_storyboard] = this[s_algorithm].storyboard();
           }
 
           animate() {
