@@ -75,10 +75,21 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                var geo = new THREE.CylinderGeometry(1, 1, 350, 32);
                var coneGeometry = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
                var boxGeometry = new THREE.BoxGeometry(1.5, 4, 1.5);
-               var textGeo = new THREE.TextGeometry('0', {
-                    size: 30
-               });
-               textGeo.translate(0, 10, 0);
+               var textGeo = new THREE.Geometry();
+               // TODO: use textGeometry!!!
+               textGeo.vertices.push(new THREE.Vector3(1, 0, 0));
+               textGeo.vertices.push(new THREE.Vector3(2, 0, 0));
+               textGeo.vertices.push(new THREE.Vector3(2, 4, 0));
+               textGeo.vertices.push(new THREE.Vector3(0, 4, 0));
+               textGeo.vertices.push(new THREE.Vector3(0, 3, 0));
+               textGeo.vertices.push(new THREE.Vector3(1, 3, 0));
+               textGeo.faces.push(new THREE.Face3(0, 1, 2));
+               textGeo.faces.push(new THREE.Face3(0, 2, 5));
+               textGeo.faces.push(new THREE.Face3(2, 3, 5));
+               textGeo.faces.push(new THREE.Face3(3, 4, 5));
+
+               textGeo.translate(-0.5, 5, 0);
+               console.log(textGeo);
                coneGeometry.rotateZ(-(Math.PI / 2));
                coneGeometry.translate(175, 0, 0);
                geo.rotateZ(Math.PI / 2);
