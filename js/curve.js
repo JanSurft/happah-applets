@@ -8,7 +8,10 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
 
-     /** Encapsulate functionality of De' Casteljau algorithm. */
+     /**
+      * Encapsulate functionality of De' Casteljau algorithm.
+      * takes t as division ratio and a callback function
+      */
      class Curve {
 
           /** Default constructor. */
@@ -127,6 +130,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                result.append(frame0);
                var i;
 
+               var _this = this;
                // Add a frame for each iteration of decasteljau
                for (i = 1; i < this[s_controlPoints].length - 1 || i < 3; i++) {
                     var frame = new STORYBOARD.Storyboard.Frame();

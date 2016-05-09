@@ -72,16 +72,31 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_camera].zoom = 2.5;
 
                // -------- TEST BAR --------
-               var geo = new THREE.CylinderGeometry(1, 1, 500, 32);
+               var geo = new THREE.CylinderGeometry(1, 1, 350, 32);
+               var coneGeometry = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
+               var boxGeometry = new THREE.BoxGeometry(1.5, 4, 1.5);
+               var textGeo = new THREE.TextGeometry('0', {
+                    size: 30
+               });
+               textGeo.translate(0, 10, 0);
+               coneGeometry.rotateZ(-(Math.PI / 2));
+               coneGeometry.translate(175, 0, 0);
                geo.rotateZ(Math.PI / 2);
+               geo.merge(textGeo);
+               geo.merge(coneGeometry);
+               geo.merge(boxGeometry);
+               boxGeometry.translate(150, 0, 0);
+               geo.merge(boxGeometry);
+               boxGeometry.translate(-300, 0, 0);
+               geo.merge(boxGeometry);
                var mat = new THREE.MeshBasicMaterial({
-                    color: 0x55dd88
+                    color: 0x4D4D4D
                });
                this[s_bar] = new THREE.Mesh(geo, mat);
                this[s_bar].position.set(0, -($(canvas).height() / 6), -0.3);
                //mes.position.applyMatrix4(this[s_camera].matrixWorld);
                var sphere = new happah3.SphericalImpostor(3);
-               sphere.position.set(-150, -($(canvas).height() / 6), 2);
+               sphere.position.set(-120, -($(canvas).height() / 6), 2);
                this[s_camera].add(this[s_bar]);
                this[s_camera].add(sphere);
                this[s_scene].add(this[s_camera]);
