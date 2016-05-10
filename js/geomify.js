@@ -61,6 +61,25 @@ function geomify(string) {
             //  /\______\   \ \ \
             //          /    \ \_\
             //                \/_/
+            textGeo.vertices.push(new THREE.Vector3(1, 0, 0));
+            textGeo.vertices.push(new THREE.Vector3(2, 0, 0));
+            textGeo.vertices.push(new THREE.Vector3(2, 4, 0));
+            textGeo.vertices.push(new THREE.Vector3(0, 4, 0));
+            textGeo.vertices.push(new THREE.Vector3(0, 3, 0));
+            textGeo.vertices.push(new THREE.Vector3(1, 3, 0));
+
+            textGeo.vertices.push(new THREE.Vector3(-2, 1.5, 0));
+            textGeo.vertices.push(new THREE.Vector3(-0.5, 1.5, 0));
+            textGeo.vertices.push(new THREE.Vector3(-0.5, 2.5, 0));
+            textGeo.vertices.push(new THREE.Vector3(-2, 2.5, 0));
+
+            textGeo.faces.push(new THREE.Face3(0, 1, 2));
+            textGeo.faces.push(new THREE.Face3(0, 2, 5));
+            textGeo.faces.push(new THREE.Face3(2, 3, 5));
+            textGeo.faces.push(new THREE.Face3(3, 4, 5));
+
+            textGeo.faces.push(new THREE.Face3(6, 7, 8));
+            textGeo.faces.push(new THREE.Face3(8, 9, 6));
             break;
     }
 
