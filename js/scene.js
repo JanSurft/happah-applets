@@ -127,7 +127,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                          sphere.material.uniforms.diffuse.value.set(color);
                          sphere.position.copy(points[i]);
 
-                         // Add the point to front/end of the array
+                         // Add the point to head/tail of the array
                          if (head) {
                               this._controlPointImpostors.children.unshift(sphere);
                               this.controlPoints.unshift(points[i]);
