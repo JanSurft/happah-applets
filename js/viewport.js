@@ -25,6 +25,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
     var s_sequence = Symbol('sequence');
     var s_counter = Symbol('counter');
     var s_addControls = Symbol('addcontrols');
+    var s_scrollbar = Symbol('scrollbar');
 
     class Viewport {
 
@@ -69,56 +70,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_camera].position.x = 0; // 0 for orthographic camera
             this[s_camera].lookAt(scene.position);
             this[s_camera].zoom = 2.5;
-            /*
-                      // -------- TEST BAR --------
-                      var geo = new THREE.CylinderGeometry(1, 1, 350, 32);
-                      var coneGeometry = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
-                      var boxGeometry = new THREE.BoxGeometry(1.5, 4, 1.5);
-                      var textGeo = new THREE.Geometry();
-                      // TODO: use textGeometry!!!
-                      textGeo = geomify('0');
-                      textGeo.translate(-1.5, 5, 0);
-                      coneGeometry.rotateZ(-(Math.PI / 2));
-                      coneGeometry.translate(175, 0, 0);
-                      geo.rotateZ(Math.PI / 2);
-                      geo.merge(textGeo);
-                      textGeo = geomify('1');
-                      textGeo.translate(150 - 0.5, 5, 0);
-                      geo.merge(textGeo);
-                      textGeo = geomify('-1');
-                      textGeo.translate(-151, 5, 0);
-                      geo.merge(textGeo);
-                      geo.merge(coneGeometry);
-                      geo.merge(boxGeometry);
-                      boxGeometry.translate(150, 0, 0);
-                      geo.merge(boxGeometry);
-                      boxGeometry.translate(-300, 0, 0);
-                      geo.merge(boxGeometry);
-                      var mat = new THREE.MeshBasicMaterial({
-                           color: 0x4D4D4D
-                      });
-                      this[s_bar] = new THREE.Mesh(geo, mat);
-                      this[s_bar].position.set(0, -($(canvas).height() / 6), -0.3);
-                      //mes.position.applyMatrix4(this[s_camera].matrixWorld);
-                      var sphere = new happah3.SphericalImpostor(100);
-                      sphere.material.uniforms.diffuse.value.set(0xff5555);
-                      var sp = new happah3.SphericalImpostor(3);
-                      sphere.position.set(-120, -($(canvas).height() / 6), 2);
-                      sp.position.set(-120, -($(canvas).height() / 6), 2);
-                      sp.material.uniforms.diffuse.value.set(0xff0000);
-                      // TODO: use add control point method instead
-                      //      then simply project the position to our axis arrow
-                      console.log(this[s_scene]._controlPointImpostors);
-                      this[s_scene]._controlPointImpostors.add(sphere);
-                      console.log(this[s_scene]._controlPointImpostors);
-                      this[s_camera].add(this[s_bar]);
-                      this[s_scene].add(sp);
-                      this[s_scene]._controlPointImpostors.add(sp);
-                      this[s_camera].add(sphere);
-                      this[s_scene].add(this[s_camera]);
-                      // -------- TEST BAR --------
-                      */
-            this[s_camera].updateProjectionMatrix();
 
             this[s_controls] = new THREE.TrackballControls(this[s_camera]);
             this[s_controls].noZoom = true;
@@ -130,7 +81,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             //this[s_controls] = new THREE.TrackballControls(this[s_camera]);
 
             this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
-            //this[s_dragControls] = new happah4.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
+            this[s_scrollbar] = new happah4.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
             this[s_addControls] = new happah5.AddControls(this[s_renderer], this[s_scene], this[s_algorithm], this[s_storyboard], this[s_camera]);
 
             // Trackball controls for camera movement
@@ -148,6 +99,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_renderer].domElement.addEventListener('mousedown', this[s_dragControls].mouseDown, false);
             this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
             this[s_renderer].domElement.addEventListener('mousewheel', this.mouseWheel, false);
+
+            // Scrollbar controls
+            this[s_renderer].domElement.addEventListener('mousedown', this[s_scrollbar].mouseDown, false);
+            this[s_renderer].domElement.addEventListener('mouseup', this[s_scrollbar].mouseUp, false);
+            this[s_renderer].domElement.addEventListener('mousemove', this[s_scrollbar].mouseMove, false);
 
             // For adding controlpoints
             this[s_renderer].domElement.addEventListener('dblclick', this[s_addControls].onMouseDoubleclick, false);
