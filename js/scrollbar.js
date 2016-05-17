@@ -13,7 +13,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
     // Drag control variables
     var s_raycaster = Symbol('raycaster');
     var s_axisLine = Symbol('line');
-    var s_selectionPlane = Symbol('plane');
+    var s_selectionPlane2 = Symbol('plane');
     var s_selectionLine = Symbol('line');
     var s_selectedObject = Symbol('selectedobject');
     var s_offset = Symbol('offset');
@@ -83,13 +83,13 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             this[s_camera].add(this[s_ball]);
 
             // for camera space selection
-            this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
+            this[s_selectionPlane2] = new THREE.Mesh(new THREE.PlaneBufferGeometry(100, 100, 8, 8), new THREE.MeshBasicMaterial({
                 color: 0x33ee77,
                 alphaTest: 0,
-                visible: false
+                visible: true
             }));
-            this[s_selectionPlane].position.copy(this[s_ball].position);
-            this[s_camera].add(this[s_selectionPlane]);
+            this[s_selectionPlane2].position.copy(this[s_ball].position);
+            this[s_camera].add(this[s_selectionPlane2]);
             this[s_selectionLine] = new THREE.Line3(new THREE.Vector3(-175, 0, 0),
                 new THREE.Vector3(175, 0, 0));
             this[s_camera].add(this[s_selectionLine]);
@@ -99,8 +99,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             this[s_scene].add(this[s_camera]);
 
             this[s_offset] = new THREE.Vector3();
-            //this[s_scene].add(this[s_selectionPlane]);
-            //this[s_selectionPlane].lookAt(this[s_camera].position);
+            //this[s_scene].add(this[s_selectionPlane2]);
+            //this[s_selectionPlane2].lookAt(this[s_camera].position);
         }
         enable() {
             this[s_enabled] = true;
@@ -140,7 +140,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
 
             // Not needed because the camera orientation does not change.
-            this[s_selectionPlane].lookAt(0, 0, 0);
+            //this[s_selectionPlane2].lookAt(0, 0, 0);
 
             // Set the raycaster
             // Don't make the ray project into world space
@@ -152,7 +152,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_raycaster].ray.direction.set(mouseVector.x, mouseVector.y, 0.5).sub(this[s_raycaster].ray.origin).normalize();
             } else if (this[s_camera] instanceof THREE.OrthographicCamera) {
                 this[s_raycaster].ray.origin.set(mouseVector.x, mouseVector.y, -1).unproject(this[s_camera]).applyMatrix4(this[s_camera].matrixWorldInverse);
-                this[s_raycaster].ray.origin.setZ(10);
+                this[s_raycaster].ray.origin.setZ(100);
                 this[s_raycaster].ray.direction.set(0, 0, -1);
             } else {
                 console.error('THREE.Raycaster: Unsupported camera type.');
@@ -168,7 +168,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             // Find all intersected objects
             var intersects = this[s_raycaster].intersectObject(this[s_ball]);
             console.log(this[s_raycaster].ray.origin);
-            console.log(this[s_selectionPlane]);
+            console.log(this[s_selectionPlane2]);
 
             if (intersects.length > 0) {
                 console.log("ball selected!");
@@ -181,10 +181,11 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_selectedObject] = intersects[0];
 
                 // Calculate the offset
-                var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
+                var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane2]);
+                console.log(this[s_raycaster]);
                 console.log(intersects);
 
-                this[s_offset].copy(intersects[0].point).sub(this[s_selectionPlane].position);
+                this[s_offset].copy(intersects[0].point).sub(this[s_selectionPlane2].position);
             }
         }
 
@@ -214,7 +215,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_raycaster].ray.direction.set(mouseVector.x, mouseVector.y, 0.5).sub(this[s_raycaster].ray.origin).normalize();
             } else if (this[s_camera] instanceof THREE.OrthographicCamera) {
                 this[s_raycaster].ray.origin.set(mouseVector.x, mouseVector.y, -1).unproject(this[s_camera]).applyMatrix4(this[s_camera].matrixWorldInverse);
-                this[s_raycaster].ray.origin.setZ(10);
+                this[s_raycaster].ray.origin.setZ(0);
                 this[s_raycaster].ray.direction.set(0, 0, -1);
             } else {
                 console.error('THREE.Raycaster: Unsupported camera type.');
@@ -228,7 +229,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_scene].redraw();
 
                 // Check the position where the plane is intersected
-                var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
+                var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane2]);
 
                 if (intersects[0] == null) {
                     console.log("Warning: lost selection plane!");
@@ -242,15 +243,15 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_selectedObject].copy(newPos);
 
                 // Update the plane's position
-                this[s_selectionPlane].position.copy(this[s_selectedObject].position);
+                this[s_selectionPlane2].position.copy(this[s_selectedObject].position);
             } else {
                 // Update position of the plane if need
                 var intersects =
                     this[s_raycaster].intersectObject(this[s_ball]);
                 if (intersects.length > 0) {
                     // TODO: is this really necessary?
-                    this[s_selectionPlane].position.copy(intersects[0].position);
-                    //this[s_selectionPlane].lookAt(this[s_camera].position);
+                    this[s_selectionPlane2].position.copy(intersects[0].position);
+                    //this[s_selectionPlane2].lookAt(this[s_camera].position);
                 }
             }
         }
