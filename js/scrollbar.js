@@ -19,6 +19,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
     var s_enabled = Symbol('enabled');
     var s_bar = Symbol('bar');
     var s_ball = Symbol('ball');
+    var s_value = Symbol('value');
 
     class Scrollbar {
 
@@ -32,6 +33,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             this[s_controls] = controls;
             this[s_camera] = camera;
             this[s_enabled] = true;
+            this[s_value] = 0;
 
             this[s_raycaster] = new THREE.Raycaster();
 
@@ -71,7 +73,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             // Ball to move along the scrollbar
             this[s_ball] = new happah.SphericalImpostor(5);
             this[s_ball].material.uniforms.diffuse.value.set(0xff5555);
-            this[s_ball].position.set(-120, midScreen, 1);
+            this[s_ball].position.set(0, midScreen, 1);
 
             // Add to camera space
             this[s_camera].add(this[s_bar]);
@@ -92,6 +94,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
         }
         disable() {
             this[s_enabled] = false;
+        }
+        get value() {
+            return this[s_value];
         }
 
         /** Returns the position of our HTML element */
@@ -180,6 +185,10 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 // Reposition the object based on the intersection point with the plane
                 var newPos = this[s_selectionLine].closestPointToPoint(this[s_selectionRay].intersectPlane(this[s_selectionPlane]));
                 this[s_ball].position.copy(newPos);
+
+                // Update scrollbar value
+                this[s_value] = newPos.x / 150;
+                console.log("current value: " + this[s_value]);
             }
         }
 
