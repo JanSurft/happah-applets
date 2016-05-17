@@ -180,3 +180,4 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           DragControls: DragControls
      };
 });
+
