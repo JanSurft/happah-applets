@@ -122,7 +122,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                return result;
           }
 
-          storyboard() {
+          storyboard(ratio = 0.5) {
                var result = new STORYBOARD.Storyboard();
                var frame0 = new STORYBOARD.Storyboard.Frame();
                frame0.segmentStrips = this[s_controlPoints];
@@ -135,13 +135,13 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                for (i = 1; i < this[s_controlPoints].length - 1 || i < 3; i++) {
                     var frame = new STORYBOARD.Storyboard.Frame();
                     frame.title = "Schritt: " + i;
-                    frame.segmentStrips = this.subdivide(i);
+                    frame.segmentStrips = this.subdivide(i, ratio);
                     result.append(frame);
                }
 
                var frameLast = new STORYBOARD.Storyboard.Frame();
                frameLast.title = "Grenzkurve";
-               frameLast.segmentStrips = this.subdivide(i);
+               frameLast.segmentStrips = this.subdivide(i, ratio);
                result.append(frameLast);
 
                return result;
