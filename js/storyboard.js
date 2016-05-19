@@ -1,39 +1,39 @@
 define(['jquery', 'translator'], function($, Translator) {
-    //var s_algorithm = Symbol('algorithm');
-    var s_frames = Symbol('frames');
+     //var s_algorithm = Symbol('algorithm');
+     var s_frames = Symbol('frames');
 
-    console.log(Translator.t('description'));
+     console.log(Translator.t('description'));
 
-    class Storyboard {
+     class Storyboard {
 
-        constructor() {
-            //this[s_algorithm] = algorithm;
-            this[s_frames] = [];
-        }
+          constructor() {
+               //this[s_algorithm] = algorithm;
+               this[s_frames] = [];
+          }
 
-        append(frame) {
-            this[s_frames].push(frame);
-        }
+          append(frame) {
+               this[s_frames].push(frame);
+          }
 
-        get frame() {
-            return this[s_frames];
-        }
+          get frame() {
+               return this[s_frames];
+          }
 
-    } //class Storyboard
+     } //class Storyboard
 
-    Storyboard.Frame = class {
+     Storyboard.Frame = class {
 
-            constructor() {
-                this.segmentStrips = [];
-                this.points = [];
-                this.title = "";
-                this.description = "";
-                this.showCurve = true;
-            }
+               constructor() {
+                    this.geometries = [];
+                    this.points = [];
+                    this.title = "";
+                    this.description = "";
+                    this.showCurve = true;
+               }
 
-        } //class Storyboard.Frame
+          } //class Storyboard.Frame
 
-    return {
-        Storyboard: Storyboard
-    };
+     return {
+          Storyboard: Storyboard
+     };
 });
