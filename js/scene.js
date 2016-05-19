@@ -1,8 +1,8 @@
 define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      var s_algorithm = Symbol('algorithm');
      var s_lights = Symbol('lights');
-     var s_algorithmPoints = Symbol('algorithmpoints');
-     var s_algorithmLine = Symbol('algorithmline');
+     //var s_algorithmPoints = Symbol('algorithmpoints');
+     //var s_algorithmLine = Symbol('algorithmline');
      var s_controlLine = Symbol('controlline');
 
      /** Flags for drawing preferences */
@@ -12,7 +12,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
      // If set: will draw control polygon
      var s_showPoly = Symbol('showpoly');
-     var s_segmentStrips = Symbol('segmentstrips');
+     var s_geometries = Symbol('geometries');
 
      class Scene extends THREE.Scene {
 
@@ -23,7 +23,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     };
                     this.controlPoints = [];
                     this.algorithmPoints = [];
-                    this[s_segmentStrips] = [];
+                    this[s_geometries] = [];
                     this._controlPointImpostors = new THREE.Object3D();
 
                     this[s_lights] = new THREE.Object3D();
@@ -83,8 +83,13 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_showCurve] = state;
                     this.redraw();
                }
-               set segmentStrips(segmentStrips) {
-                    this[s_segmentStrips] = segmentStrips;
+               set geometries(geometries) {
+                    // Remove geometries from the scene to edit them
+                    for (var i = 0; i < this[s_geometries].length; i++) {
+                         this.remove(this[s_geometries][i]);
+                    }
+                    this[s_geometries] = geometries;
+                    this.redraw();
                }
 
                /** Redraws the curve in the next animate() cycle */
@@ -93,29 +98,31 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                }
 
                // TODO: only draw segmentstrips specified by the storyboard.
+               // TBD: iterate over frame.geometries and draw them.
                animate() {
                     // Only re-calculate if things have changed.
                     if (this[s_altered]) {
                          console.log("redraw impostors/lines");
 
-                         // Remove lines from the scene to edit them
-                         this.remove(this[s_algorithmLine]);
-                         this.remove(this[s_controlLine]);
-
+                         for (var i = 0; i < this[s_geometries].length; i++) {
+                              this.add(this[s_geometries][i]);
+                         }
                          // Only calculate the lines if they're enabled
-                         if (this[s_showCurve]) {
+                         // TBD this should be handled by the individual frame
+                         /*if (this[s_showCurve]) {
                               for (var i = 0; i < this.controlPoints.length; i++)
                                    this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
 
                               //this[s_algorithmPoints] = this[s_algorithm].subdivide();
-                              this[s_algorithmLine] = this.insertSegmetStrip(this[s_segmentStrips], new THREE.Color(0x009D82));
+                              this[s_algorithmLine] = this.insertSegmetStrip(this[s_geometries], new THREE.Color(0x009D82));
                               this.add(this[s_algorithmLine]);
-                         }
+                              }
 
                          if (this[s_showPoly]) {
                               this[s_controlLine] = this.insertSegmetStrip(this.controlPoints, new THREE.Color(0xFF0000));
                               this.add(this[s_controlLine]);
                          }
+                         */
 
                          this[s_altered] = false;
                     }
@@ -152,6 +159,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this.redraw();
                }
 
+               // TODO: does this really belong here?
                insertSegmetStrip(points, color) {
                     if (points.length === 0)
                          return new THREE.Line();
