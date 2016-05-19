@@ -106,7 +106,10 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                          for (var i = 0; i < this[s_geometries].length; i++) {
                               this.add(this[s_geometries][i]);
+                              console.log(this[s_geometries][i]);
                          }
+                         //TODO: what about the impostors? they belong in frame
+                         //too
                          // Only calculate the lines if they're enabled
                          // TBD this should be handled by the individual frame
                          /*if (this[s_showCurve]) {
@@ -128,6 +131,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     }
                }
 
+               // TODO: doesn't belong here as well...
                addControlPoints(points, head = false, color = new THREE.Color(0x888888)) {
                     for (var i in points) {
                          var sphere = new happah.SphericalImpostor(3);
@@ -154,7 +158,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     // Remove everything from the scene
                     this.remove(this._controlPointImpostors);
                     this.controlPoints.length = 0;
-                    var sadf = this.controlPoints;
                     this._controlPointImpostors.children = [];
                     this.redraw();
                }

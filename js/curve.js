@@ -138,11 +138,11 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
 
                     // Add previous polygons in grey
                     for (var k = 0; k < i; k++) {
-                         frame.geometries.append(insertSegmentStrip(this.subdivide(k, ratio), 0xd3d3d3));
+                         frame.geometries.push(insertSegmentStrip(this.subdivide(k, ratio), 0xd3d3d3));
                     }
 
                     // Add geometry of current
-                    frame.geometries.append(insertSegmentStrip(this.subdivide(i, ratio), 0xff0000));
+                    frame.geometries.push(insertSegmentStrip(this.subdivide(i, ratio), 0xff0000));
                     result.append(frame);
                }
 

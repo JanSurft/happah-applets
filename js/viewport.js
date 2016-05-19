@@ -40,7 +40,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_algorithm] = algorithm;
                this[s_currentFrame] = 0;
                this[s_scene] = scene;
-               this[s_scene].segmentStrips = this[s_storyboard].frame[this[s_currentFrame]].segmentStrips;
+               this[s_scene].geometries = this[s_storyboard].frame[this[s_currentFrame]].geometries;
                this[s_scene].algorithm = algorithm;
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
@@ -65,9 +65,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_sequence] = false;
                this[s_counter] = 0;
 
-               this[s_camera].position.z = 2; // 0 for orthographic camera
+               this[s_camera].position.z = 0; // 0 for orthographic camera
                this[s_camera].position.y = 1;
-               this[s_camera].position.x = 2; // 0 for orthographic camera
+               this[s_camera].position.x = 0; // 0 for orthographic camera
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
 
@@ -82,6 +82,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
                this[s_scrollbar] = new happah4.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
+               this[s_scrollbar].value = 0.5;
                this[s_addControls] = new happah5.AddControls(this[s_renderer], this[s_scene], this[s_algorithm], this[s_storyboard], this[s_camera]);
 
                // Trackball controls for camera movement
@@ -123,8 +124,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                // Set the relevant flags
                this[s_scene].curveState = frame.showCurve;
 
-               this[s_scene].segmentStrips = this[s_storyboard].frame[this[s_currentFrame]].segmentStrips;
-               //var asd = this[s_scene].segmentStrips;
+               this[s_scene].geometries = this[s_storyboard].frame[this[s_currentFrame]].geometries;
+               //var asd = this[s_scene].geometries;
 
                //this[s_scene].redraw();
           }
@@ -206,6 +207,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
           update() { //TODO: make update private
                this[s_scene].animate();
+               console.log(this[s_scene]);
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
                this.currentFrame();

@@ -18,6 +18,9 @@ define(['jquery', 'translator'], function($, Translator) {
           get frame() {
                return this[s_frames];
           }
+          get geometries() {
+               return this[s_geometries];
+          }
 
      } //class Storyboard
 
@@ -25,6 +28,7 @@ define(['jquery', 'translator'], function($, Translator) {
 
                constructor() {
                     this.geometries = [];
+                    this.geometries[0] = [];
                     this.points = [];
                     this.title = "";
                     this.description = "";

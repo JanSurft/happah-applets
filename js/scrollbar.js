@@ -100,6 +100,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
           }
           set value(value) {
                this[s_value] = value;
+               this[s_ball].position.setX(150 * value);
           }
 
           /** Returns the position of our HTML element */
