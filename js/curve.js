@@ -19,7 +19,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                this[s_controlPoints] = controlPoints;
           }
 
-          evaluate(t, callback) {
+          evaluate(t = 0.5, callback = null) {
                var segmentLength = this[s_controlPoints].length;
                var points = new Array(segmentLength);
                points[0] = new Array(segmentLength);
@@ -125,7 +125,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
           storyboard(ratio = 0.5) {
                var result = new STORYBOARD.Storyboard();
                var frame0 = new STORYBOARD.Storyboard.Frame();
-               frame0.segmentStrips = this[s_controlPoints];
+               frame0.geometries[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Kontrollpolygon";
                result.append(frame0);
                var i;
@@ -135,13 +135,20 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                for (i = 1; i < this[s_controlPoints].length - 1 || i < 3; i++) {
                     var frame = new STORYBOARD.Storyboard.Frame();
                     frame.title = "Schritt: " + i;
-                    frame.segmentStrips = this.subdivide(i, ratio);
+
+                    // Add previous polygons in grey
+                    for (var k = 0; k < i; k++) {
+                         frame.geometries.append(insertSegmentStrip(this.subdivide(k, ratio), 0xd3d3d3));
+                    }
+
+                    // Add geometry of current
+                    frame.geometries.append(insertSegmentStrip(this.subdivide(i, ratio), 0xff0000));
                     result.append(frame);
                }
 
                var frameLast = new STORYBOARD.Storyboard.Frame();
                frameLast.title = "Grenzkurve";
-               frameLast.segmentStrips = this.subdivide(i, ratio);
+               frameLast.geometries = insertSegmentStrip(this.subdivide(i, ratio), 0xff0000);
                result.append(frameLast);
 
                return result;
