@@ -207,7 +207,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
           update() { //TODO: make update private
                this[s_scene].animate();
-               console.log(this[s_scene]);
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
                this.currentFrame();
