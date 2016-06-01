@@ -83,7 +83,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                this[s_selectionRay] = new THREE.Ray();
                this[s_selectionLine] = new THREE.Line3(new THREE.Vector3(-175, -($(canvas).height() / 6), 0),
                     new THREE.Vector3(175, -($(canvas).height() / 6), 5));
-               this[s_camera].add(this[s_selectionLine]);
+               //this[s_camera].add(this[s_selectionLine]);
                this[s_camera].updateProjectionMatrix();
 
                // Add the camera with children to the scene

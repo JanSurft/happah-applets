@@ -40,7 +40,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_algorithm] = algorithm;
                this[s_currentFrame] = 0;
                this[s_scene] = scene;
-               this[s_scene].geometries = this[s_storyboard].frame[this[s_currentFrame]].geometries;
+               this[s_scene].meshes = this[s_storyboard].frame[0].meshes;
                this[s_scene].algorithm = algorithm;
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
@@ -124,10 +124,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                // Set the relevant flags
                this[s_scene].curveState = frame.showCurve;
 
-               this[s_scene].geometries = this[s_storyboard].frame[this[s_currentFrame]].geometries;
-               //var asd = this[s_scene].geometries;
+               this[s_scene].meshes = this[s_storyboard].frame[this[s_currentFrame]].meshes;
+               // TODO use set meshes
 
-               //this[s_scene].redraw();
+               this[s_scene].redraw();
           }
 
           nextFrame() {

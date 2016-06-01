@@ -12,7 +12,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
      // If set: will draw control polygon
      var s_showPoly = Symbol('showpoly');
-     var s_geometries = Symbol('geometries');
+     //var s_geometries = Symbol('geometries');
+     // Store a set of meshes
+     var s_meshes = Symbol('meshes');
 
      class Scene extends THREE.Scene {
 
@@ -23,7 +25,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     };
                     this.controlPoints = [];
                     this.algorithmPoints = [];
-                    this[s_geometries] = [];
+                    //this[s_geometries] = [];
+                    this[s_meshes] = [new THREE.Object3D()];
                     this._controlPointImpostors = new THREE.Object3D();
 
                     this[s_lights] = new THREE.Object3D();
@@ -83,12 +86,12 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_showCurve] = state;
                     this.redraw();
                }
-               set geometries(geometries) {
-                    // Remove geometries from the scene to edit them
-                    for (var i = 0; i < this[s_geometries].length; i++) {
-                         this.remove(this[s_geometries][i]);
+               set meshes(meshes) {
+                    // Remove the meshes first
+                    for (var i = 0; i < this[s_meshes].length; i++) {
+                         this.remove(this[s_meshes][i]);
                     }
-                    this[s_geometries] = geometries;
+                    this[s_meshes] = meshes;
                     this.redraw();
                }
 
@@ -104,9 +107,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     if (this[s_altered]) {
                          console.log("redraw impostors/lines");
 
-                         for (var i = 0; i < this[s_geometries].length; i++) {
-                              this.add(this[s_geometries][i]);
-                              console.log(this[s_geometries][i]);
+                         // Add all geometries from the current frame
+                         for (var i = 0; i < this[s_meshes].length; i++) {
+                              this.add(this[s_meshes][i]);
                          }
                          //TODO: what about the impostors? they belong in frame
                          //too
@@ -163,6 +166,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                }
 
                // TODO: does this really belong here?
+               /*
                insertSegmetStrip(points, color) {
                     if (points.length === 0)
                          return new THREE.Line();
@@ -180,6 +184,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                     return line;
                }
+               */
 
           } //class Scene
 

@@ -87,19 +87,18 @@ function geomify(string) {
 }
 
 function insertSegmentStrip(points, color) {
-     if (points.length === 0)
-          return new THREE.Line();
+     if (points.length == 0)
+          return null;
 
      var lineGeometry = new THREE.Geometry();
-     var lineMaterial = new THREE.LineBasicMaterial();
-     lineMaterial.color = color;
+     var lineMaterial = new THREE.LineBasicMaterial({
+          color: color
+     });
      lineMaterial.linewidth = 5;
 
      for (var i = 0; i < points.length; i++) {
           lineGeometry.vertices.push(points[i]);
      }
      lineGeometry.computeLineDistances();
-     var line = new THREE.Line(lineGeometry, lineMaterial);
-
-     return line;
+     return new THREE.Line(lineGeometry, lineMaterial);
 }

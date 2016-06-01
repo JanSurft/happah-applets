@@ -16,19 +16,18 @@ define(['jquery', 'translator'], function($, Translator) {
           }
 
           get frame() {
-               return this[s_frames];
-          }
-          get geometries() {
-               return this[s_geometries];
-          }
+                    return this[s_frames];
+               }
+               //          get meshes() {
+               //              return this[s_meshes];
+               //        }
 
      } //class Storyboard
 
      Storyboard.Frame = class {
 
                constructor() {
-                    this.geometries = [];
-                    this.geometries[0] = [];
+                    this.meshes = [];
                     this.points = [];
                     this.title = "";
                     this.description = "";

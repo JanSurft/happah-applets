@@ -125,7 +125,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
           storyboard(ratio = 0.5) {
                var result = new STORYBOARD.Storyboard();
                var frame0 = new STORYBOARD.Storyboard.Frame();
-               frame0.geometries[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Kontrollpolygon";
                result.append(frame0);
                var i;
@@ -138,17 +138,17 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
 
                     // Add previous polygons in grey
                     for (var k = 0; k < i; k++) {
-                         frame.geometries.push(insertSegmentStrip(this.subdivide(k, ratio), 0xd3d3d3));
+                         frame.meshes.push(insertSegmentStrip(this.subdivide(k, ratio), 0x737373));
                     }
 
                     // Add geometry of current
-                    frame.geometries.push(insertSegmentStrip(this.subdivide(i, ratio), 0xff0000));
+                    frame.meshes.push(insertSegmentStrip(this.subdivide(i, ratio), 0xff0000));
                     result.append(frame);
                }
 
                var frameLast = new STORYBOARD.Storyboard.Frame();
                frameLast.title = "Grenzkurve";
-               frameLast.geometries = insertSegmentStrip(this.subdivide(i, ratio), 0xff0000);
+               frameLast.meshes[0] = insertSegmentStrip(this.subdivide(i, ratio), 0xff0000);
                result.append(frameLast);
 
                return result;
