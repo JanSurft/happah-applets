@@ -2,7 +2,7 @@ define(['jquery', 'translator'], function($, Translator) {
     //var s_algorithm = Symbol('algorithm');
     var s_frames = Symbol('frames');
 
-    console.log(Translator.t('description'));
+    console.log(Translator.t('hello'));
 
     class Storyboard {
 

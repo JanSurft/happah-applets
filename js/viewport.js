@@ -133,16 +133,17 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
         nextFrame() {
             if (this[s_currentFrame] < this[s_storyboard].frame.length - 1) {
                 this[s_currentFrame]++;
-            } else
-                $('#hph-forward').css("color", "grey");
+            }
 
             this.currentFrame();
         }
 
         currentFrame() {
             if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
-                $('#hph-forward').css("color", "#515151");
-
+                $('#hph-forward').css("color", "#333");
+			else
+                $('#hph-forward').css("color", "grey");
+			
             this.applyFrame(this[s_storyboard].frame[this[s_currentFrame]]);
         }
 
