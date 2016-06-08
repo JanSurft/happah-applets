@@ -141,6 +141,9 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                          frame.meshes.push(insertSegmentStrip(this.subdivide(k, ratio), 0x535353));
                     }
 
+                    this.evaluate(ratio, function ran(point) {
+                         frame.points.push(point);
+                    });
                     // Add geometry of current
                     frame.meshes.push(insertSegmentStrip(this.subdivide(i, ratio), 0xff0000));
                     result.append(frame);

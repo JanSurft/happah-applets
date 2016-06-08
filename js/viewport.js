@@ -127,6 +127,15 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_storyboard] = this[s_algorithm].storyboard();
                this[s_scene].meshes = this[s_storyboard].frame[this[s_currentFrame]].meshes;
                // TODO use set meshes
+               var points = this[s_storyboard].frame[this[s_currentFrame]].points;
+               var impostors = [];
+               for (var i = 0; i < points.length; i++) {
+                    impostors[i] = new happah3.SphericalImpostor(2);
+                    impostors[i].material.uniforms.diffuse.value.set(0x00dd33);
+                    console.log(points[i][0]);
+                    impostors[i].position.copy(points[i][0]);
+               }
+               this[s_scene].points = impostors;
 
                this[s_scene].redraw();
           }

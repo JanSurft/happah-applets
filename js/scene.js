@@ -15,6 +15,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      //var s_geometries = Symbol('geometries');
      // Store a set of meshes
      var s_meshes = Symbol('meshes');
+     var s_points = Symbol('points');
 
      class Scene extends THREE.Scene {
 
@@ -25,7 +26,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     };
                     this.controlPoints = [];
                     this.algorithmPoints = [];
-                    //this[s_geometries] = [];
+                    this[s_points] = [];
                     this[s_meshes] = [new THREE.Object3D()];
                     this._controlPointImpostors = new THREE.Object3D();
 
@@ -95,13 +96,28 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this.redraw();
                }
 
+               set points(points) {
+                    // Remove points first
+                    for (var i = 0; i < this[s_points].length; i++) {
+                         this.remove(this[s_points][i]);
+                    }
+                    for (var i = 0; i < points.length; i++) {
+                         this[s_points][i] = new happah.SphericalImpostor(2);
+                         this[s_points][i].material.uniforms.diffuse.value.set(0x00dd33);
+                         this[s_points][i].position.copy(points[i][points[i].length - 1]);
+                         console.log(points);
+                         this.add(this[s_points][i]);
+                    }
+                    this[s_points] = points;
+                    this.redraw();
+               }
+
                /** Redraws the curve in the next animate() cycle */
                redraw() {
                     this[s_altered] = true;
                }
 
-               // TODO: only draw segmentstrips specified by the storyboard.
-               // TBD: iterate over frame.geometries and draw them.
+               // TODO: too many loops for only a single frame...
                animate() {
                     // Only re-calculate if things have changed.
                     if (this[s_altered]) {
@@ -115,10 +131,10 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                          for (var i = 0; i < this[s_meshes].length; i++) {
                               this.add(this[s_meshes][i]);
                          }
+
                          //TODO: what about the impostors? they belong in frame
                          //too
                          // Only calculate the lines if they're enabled
-                         // TBD this should be handled by the individual frame
                          /*if (this[s_showCurve]) {
                               for (var i = 0; i < this.controlPoints.length; i++)
                                    this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
