@@ -101,13 +101,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     for (var i = 0; i < this[s_points].length; i++) {
                          this.remove(this[s_points][i]);
                     }
-                    for (var i = 0; i < points.length; i++) {
-                         this[s_points][i] = new happah.SphericalImpostor(2);
-                         this[s_points][i].material.uniforms.diffuse.value.set(0x00dd33);
-                         this[s_points][i].position.copy(points[i][points[i].length - 1]);
-                         console.log(points);
-                         this.add(this[s_points][i]);
-                    }
                     this[s_points] = points;
                     this.redraw();
                }
