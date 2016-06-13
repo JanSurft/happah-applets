@@ -33,7 +33,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
         constructor(canvas, scene, algorithm) {
             this.update = this.update.bind(this);
             this.mouseWheel = this.mouseWheel.bind(this);
-            //this.addControlPoint = this.addControlPoint.bind(this);
             var _this = this;
 
             this[s_canvas] = canvas;
@@ -56,13 +55,20 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             };
             this[s_grid] = new THREE.GridHelper(500, 10);
             this[s_grid].position.y = -0.001;
-            this[s_renderer] = new THREE.WebGLRenderer(parameters);
-            this[s_renderer].setClearColor(0xFFFFFF); //TODO: can renderer and viewport be separated?
-            this[s_renderer].setSize($(canvas).width(), $(canvas).height());
-            //this[s_camera] = new THREE.PerspectiveCamera(45, $(canvas).width() / $(canvas).height(), 1, 1000);
+            this[s_renderer] = new
+            THREE.WebGLRenderer(parameters);
+            this[s_renderer].setClearColor(0xFFFFFF);
+            //TODO: can renderer and viewport be separated ?
+            this[s_renderer].setSize($(canvas).width(),
+                $(canvas).height());
+            //this[s_camera] = new THREE.PerspectiveCamera(45,
+            //$(canvas).width() / $(canvas).height(), 1, 1000);
 
-            this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
-            this[s_addMode] = false;
+            this[s_camera] = new THREE.OrthographicCamera($(canvas).width() /
+                -2, $(canvas).width() / 2, $(canvas).height() / 2,
+                $(canvas).height() / -2, -500, 1000);
+            this[s_addMode] =
+                false;
             this[s_sequence] = false;
             this[s_counter] = 0;
 
@@ -84,7 +90,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
             this[s_scrollbar] = new scrollbar.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
             this[s_scrollbar].value = 0.5;
-            this[s_addControls] = new addcontrols.AddControls(this[s_renderer], this[s_scene], this[s_algorithm], this[s_storyboard], this[s_camera]);
+            this[s_addControls] = new addcontrols.AddControls(this, this[s_scene], this[s_camera]);
 
             // Trackball controls for camera movement TBD...
             this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);
@@ -107,6 +113,15 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_addControls].listenTo(this[s_renderer].domElement);
         }
 
+        // Call if the storyboard is out of date
+        rebuildStoryboard() {
+            this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
+
+            // In any case when the storyboard is rebuilt, the scene has to be
+            // updated.
+            this[s_scene].redraw();
+        }
+
         applyFrame(frame) {
             // Reset all previous modifications
             //this[s_scene].removeControlPoints();
@@ -120,7 +135,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             // Set the relevant flags
             this[s_scene].curveState = frame.showCurve;
 
-            this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
+            this.rebuildStoryboard();
+
             this[s_scene].meshes = this[s_storyboard].frame[this[s_currentFrame]].meshes;
             // TODO use set meshes
             var points = this[s_storyboard].frame[this[s_currentFrame]].points;
@@ -221,7 +237,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
         update() { //TODO: make update private
             this[s_scene].animate();
             this[s_renderer].render(this[s_scene], this[s_camera]);
-            //this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
             this.currentFrame();
         }
 
@@ -235,7 +250,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             if (this[s_sequence] && this[s_counter] % 100 == 0) {
                 this.nextFrame();
             }
-            //this[s_transformControls].update();
         }
 
     } //class Viewport
