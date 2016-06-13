@@ -6,10 +6,8 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
     var s_camera = Symbol('camera');
-    var s_renderer = Symbol('renderer');
     var s_scene = Symbol('scene');
-    var s_storyboard = Symbol('storyboard');
-    var s_algorithm = Symbol('algorithm');
+    var s_viewport = Symbol('viewport');
 
     // For testing purposes only
     var s_addMode = Symbol('addMode');
@@ -17,16 +15,35 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
     class AddControls {
 
-        constructor(renderer, scene, algorithm, storyboard, camera) {
+        constructor(viewport, scene, camera) {
             this.onMouseDoubleclick = this.onMouseDoubleclick.bind(this);
             this.onMouseClick = this.onMouseClick.bind(this);
 
-            this[s_renderer] = renderer;
             this[s_scene] = scene;
-            this[s_algorithm] = algorithm;
-            this[s_storyboard] = storyboard;
+            this[s_viewport] = viewport;
             this[s_addMode] = false;
             this[s_camera] = camera;
+        }
+
+        /** Adds a control point to the scene */
+        addControlPoints(points, head = false, color = new THREE.Color(0x888888)) {
+            for (var i in points) {
+                var sphere = new happah.SphericalImpostor(3);
+                sphere.material.uniforms.diffuse.value.set(color);
+                sphere.position.copy(points[i]);
+
+                // Add the point to head/tail of the array
+                if (head) {
+                    this[s_scene]._controlPointImpostors.children.unshift(sphere);
+                    this[s_scene].controlPoints.unshift(points[i]);
+                } else {
+                    this[s_scene]._controlPointImpostors.add(sphere);
+                    this[s_scene].controlPoints.push(points[i]);
+                }
+            }
+
+            this[s_viewport].rebuildStoryboard();
+            //$(this).trigger('update.happah');
         }
 
         /** Returns the position of an HTML element */
@@ -78,8 +95,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             if (intersects[0]) {
                 this[s_addMode] = true;
                 // Set the cursor
-                this[s_renderer].domElement.style.cursor = "crosshair";
-                //this[s_dragControls].disable();
+                event.currentTarget.style.cursor = "crosshair";
             }
         }
 
@@ -103,8 +119,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 // Exit add mode.
                 if (intersects[0]) {
                     this[s_addMode] = false;
-                    this[s_renderer].domElement.style.cursor = "default";
-                    //this[s_dragControls].enable();
+                    event.currentTarget.style.cursor = "default";
                     return;
                 }
 
@@ -112,9 +127,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 var position = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
 
                 // Add a new point to the specified position
-                this[s_scene].addControlPoints([position], this[s_isHead]);
+                this.addControlPoints([position], this[s_isHead]);
 
-                this[s_storyboard] = this[s_algorithm].storyboard();
+                this[s_viewport].rebuildStoryboard();
             }
         }
 

@@ -91,6 +91,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_scrollbar] = new scrollbar.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
             this[s_scrollbar].value = 0.5;
             this[s_addControls] = new addcontrols.AddControls(this, this[s_scene], this[s_camera]);
+            this[s_addControls].addControlPoints([
+                new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+                new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+            ]);
 
             // Trackball controls for camera movement TBD...
             this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);

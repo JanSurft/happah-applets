@@ -117,12 +117,15 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 if (this[s_altered]) {
                     console.log("redraw impostors/lines");
 
+                    if (this[s_showPoly]) {
+                        this.add(this._controlPointImpostors);
+                    }
                     // Update controlpoints positions
-                    for (var i = 0; i < this.controlPoints.length; i++)
+                    for (var i in this.controlPoints)
                         this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
 
                     // Add all geometries from the current frame
-                    for (var i = 0; i < this[s_meshes].length; i++) {
+                    for (var i in this[s_meshes]) {
                         this.add(this[s_meshes][i]);
                     }
 
