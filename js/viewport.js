@@ -100,6 +100,14 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
             // For adding controlpoints
             this[s_addControls].listenTo(this[s_renderer].domElement);
+
+            //
+            ///
+            //                IMPORTANT!!!IMPORTANT!!!
+            //
+            //k
+            // TODO TODO TODO: TBD not every frame one may call currentFrame
+            this.currentFrame();
         }
 
         // Call if the storyboard is out of date
@@ -121,6 +129,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             // Set the label text
             $('#hph-label').text("Frame: " + frame.title);
 
+            console.warn("applyFrame called!");
             // Set the relevant flags
             this[s_scene].curveState = frame.showCurve;
 
@@ -139,7 +148,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                 }
             }
             this[s_scene].points = impostors;
-            this[s_scene].redraw();
         }
 
         nextFrame() {
@@ -215,7 +223,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             requestAnimationFrame(this.update.bind(this));
             this[s_scene].animate();
             this[s_renderer].render(this[s_scene], this[s_camera]);
-            this.currentFrame();
+            //this.currentFrame();
 
             this[s_controls].update();
 

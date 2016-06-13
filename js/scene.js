@@ -83,6 +83,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 // Only re-calculate if things have changed.
                 if (this[s_altered]) {
                     console.log("redraw impostors/lines");
+                    this[s_altered] = false;
 
                     if (this[s_showPoly]) {
                         this.add(this._controlPointImpostors);
@@ -96,7 +97,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                         this.add(this[s_meshes][i]);
                     }
 
-                    this[s_altered] = false;
                 }
             }
 
