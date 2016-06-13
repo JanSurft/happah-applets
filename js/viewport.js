@@ -2,9 +2,10 @@
 //
 // Viewport
 // @author Tarek Wilkening (tarek_wilkening@web.de)
+// TODO: make it less of a 'god' class
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols'], function($, THREE, THREE, happah, happah2, happah3, happah4, happah5) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols'], function($, THREE, THREE, dragcontrols, trackballcontrols, sphericalimpostor, scrollbar, addcontrols) {
     var s_camera = Symbol('camera');
     var s_dragControls = Symbol('dragControls');
     var s_renderer = Symbol('renderer');
@@ -80,12 +81,12 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
             //this[s_controls] = new THREE.TrackballControls(this[s_camera]);
 
-            this[s_dragControls] = new happah.DragControls(this[s_scene], this[s_controls], this[s_camera]);
-            this[s_scrollbar] = new happah4.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
+            this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
+            this[s_scrollbar] = new scrollbar.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
             this[s_scrollbar].value = 0.5;
-            this[s_addControls] = new happah5.AddControls(this[s_renderer], this[s_scene], this[s_algorithm], this[s_storyboard], this[s_camera]);
+            this[s_addControls] = new addcontrols.AddControls(this[s_renderer], this[s_scene], this[s_algorithm], this[s_storyboard], this[s_camera]);
 
-            // Trackball controls for camera movement
+            // Trackball controls for camera movement TBD...
             this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);
             this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
             this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
@@ -95,20 +96,15 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
 
             // Drag controls for dragging and dropping objects
-            this[s_renderer].domElement.addEventListener('mousemove', this[s_dragControls].mouseMove, false);
-            this[s_renderer].domElement.addEventListener('mouseup', this[s_dragControls].mouseUp, false);
-            this[s_renderer].domElement.addEventListener('mousedown', this[s_dragControls].mouseDown, false);
+            this[s_dragControls].listenTo(this[s_renderer].domElement);
             this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
             this[s_renderer].domElement.addEventListener('mousewheel', this.mouseWheel, false);
 
             // Scrollbar controls
-            this[s_renderer].domElement.addEventListener('mousedown', this[s_scrollbar].mouseDown, false);
-            this[s_renderer].domElement.addEventListener('mouseup', this[s_scrollbar].mouseUp, false);
-            this[s_renderer].domElement.addEventListener('mousemove', this[s_scrollbar].mouseMove, false);
+            this[s_scrollbar].listenTo(this[s_renderer].domElement);
 
             // For adding controlpoints
-            this[s_renderer].domElement.addEventListener('dblclick', this[s_addControls].onMouseDoubleclick, false);
-            this[s_renderer].domElement.addEventListener('click', this[s_addControls].onMouseClick, false);
+            this[s_addControls].listenTo(this[s_renderer].domElement);
         }
 
         applyFrame(frame) {
@@ -131,7 +127,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             var impostors = [];
             for (var i = 0; i < points.length; i++) {
                 for (var k = 0; k < points[i].length; k++) {
-                    var imp = new happah3.SphericalImpostor(2);
+                    var imp = new sphericalimpostor.SphericalImpostor(2);
                     imp.material.uniforms.diffuse.value.set(0x00dd33);
                     imp.position.copy(points[i][k]);
                     impostors.push(imp);

@@ -41,6 +41,15 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             return position
         }
 
+        listenTo(domElement) {
+            domElement.addEventListener('dblclick', this.onMouseDoubleclick, false);
+            domElement.addEventListener('click', this.onMouseClick, false);
+        }
+        stopListening(domElement) {
+            domElement.removeEventListener('dblclick', this.onMouseDoubleclick, false);
+            domElement.removeEventListener('click', this.onMouseClick, false);
+        }
+
         onMouseDoubleclick(event) {
             // Get current mouse position on screen
             var elementPosition = this.getElementPosition(event.currentTarget);
