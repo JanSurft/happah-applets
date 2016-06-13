@@ -74,6 +74,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_scrollbar] = new scrollbar.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
             this[s_scrollbar].value = 0.5;
             this[s_addControls] = new addcontrols.AddControls(this, this[s_scene], this[s_camera]);
+
+            // Initialize some points
             this[s_addControls].addControlPoints([
                 new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
                 new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
@@ -84,9 +86,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
             this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
 
-            this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
-            this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
-            this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
+            //this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
+            //this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
+            //this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
 
             // Drag controls for dragging and dropping objects
             this[s_dragControls].listenTo(this[s_renderer].domElement);

@@ -1,9 +1,5 @@
 define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
-    var s_algorithm = Symbol('algorithm');
     var s_lights = Symbol('lights');
-    //var s_algorithmPoints = Symbol('algorithmpoints');
-    //var s_algorithmLine = Symbol('algorithmline');
-    var s_controlLine = Symbol('controlline');
 
     /** Flags for drawing preferences */
     // Set to true if scene has been altered.
@@ -21,9 +17,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
             constructor() {
                 super();
-                this[s_algorithm] = function(points, value) {
-                    return points;
-                };
                 this.controlPoints = [];
                 this.algorithmPoints = [];
                 this[s_points] = [];
@@ -32,43 +25,18 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                 this[s_lights] = new THREE.Object3D();
 
-                var ambientLight = new THREE.AmbientLight(0x444444);
                 var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, 1);
-                //this[s_lights].add(ambientLight);
                 this[s_lights].add(hemisphereLight);
                 var dirLight = new THREE.DirectionalLight(0xffffff);
                 dirLight.position.set(200, 200, 1000).normalize();
                 this[s_lights].add(dirLight);
-                // this[s_lights].add(dirLight.target);
-                //this.camera.add(dirLight.target);
-                //this.add(this[s_algorithmLine]);
-                //this.add(this[s_controlLine]);
 
-
-                //var light = new THREE.PointLight(0xffffff, 1, 0);
-                //light.position.set(0, 200, 0);
-                //this[s_lights].add(light);
-                //light = new THREE.PointLight(0xffffff, 1, 0);
-                //light.position.set(100, 200, 100);
-                //this[s_lights].add(light);
-                //light = new THREE.PointLight(0xffffff, 1, 0);
-                //light.position.set(-100, -200, -100);
-                //this[s_lights].add(light);
-                //this[s_lights].add(new THREE.HemisphereLight(0xffffbb, 0x080820, 1));
-                //this[s_lights].add(new THREE.AmbientLight(0x000000));
                 this.add(this[s_lights]);
                 this[s_altered] = true;
                 this[s_showPoly] = true;
                 this[s_showCurve] = true;
             }
 
-            get algorithm() {
-                return this[s_algorithm];
-            }
-            set algorithm(algorithm) {
-                this[s_algorithm] = algorithm;
-                this.redraw();
-            }
             get controlPointImpostors() {
                 return this._controlPointImpostors;
             }
@@ -111,7 +79,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_altered] = true;
             }
 
-            // TODO: too many loops for only a single frame...
             animate() {
                 // Only re-calculate if things have changed.
                 if (this[s_altered]) {
@@ -129,49 +96,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                         this.add(this[s_meshes][i]);
                     }
 
-                    //TODO: what about the impostors? they belong in frame
-                    //too
-                    // Only calculate the lines if they're enabled
-                    /*if (this[s_showCurve]) {
-                         for (var i = 0; i < this.controlPoints.length; i++)
-                              this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
-
-                         //this[s_algorithmPoints] = this[s_algorithm].subdivide();
-                         this[s_algorithmLine] = this.insertSegmetStrip(this[s_geometries], new THREE.Color(0x009D82));
-                         this.add(this[s_algorithmLine]);
-                         }
-
-                    if (this[s_showPoly]) {
-                         this[s_controlLine] = this.insertSegmetStrip(this.controlPoints, new THREE.Color(0xFF0000));
-                         this.add(this[s_controlLine]);
-                    }
-                    */
-
                     this[s_altered] = false;
                 }
-            }
-
-            // TODO: doesn't belong here as well...
-            addControlPoints(points, head = false, color = new THREE.Color(0x888888)) {
-                for (var i in points) {
-                    var sphere = new happah.SphericalImpostor(3);
-                    sphere.material.uniforms.diffuse.value.set(color);
-                    sphere.position.copy(points[i]);
-
-                    // Add the point to head/tail of the array
-                    if (head) {
-                        this._controlPointImpostors.children.unshift(sphere);
-                        this.controlPoints.unshift(points[i]);
-                    } else {
-                        this._controlPointImpostors.add(sphere);
-                        this.controlPoints.push(points[i]);
-                    }
-                }
-                if (this[s_showPoly])
-                    this.add(this._controlPointImpostors);
-
-                this.redraw();
-                $(this).trigger('update.happah');
             }
 
             removeControlPoints() {
@@ -181,27 +107,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this._controlPointImpostors.children = [];
                 this.redraw();
             }
-
-            // TODO: does this really belong here?
-            /*
-            insertSegmetStrip(points, color) {
-                 if (points.length === 0)
-                      return new THREE.Line();
-
-                 var lineGeometry = new THREE.Geometry();
-                 var lineMaterial = new THREE.LineBasicMaterial();
-                 lineMaterial.color = color;
-                 lineMaterial.linewidth = 5;
-
-                 for (var i = 0; i < points.length; i++) {
-                      lineGeometry.vertices.push(points[i]);
-                 }
-                 lineGeometry.computeLineDistances();
-                 var line = new THREE.Line(lineGeometry, lineMaterial);
-
-                 return line;
-            }
-            */
 
         } //class Scene
 
