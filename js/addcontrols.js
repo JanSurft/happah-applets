@@ -112,9 +112,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 var raycaster = new THREE.Raycaster();
                 raycaster.setFromCamera(vector, this[s_camera]);
 
-                // Create new storyboard
-                this[s_viewport].rebuildStoryboard();
-
                 // Intersect with impostors
                 var impostors = this[s_scene]._controlPointImpostors.children;
                 var intersects = raycaster.intersectObjects(impostors, true);
