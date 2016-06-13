@@ -36,7 +36,7 @@ require(['happah', 'three', 'jquery', 'bootstrap'], function(happah, THREE, $) {
     //scene.algorithm = deCasteljau;
     //scene.algorithm = new happah.Curve(scene.controlPoints);
 
-    viewport.animate();
+    viewport.update();
 
     // TEST
     var i = new happah.Menu(".dropdown-menu", scene, viewport);

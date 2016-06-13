@@ -11,18 +11,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
     var s_renderer = Symbol('renderer');
     var s_scene = Symbol('scene');
     var s_controls = Symbol('trackballControls');
-    var s_transformControls = Symbol('transformControls');
     var s_grid = Symbol('grid');
     var s_storyboard = Symbol('storyboard');
     var s_currentFrame = Symbol('currentframe');
     var s_algorithm = Symbol('algorithm');
-
-    // For testing purposes only
-    var s_trackball = Symbol('trackball');
-    var s_addMode = Symbol('addMode');
-    var s_isHead = Symbol('ishead');
-    var s_bar = Symbol('bar');
-    var s_canvas = Symbol('canvas');
     var s_sequence = Symbol('sequence');
     var s_counter = Symbol('counter');
     var s_addControls = Symbol('addcontrols');
@@ -35,13 +27,14 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this.mouseWheel = this.mouseWheel.bind(this);
             var _this = this;
 
-            this[s_canvas] = canvas;
             this[s_storyboard] = algorithm.storyboard();
             this[s_algorithm] = algorithm;
             this[s_currentFrame] = 0;
             this[s_scene] = scene;
             this[s_scene].meshes = this[s_storyboard].frame[0].meshes;
             this[s_scene].algorithm = algorithm;
+
+            // TBD..
             $(this[s_scene]).bind('update.happah', function() {
                 _this.update();
             });
@@ -53,25 +46,18 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                 canvas: canvas,
                 context: context
             };
+            this[s_renderer] = new THREE.WebGLRenderer(parameters);
+            this[s_renderer].setClearColor(0xFFFFFF);
+            this[s_renderer].setSize($(canvas).width(), $(canvas).height());
+
             this[s_grid] = new THREE.GridHelper(500, 10);
             this[s_grid].position.y = -0.001;
-            this[s_renderer] = new
-            THREE.WebGLRenderer(parameters);
-            this[s_renderer].setClearColor(0xFFFFFF);
-            //TODO: can renderer and viewport be separated ?
-            this[s_renderer].setSize($(canvas).width(),
-                $(canvas).height());
-            //this[s_camera] = new THREE.PerspectiveCamera(45,
-            //$(canvas).width() / $(canvas).height(), 1, 1000);
 
-            this[s_camera] = new THREE.OrthographicCamera($(canvas).width() /
-                -2, $(canvas).width() / 2, $(canvas).height() / 2,
-                $(canvas).height() / -2, -500, 1000);
-            this[s_addMode] =
-                false;
             this[s_sequence] = false;
             this[s_counter] = 0;
 
+            //this[s_camera] = new THREE.PerspectiveCamera(45,$(canvas).width() / $(canvas).height(), 1, 1000);
+            this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
             this[s_camera].position.z = 0; // 0 for orthographic camera
             this[s_camera].position.y = 1;
             this[s_camera].position.x = 0; // 0 for orthographic camera
@@ -82,10 +68,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_controls].noZoom = true;
 
             // TODO:
-            this[s_controls].addEventListener('change', this.update);
-            // Test:
-
-            //this[s_controls] = new THREE.TrackballControls(this[s_camera]);
+            //this[s_controls].addEventListener('change', this.update);
 
             this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
             this[s_scrollbar] = new scrollbar.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
@@ -183,7 +166,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
         clearScene() {
             this[s_scene].removeControlPoints();
-            this[s_addMode] = true;
 
             // Update the cursor
             this[s_renderer].domElement.style.cursor = "crosshair";
@@ -223,30 +205,16 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                 delta = 0;
             }
 
-            // Enlarge the control-bar
-            //this[s_scene].remove(this[s_camera]);
-            //this[s_camera].remove(this[s_bar]);
-            var position = new THREE.Vector3();
-
-            //var geometry = new THREE.CylinderGeometry(2, 2, this[s_bar].height * 10, 32);
-            //geometry.rotateZ(Math.PI / 2);
-            //this[s_bar] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial().clone(this[s_bar].material));
-            //this[s_bar].position.set(0, -($(this[s_canvas]).height() / 6), -0.3);
-            //this[s_camera].add(this[s_bar]);
-            //this[s_scene].add(this[s_camera]);
             this[s_camera].zoom += delta;
             this[s_camera].updateProjectionMatrix();
         }
 
-        update() { //TODO: make update private
+        update() {
+            requestAnimationFrame(this.update.bind(this));
             this[s_scene].animate();
             this[s_renderer].render(this[s_scene], this[s_camera]);
             this.currentFrame();
-        }
 
-        animate() {
-            requestAnimationFrame(this.animate.bind(this));
-            this.update();
             this[s_controls].update();
 
             // Handle sequence here
