@@ -207,6 +207,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
             this[s_camera].zoom += delta;
             this[s_camera].updateProjectionMatrix();
+            this[s_scene].redraw();
         }
 
         update() {
