@@ -166,11 +166,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
         clearScene() {
             this[s_scene].removeControlPoints();
+            this[s_addControls].enterAddMode();
 
-            //TODO: enter add mode
             // Update the cursor
             this[s_renderer].domElement.style.cursor = "crosshair";
-            this[s_dragControls].disable();
         }
 
         set gridState(state) {

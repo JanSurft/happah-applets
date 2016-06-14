@@ -25,6 +25,11 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             this[s_camera] = camera;
         }
 
+        /** Force add mode */
+        enterAddMode() {
+            this[s_addMode] = true;
+        }
+
         /** Adds a control point to the scene */
         addControlPoints(points, head = false, color = new THREE.Color(0x888888)) {
             for (var i in points) {
