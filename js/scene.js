@@ -65,13 +65,17 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             }
 
             set points(points) {
-                // Remove points first
-                for (var i = 0; i < this[s_points].length; i++) {
-                    this.remove(this[s_points][i]);
-                    this.add(points[i]);
+                    // Remove points first
+                    for (var i = 0; i < this[s_points].length; i++) {
+                        this.remove(this[s_points][i]);
+                        this.add(points[i]);
+                    }
+                    this[s_points] = points;
+                    this.redraw();
                 }
-                this[s_points] = points;
-                this.redraw();
+                // remove this later
+            get altered() {
+                return this[s_altered];
             }
 
             /** Redraws the curve in the next animate() cycle */
@@ -79,7 +83,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_altered] = true;
             }
 
-            animate() {
+            paint() {
                 // Only re-calculate if things have changed.
                 if (this[s_altered]) {
                     console.log("redraw impostors/lines");

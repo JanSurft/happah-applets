@@ -19,6 +19,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
     var s_counter = Symbol('counter');
     var s_addControls = Symbol('addcontrols');
     var s_scrollbar = Symbol('scrollbar');
+    var s_altered = Symbol('altered');
 
     class Viewport {
 
@@ -52,6 +53,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
             this[s_grid] = new THREE.GridHelper(500, 10);
             this[s_grid].position.y = -0.001;
+            this[s_scene].add(this[s_grid]);
 
             this[s_sequence] = false;
             this[s_counter] = 0;
@@ -68,7 +70,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_controls].noZoom = true;
 
             // TODO:
-            //this[s_controls].addEventListener('change', this.update);
+            //this[s_controls].addEventListener('change', this.test);
 
             this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
             this[s_scrollbar] = new scrollbar.Scrollbar(this[s_scene], this[s_controls], this[s_camera], $(canvas));
@@ -101,12 +103,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             // For adding controlpoints
             this[s_addControls].listenTo(this[s_renderer].domElement);
 
-            //
-            ///
-            //                IMPORTANT!!!IMPORTANT!!!
-            //
-            //k
-            // TODO TODO TODO: TBD not every frame one may call currentFrame
+            // Update
             this.currentFrame();
         }
 
@@ -120,16 +117,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
         }
 
         applyFrame(frame) {
-            // Reset all previous modifications
-            //this[s_scene].removeControlPoints();
-
-            // Add the points needed for the frame
-            //this[s_scene].addControlPoints(frame.points);
-
             // Set the label text
             $('#hph-label').text("Frame: " + frame.title);
 
-            console.warn("applyFrame called!");
             // Set the relevant flags
             this[s_scene].curveState = frame.showCurve;
 
@@ -177,6 +167,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
         clearScene() {
             this[s_scene].removeControlPoints();
 
+            //TODO: enter add mode
             // Update the cursor
             this[s_renderer].domElement.style.cursor = "crosshair";
             this[s_dragControls].disable();
@@ -221,9 +212,12 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
         update() {
             requestAnimationFrame(this.update.bind(this));
-            this[s_scene].animate();
-            this[s_renderer].render(this[s_scene], this[s_camera]);
-            //this.currentFrame();
+
+            if (this[s_scene].altered) {
+                this.currentFrame();
+                this[s_scene].paint();
+                this[s_renderer].render(this[s_scene], this[s_camera]);
+            }
 
             this[s_controls].update();
 
