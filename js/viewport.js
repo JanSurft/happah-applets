@@ -82,8 +82,17 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                // Screen overlay
                this[s_overlay] = new THREE.Scene();
+               var lights = new THREE.Object3D();
 
-               this[s_scrollbar] = new scrollbar.Scrollbar(this[s_overlay], this[s_controls], this[s_camera], $(canvas));
+               var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, 1);
+               lights.add(hemisphereLight);
+               var dirLight = new THREE.DirectionalLight(0xffffff);
+               dirLight.position.set(200, 200, 1000).normalize();
+               lights.add(dirLight);
+
+               this[s_overlay].add(lights);
+
+               this[s_scrollbar] = new scrollbar.Scrollbar(this[s_overlay], this[s_controls], this[s_camera], $(canvas), this);
                this[s_scrollbar].value = 0.5;
                this[s_addControls] = new addcontrols.AddControls(this, this[s_scene], this[s_camera]);
 
@@ -234,8 +243,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_renderer].clearDepth();
                this[s_zoom] = this[s_camera].zoom;
                this[s_camera].zoom = 2.5;
+               this[s_camera].updateProjectionMatrix();
                this[s_renderer].render(this[s_overlay], this[s_camera]);
                this[s_camera].zoom = this[s_zoom];
+               this[s_camera].updateProjectionMatrix();
 
                this[s_controls].update();
 
