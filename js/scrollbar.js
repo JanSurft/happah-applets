@@ -75,17 +75,18 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                // Ball to move along the scrollbar
                this[s_ball] = new happah.SphericalImpostor(3);
                this[s_ball].material.uniforms.diffuse.value.set(0xff5555);
-               this[s_ball].position.set(0, 5, 100);
+               this[s_ball].position.set(0, 6, 100);
 
                // Add to camera space
                this[s_scene].add(this[s_bar]);
                this[s_scene].add(this[s_ball]);
 
-               this[s_selectionPlane] = new THREE.Plane(new THREE.Vector3(0, 0, 0), 0);
+               this[s_selectionPlane] = new THREE.Plane(new THREE.Vector3(0, 10, 0), 0);
+
                this[s_selectionRay] = new THREE.Ray();
-               this[s_selectionLine] = new THREE.Line3(new THREE.Vector3(-175, 0, 100),
-                    new THREE.Vector3(175, 0, 100));
-               this[s_scene].add(this[s_selectionLine]);
+               this[s_selectionLine] = new THREE.Line3(new THREE.Vector3(-175, 6, 100),
+                    new THREE.Vector3(175, 6, 100));
+               //this[s_scene].add(this[s_selectionLine]);
 
                // Add the camera with children to the scene
                //this[s_scene].add(this[s_camera]);
@@ -143,6 +144,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
 
+
                // Set the raycaster
                // Don't make the ray project into world space
                // Unproject mouseposition to get corrent coordinates then
@@ -152,11 +154,14 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_raycaster].ray.origin.set(0, 0, 0); //setFromMatrixPosition(this[s_camera].matrixWorldInverse);
                     this[s_raycaster].ray.direction.set(mouseVector.x, mouseVector.y, 0.5).sub(this[s_raycaster].ray.origin).normalize();
                } else if (this[s_camera] instanceof THREE.OrthographicCamera) {
-                    this[s_raycaster].ray.origin.set(mouseVector.x, mouseVector.y, -1).unproject(this[s_camera]).applyMatrix4(this[s_camera].matrixWorldInverse);
+                    this[s_raycaster].ray.origin.set(mouseVector.x, mouseVector.y, -1).unproject(this[s_camera]); //.applyMatrix4(this[s_camera].matrixWorldInverse);
                     this[s_raycaster].ray.direction.set(0, 0, -1);
                } else {
                     console.error('THREE.Raycaster: Unsupported camera type.');
                }
+               var img = new happah.SphericalImpostor(3);
+               img.position.copy(mouseVector.unproject(this[s_camera]));
+               this[s_scene].add(img);
 
                // Set up ray from mouse position
                this[s_selectionRay].set(this[s_raycaster].ray.origin, this[s_raycaster].ray.direction);
@@ -190,7 +195,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
 
                // Set up ray from mouse position
-               this[s_selectionRay].set(mouseVector.unproject(this[s_camera]).applyMatrix4(this[s_camera].matrixWorldInverse), new THREE.Vector3(0, 0, -1));
+               this[s_selectionRay].set(mouseVector.unproject(this[s_camera]) /*.applyMatrix4(this[s_camera].matrixWorldInverse)*/ , new THREE.Vector3(0, -1, 0));
 
                if (this[s_selectedObject]) {
                     // Scene has changed so we need to redraw.
