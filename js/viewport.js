@@ -20,8 +20,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
      var s_addControls = Symbol('addcontrols');
      var s_scrollbar = Symbol('scrollbar');
      var s_altered = Symbol('altered');
-     var s_overlay = Symbol('overlay');
      var s_zoom = Symbol('zoom');
+
+     // Overlay
+     var s_overlay = Symbol('overlay');
+     var s_overlayCam = Symbol('overlayCam');
 
      class Viewport {
 
@@ -72,6 +75,13 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
 
+               this[s_overlayCam] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
+               this[s_overlayCam].position.z = 0; // 0 for orthographic camera
+               this[s_overlayCam].position.y = 1;
+               this[s_overlayCam].position.x = 0; // 0 for orthographic camera
+               this[s_overlayCam].lookAt(scene.position);
+               this[s_overlayCam].zoom = 2.5;
+
                this[s_controls] = new THREE.TrackballControls(this[s_camera]);
                this[s_controls].noZoom = true;
 
@@ -92,7 +102,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
                this[s_overlay].add(lights);
 
-               this[s_scrollbar] = new scrollbar.Scrollbar(this[s_overlay], this[s_controls], this[s_camera], $(canvas), this);
+               this[s_scrollbar] = new scrollbar.Scrollbar(this[s_overlay], this[s_controls], this[s_overlayCam], $(canvas), this);
                this[s_scrollbar].value = 0.5;
                this[s_addControls] = new addcontrols.AddControls(this, this[s_scene], this[s_camera]);
 
@@ -243,8 +253,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_renderer].clearDepth();
                this[s_zoom] = this[s_camera].zoom;
                this[s_camera].zoom = 2.5;
-               this[s_camera].updateProjectionMatrix();
-               this[s_renderer].render(this[s_overlay], this[s_camera]);
+               this[s_overlayCam].updateProjectionMatrix();
+               this[s_renderer].render(this[s_overlay], this[s_overlayCam]);
                this[s_camera].zoom = this[s_zoom];
                this[s_camera].updateProjectionMatrix();
 

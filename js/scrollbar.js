@@ -66,6 +66,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                geo.merge(boxGeometry);
                boxGeometry.translate(-300, 0, 0);
                geo.merge(boxGeometry);
+               geo.rotateX(3 * Math.PI / 2);
                var mat = new THREE.MeshBasicMaterial({
                     color: 0x4D4D4D
                });
@@ -154,14 +155,11 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_raycaster].ray.origin.set(0, 0, 0); //setFromMatrixPosition(this[s_camera].matrixWorldInverse);
                     this[s_raycaster].ray.direction.set(mouseVector.x, mouseVector.y, 0.5).sub(this[s_raycaster].ray.origin).normalize();
                } else if (this[s_camera] instanceof THREE.OrthographicCamera) {
-                    this[s_raycaster].ray.origin.set(mouseVector.x, mouseVector.y, -1).unproject(this[s_camera]); //.applyMatrix4(this[s_camera].matrixWorldInverse);
-                    this[s_raycaster].ray.direction.set(0, 0, -1);
+                    this[s_raycaster].ray.origin.copy(mouseVector.unproject(this[s_camera])); //.applyMatrix4(this[s_camera].matrixWorldInverse));
+                    this[s_raycaster].ray.direction.set(0, -1, 0);
                } else {
                     console.error('THREE.Raycaster: Unsupported camera type.');
                }
-               var img = new happah.SphericalImpostor(3);
-               img.position.copy(mouseVector.unproject(this[s_camera]));
-               this[s_scene].add(img);
 
                // Set up ray from mouse position
                this[s_selectionRay].set(this[s_raycaster].ray.origin, this[s_raycaster].ray.direction);
@@ -195,7 +193,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
 
                // Set up ray from mouse position
-               this[s_selectionRay].set(mouseVector.unproject(this[s_camera]) /*.applyMatrix4(this[s_camera].matrixWorldInverse)*/ , new THREE.Vector3(0, -1, 0));
+               this[s_selectionRay].set(mouseVector.unproject(this[s_camera]), new THREE.Vector3(0, -1, 0));
 
                if (this[s_selectedObject]) {
                     // Scene has changed so we need to redraw.
