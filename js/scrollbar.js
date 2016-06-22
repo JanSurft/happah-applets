@@ -49,7 +49,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                var textGeo = new THREE.Geometry();
                // TODO: use textGeometry!!!
                textGeo = geomify('0');
-               textGeo.translate(-1.5, 0, 0);
+               textGeo.translate(-1.5, 5, 0);
                coneGeometry.rotateZ(-(Math.PI / 2));
                coneGeometry.translate(175, 0, 0);
                geo.rotateZ(Math.PI / 2);
