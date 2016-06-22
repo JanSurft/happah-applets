@@ -16,7 +16,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
      var s_selectionPlane = Symbol('plane');
      var s_offset = Symbol('offset');
      var s_enabled = Symbol('enabled');
-     var s_backup = Symbol('backup');
 
      class DragControls {
 
@@ -111,7 +110,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                // Find all intersected objects
                var intersects = this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children, true);
-               this[s_backup] = intersects[0].position;
 
                if (intersects.length > 0) {
                     // Disable the controls
@@ -159,7 +157,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                     if (intersects[0] == null) {
                          console.log("Warning: lost selection plane!");
-                         //this[s_selectionPlane].position.copy(this[s_backup]);
                          this.mouseUp();
                          return;
                     }
