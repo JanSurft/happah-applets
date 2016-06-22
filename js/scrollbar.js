@@ -39,26 +39,25 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                this[s_raycaster] = new THREE.Raycaster();
 
-               // Remove camera from the scene to give birth to some children
-               //this[s_scene].remove(this[s_camera]);
-
                // Axis-arrow geometry
                var geo = new THREE.CylinderGeometry(1, 1, 350, 32);
                var coneGeometry = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
                var boxGeometry = new THREE.BoxGeometry(1.5, 4, 1.5);
                var textGeo = new THREE.Geometry();
-               // TODO: use textGeometry!!!
-               textGeo = geomify('0');
-               textGeo.translate(-1.5, 5, 0);
+
+               var characterSize = 6;
+               var offset = (characterSize * 3) / 2;
+               textGeo = geomify('0', characterSize);
+               textGeo.translate(0 - offset, 5, 0);
                coneGeometry.rotateZ(-(Math.PI / 2));
                coneGeometry.translate(175, 0, 0);
                geo.rotateZ(Math.PI / 2);
                geo.merge(textGeo);
-               textGeo = geomify('1');
-               textGeo.translate(150 - 0.5, 5, 0);
+               textGeo = geomify('1', characterSize);
+               textGeo.translate(150 - offset, 5, 0);
                geo.merge(textGeo);
-               textGeo = geomify('-1');
-               textGeo.translate(-151, 5, 0);
+               textGeo = geomify('-1', characterSize);
+               textGeo.translate(-150 - offset, 5, 0);
                geo.merge(textGeo);
                geo.merge(coneGeometry);
                geo.merge(boxGeometry);
@@ -87,10 +86,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                this[s_selectionRay] = new THREE.Ray();
                this[s_selectionLine] = new THREE.Line3(new THREE.Vector3(-175, 6, 100),
                     new THREE.Vector3(175, 6, 100));
-               //this[s_scene].add(this[s_selectionLine]);
 
-               // Add the camera with children to the scene
-               //this[s_scene].add(this[s_camera]);
           }
           enable() {
                this[s_enabled] = true;
@@ -196,15 +192,14 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                this[s_selectionRay].set(mouseVector.unproject(this[s_camera]), new THREE.Vector3(0, -1, 0));
 
                if (this[s_selectedObject]) {
-                    // Scene has changed so we need to redraw.
-                    //this[s_scene].redraw();
-
                     // Reposition the object based on the intersection point with the plane
                     var newPos = this[s_selectionLine].closestPointToPoint(this[s_selectionRay].intersectPlane(this[s_selectionPlane]));
                     this[s_ball].position.copy(newPos);
 
                     // Update scrollbar value
                     this[s_value] = newPos.x / 150;
+
+                    // New value means new storyboard
                     this[s_viewport].rebuildStoryboard();
                }
           }
