@@ -73,6 +73,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_camera].position.x = 0; // 0 for orthographic camera
                this[s_camera].lookAt(scene.position);
                this[s_camera].zoom = 2.5;
+               this[s_camera].updateProjectionMatrix();
 
                //this[s_overlayCam] = new THREE.PerspectiveCamera(45, $(canvas).width() / $(canvas).height(), 1, 1000);
                this[s_overlayCam] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
@@ -81,6 +82,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                this[s_overlayCam].position.x = 0; // 0 for orthographic camera
                this[s_overlayCam].lookAt(scene.position);
                this[s_overlayCam].zoom = 2.5;
+               this[s_overlayCam].updateProjectionMatrix();
 
                this[s_controls] = new THREE.TrackballControls(this[s_camera]);
                this[s_controls].noZoom = true;
@@ -247,13 +249,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                     this[s_scene].paint();
                }
 
-               // TODO: overlay should stay constant zoom factor
                this[s_renderer].clear();
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_renderer].clearDepth();
-               this[s_overlayCam].updateProjectionMatrix();
                this[s_renderer].render(this[s_overlay], this[s_overlayCam]);
-               this[s_camera].updateProjectionMatrix();
 
                this[s_controls].update();
 
