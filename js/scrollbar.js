@@ -21,6 +21,10 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      var s_ball = Symbol('ball');
      var s_value = Symbol('value');
      var s_viewport = Symbol('viewport');
+     var s_rightVec = Symbol('rightvec');
+     var s_leftVec = Symbol('leftvec');
+     var s_lineRight = Symbol('lineright');
+     var s_lineLeft = Symbol('lineleft');
 
      class Scrollbar {
 
@@ -45,7 +49,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                var boxGeometry = new THREE.BoxGeometry(1.5, 4, 1.5);
                var textGeo = new THREE.Geometry();
 
-               var characterSize = 6;
+               var characterSize = 1.4;
                var offset = (characterSize * 3) / 2;
                textGeo = geomify('0', characterSize);
                textGeo.translate(0 - offset, 5, 0);
@@ -76,6 +80,31 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                this[s_ball] = new happah.SphericalImpostor(3);
                this[s_ball].material.uniforms.diffuse.value.set(0xff5555);
                this[s_ball].position.set(0, 6, 100);
+
+               // Sections to devide interval into separate colors
+               this[s_leftVec] = new THREE.Vector3(0, 6, 100);
+               this[s_rightVec] = new THREE.Vector3(150, 6, 100);
+               var lineGeo = new THREE.Geometry();
+               var lineMat = new THREE.LineBasicMaterial({
+                    color: 0xFF0000,
+                    linewidth: 3
+               });
+               lineGeo.vertices.push(this[s_rightVec]);
+               lineGeo.vertices.push(this[s_ball].position);
+
+               this[s_lineRight] = new THREE.Line(lineGeo, lineMat);
+
+               var lineGeo2 = new THREE.Geometry();
+               lineGeo2.vertices.push(this[s_ball].position);
+               lineGeo2.vertices.push(this[s_leftVec]);
+               lineMat = new THREE.LineBasicMaterial({
+                    color: 0x000000,
+                    linewidth: 3
+               });
+               this[s_lineLeft] = new THREE.Line(lineGeo2, lineMat);
+
+               this[s_scene].add(this[s_lineRight]);
+               this[s_scene].add(this[s_lineLeft]);
 
                // Add to camera space
                this[s_scene].add(this[s_bar]);
@@ -198,6 +227,10 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                     // Update scrollbar value
                     this[s_value] = newPos.x / 150;
+
+                    // Update our line sections
+                    this[s_lineRight].geometry.verticesNeedUpdate = true;
+                    this[s_lineLeft].geometry.verticesNeedUpdate = true;
 
                     // New value means new storyboard
                     this[s_viewport].rebuildStoryboard();
