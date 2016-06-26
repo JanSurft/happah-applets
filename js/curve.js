@@ -129,6 +129,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
             frame0.title = "Kontrollpolygon";
             result.append(frame0);
             var i;
+            var meshesMinusOne = [insertSegmentStrip(this[s_controlPoints], 0x3d3d3d)];
 
             var _this = this;
             // Add a frame for each iteration of decasteljau
@@ -137,17 +138,36 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                 frame.title = "Schritt: " + i;
 
                 // Add previous polygons in grey
-                for (var k = 0; k < i; k++) {
+                /*
+                for (var k = 1; k < i; k++) {
                     frame.meshes.push(insertSegmentStrip(this.subdivide(k, ratio), 0x535353));
                 }
+                for (var k in result.frame) {
+                    for (var v in result.frame[k].meshes) {
+                        var mesh = result.frame[k].meshes[v];
+                        if (mesh != null)
+                            mesh.material.color.set(0x3d3d3d);
+                        frame.meshes.push(mesh);
+                    }
+                }
+                */
+                for (var k in meshesMinusOne) {
+                    frame.meshes[k] = meshesMinusOne[k];
+                }
 
-                this.evaluate(ratio, function add(point) {
-                    frame.points.push(point);
+                this.evaluate(ratio, function add(points) {
+                    frame.points.push(points);
                 });
                 var points = this.subdivide(i, ratio);
+                console.log(points);
                 // Add geometry of current
-                frame.meshes.push(insertSegmentStrip(points, 0xff0000));
-                frame.meshes.push(insertSegmentStrip(frame.points[0], 0x00dd00));
+                //frame.meshes.push(insertSegmentStrip(points, 0xff0000));
+                if (frame.points[i - 1] != null) {
+                    var mesh = insertSegmentStrip(frame.points[i - 1], 0xff0000);
+                    frame.meshes.push(mesh);
+                    var mesh2 = insertSegmentStrip(frame.points[i - 1], 0x3d3d3d);
+                    meshesMinusOne.push(mesh2);
+                }
                 result.append(frame);
             }
 
