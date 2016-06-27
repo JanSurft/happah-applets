@@ -161,19 +161,23 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             var points = this[s_storyboard].frame[this[s_currentFrame]].points;
             var impostors = [];
             /*
-            for (var i = 0; i < points.length; i++) {
-                 for (var k = 0; k < points[i].length; k++) {
-                      var imp = new sphericalimpostor.SphericalImpostor(2);
-                      imp.material.uniforms.diffuse.value.set(0x00dd33);
-                      imp.position.copy(points[i][k]);
-                      impostors.push(imp);
-                 }
+                for (var i = 0; i < points.length; i++) {
+                    for (var k = 0; k < points[i].length; k++) {
+                        var imp = new sphericalimpostor.SphericalImpostor(2);
+                        imp.material.uniforms.diffuse.value.set(0x00dd33);
+                        imp.position.copy(points[i][k]);
+                        impostors.push(imp);
+                    }
+                }
+                */
+            if (points[0] != null) {
+                for (var i in points[this[s_currentFrame]]) {
+                    var imp = new sphericalimpostor.SphericalImpostor(2);
+                    imp.position.copy(points[this[s_currentFrame]][i]);
+                    imp.material.uniforms.diffuse.value.set(0x00dd44);
+                    impostors.push(imp);
+                }
             }
-            */
-            var imp = new sphericalimpostor.SphericalImpostor(2);
-            if (points.length != 0)
-                imp.position.copy(points[points.length - 1][0]);
-            impostors.push(imp);
             this[s_scene].points = impostors;
         }
 
