@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three'], function($, THREE) {
+define(['jquery', 'three', 'guide'], function($, THREE, guide) {
     var s_scene = Symbol('scene');
     var s_viewport = Symbol('viewport');
     var s_gridEnabled = Symbol('gridenabled');
@@ -50,6 +50,9 @@ define(['jquery', 'three'], function($, THREE) {
             this[s_content].find("#hph-pause").on('click', {
                 _this: this
             }, this.pause);
+            this[s_content].find("#show-help").on('click', {
+                _this: this
+            }, this.help);
         }
 
         toggleGrid(event) {
@@ -104,6 +107,10 @@ define(['jquery', 'three'], function($, THREE) {
         clearControlPoints(event) {
             //event.data._this[s_scene].removeControlPoints();
             event.data._this[s_viewport].clearScene();
+        }
+        help(event) {
+            var tourPrompt = new guide.Guide();
+            tourPrompt.tourStart();
         }
 
     } // Class Menu
