@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 //
 // Interface
 // @author Tarek Wilkening (tarek_wilkening@web.de)
@@ -110,7 +110,7 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
         }
         help(event) {
             var tourPrompt = new guide.Guide();
-            tourPrompt.tourStart();
+            tourPrompt.showHelp();
         }
 
     } // Class Menu

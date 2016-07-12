@@ -8,12 +8,35 @@
  /////////////////////////////////////////////////////////////////////////////
  define(['jquery'], function($) {
      var s_tourStates = Symbol('tourstates');
+     var s_helpStates = Symbol('helpstates');
 
      class Guide {
          constructor() {
+             this[s_helpStates] = [{
+                 title: 'Help',
+                 html: 'Adding Control-points: doubleclick on one end of the control-polygon. Moving control-points: you can move control-points by drag and drop. Change division ratio by moving the scrollbar-handle in the bottom.',
+                 buttons: {
+                     tour: 3,
+                     Ok: 2
+                 },
+                 focus: 0,
+                 position: {},
+                 submit: this.tourSubmit
+             }];
+
              this[s_tourStates] = [{
+                 title: 'Help',
+                 html: 'Adding Control-points: doubleclick on one end of the control-polygon. Moving control-points: you can move control-points by drag and drop.',
+                 buttons: {
+                     tour: 1,
+                     Ok: 2
+                 },
+                 focus: 0,
+                 position: {},
+                 submit: this.tourSubmit
+             }, {
                  title: 'Welcome',
-                 html: 'Ready to take a quick tour of editors functionality?',
+                 html: 'Ready to take a quick tour through editors functionality?',
                  buttons: {
                      Next: 1
                  },
@@ -161,6 +184,10 @@
              $.prompt(this[s_tourStates]);
          }
 
+         showHelp() {
+             $.prompt(this[s_tourStates]);
+         }
+
          tourSubmit(e, v, m, f) {
              if (v === -1) {
                  $.prompt.prevState();
@@ -168,6 +195,10 @@
              } else if (v === 1) {
                  $.prompt.nextState();
                  return false;
+             } else if (v === 3) {
+                 console.log($.prompt.states);
+                 $.prompt(this[s_tourStates]);
+                 return true;
              }
          }
 
