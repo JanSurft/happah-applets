@@ -53,6 +53,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             }
             set curveState(state) {
                 this[s_showCurve] = state;
+                console.log("curve");
                 this.redraw();
             }
             set meshes(meshes) {
@@ -93,13 +94,14 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                     if (this[s_showPoly]) {
                         this.add(this._controlPointImpostors);
+                        this.add(this[s_meshes][0]);
                     }
                     // Update controlpoints positions
                     for (var i in this.controlPoints)
                         this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
 
                     // Add all geometries from the current frame
-                    for (var i in this[s_meshes]) {
+                    for (var i = 1; i < this[s_meshes].length; i++) {
                         this.add(this[s_meshes][i]);
                     }
 

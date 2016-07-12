@@ -155,11 +155,13 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                     frame.meshes[k] = meshesMinusOne[k];
                 }
 
+                // Start and end point need to be included
+                //frame.points.push(this[s_controlPoints][0]);
+                //frame.points.push(this[s_controlPoints][this[s_controlPoints].length - 2]);
                 this.evaluate(ratio, function add(points) {
                     frame.points.push(points);
                 });
                 var points = this.subdivide(i, ratio);
-                console.log(points);
                 // Add geometry of current
                 //frame.meshes.push(insertSegmentStrip(points, 0xff0000));
                 if (frame.points[i - 1] != null) {
@@ -173,7 +175,9 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
 
             var frameLast = new STORYBOARD.Storyboard.Frame();
             frameLast.title = "Grenzkurve";
-            frameLast.meshes[0] = insertSegmentStrip(this.subdivide(i, ratio), 0xff0000);
+            frameLast.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0x3d3d3d);
+            frameLast.meshes[1] = insertSegmentStrip(this.subdivide(i + 1, 0.5), 0xff0000);
+            frameLast.isStatic = true;
             result.append(frameLast);
 
             return result;
