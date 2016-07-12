@@ -53,7 +53,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             }
             set curveState(state) {
                 this[s_showCurve] = state;
-                console.log("curve");
                 this.redraw();
             }
             set meshes(meshes) {

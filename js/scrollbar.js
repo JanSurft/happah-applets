@@ -18,7 +18,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
     var s_selectedObject = Symbol('selectedobject');
     var s_enabled = Symbol('enabled');
     var s_bar = Symbol('bar');
-    var s_ball = Symbol('ball');
+    var s_handle = Symbol('handle');
     var s_value = Symbol('value');
     var s_viewport = Symbol('viewport');
     var s_rightVec = Symbol('rightvec');
@@ -77,9 +77,14 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             this[s_bar].position.set(0, 0, 100);
 
             // Ball to move along the scrollbar
-            this[s_ball] = new happah.SphericalImpostor(3);
-            this[s_ball].material.uniforms.diffuse.value.set(0xff5555);
-            this[s_ball].position.set(0, 6, 100);
+            //this[s_handle] = new happah.SphericalImpostor(3);
+            //this[s_handle].material.uniforms.diffuse.value.set(0xff5555);
+            var boxGeometry = new THREE.BoxGeometry(4, 8, 8);
+            var boxMaterial = new THREE.MeshBasicMaterial({
+                color: 0x5d5d5d
+            });
+            this[s_handle] = new THREE.Mesh(boxGeometry, boxMaterial);
+            this[s_handle].position.set(0, 6, 100);
 
             // Sections to devide interval into separate colors
             this[s_leftVec] = new THREE.Vector3(0, 6, 100);
@@ -90,12 +95,12 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 linewidth: 3
             });
             lineGeo.vertices.push(this[s_rightVec]);
-            lineGeo.vertices.push(this[s_ball].position);
+            lineGeo.vertices.push(this[s_handle].position);
 
             this[s_lineRight] = new THREE.Line(lineGeo, lineMat);
 
             var lineGeo2 = new THREE.Geometry();
-            lineGeo2.vertices.push(this[s_ball].position);
+            lineGeo2.vertices.push(this[s_handle].position);
             lineGeo2.vertices.push(this[s_leftVec]);
             lineMat = new THREE.LineBasicMaterial({
                 color: 0x000000,
@@ -108,7 +113,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
             // Add to camera space
             this[s_scene].add(this[s_bar]);
-            this[s_scene].add(this[s_ball]);
+            this[s_scene].add(this[s_handle]);
 
             this[s_selectionPlane] = new THREE.Plane(new THREE.Vector3(0, 10, 0), 0);
 
@@ -128,7 +133,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
         }
         set value(value) {
             this[s_value] = value;
-            this[s_ball].position.setX(150 * value);
+            this[s_handle].position.setX(150 * value);
         }
         listenTo(domElement) {
             domElement.addEventListener('mousedown', this.mouseDown, false);
@@ -190,7 +195,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             this[s_selectionRay].set(this[s_raycaster].ray.origin, this[s_raycaster].ray.direction);
 
             // Find all intersected objects
-            var intersects = this[s_raycaster].intersectObject(this[s_ball]);
+            var intersects = this[s_raycaster].intersectObject(this[s_handle]);
 
             if (intersects.length > 0) {
                 // Enable drag-mode
@@ -223,7 +228,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
             if (this[s_selectedObject]) {
                 // Reposition the object based on the intersection point with the plane
                 var newPos = this[s_selectionLine].closestPointToPoint(this[s_selectionRay].intersectPlane(this[s_selectionPlane]));
-                this[s_ball].position.copy(newPos);
+                this[s_handle].position.copy(newPos);
 
                 // Update scrollbar value
                 this[s_value] = newPos.x / 150;
