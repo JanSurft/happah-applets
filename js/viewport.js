@@ -81,7 +81,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_overlayCam].position.y = 1;
             this[s_overlayCam].position.x = 0; // 0 for orthographic camera
             this[s_overlayCam].lookAt(scene.position);
-            this[s_overlayCam].zoom = 2.5;
+            this[s_overlayCam].zoom = 2.2;
             this[s_overlayCam].updateProjectionMatrix();
 
             this[s_controls] = new THREE.TrackballControls(this[s_camera]);
