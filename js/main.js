@@ -19,6 +19,7 @@ require.config({
     paths: {
         i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
         impromptu: "https://cdn.rawgit.com/trentrichardson/jQuery-Impromptu/master/dist/jquery-impromptu.min",
+        mathjax: "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML",
         jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
         three: "http://threejs.org/build/three",
         TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
@@ -29,7 +30,7 @@ require.config({
     }
 });
 
-require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu'], function(happah, THREE, $) {
+require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
     var scene = new happah.Scene();
     var storyboard = new happah.Storyboard();
     var algorithm = new happah.Curve(scene.controlPoints);

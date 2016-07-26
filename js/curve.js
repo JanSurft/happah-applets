@@ -178,7 +178,12 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
             frameLast.title = "Grenzkurve";
             frameLast.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0x3d3d3d);
             frameLast.meshes[1] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
-            frameLast.isStatic = true;
+
+            this.evaluate(ratio, function add(points) {
+                frameLast.points;
+            });
+            console.log(frameLast.points);
+
             result.append(frameLast);
 
             return result;
