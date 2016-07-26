@@ -62,7 +62,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
             this[s_grid] = new THREE.GridHelper(500, 10);
             this[s_grid].position.y = -0.001;
-            this[s_scene].add(this[s_grid]);
 
             this[s_sequence] = false;
             this[s_counter] = 0;

@@ -18,12 +18,12 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
             this[s_content] = $(selector);
             this[s_scene] = scene;
             this[s_viewport] = viewport;
-            this[s_gridEnabled] = true;
+            this[s_gridEnabled] = false;
             // this[s_addModeEnabled] = false;
             this[s_showControlPoly] = true;
-            this[s_viewport].gridState = true;
+            this[s_viewport].gridState = false;
             this[s_sequence] = false;
-            $('#grid-toggle').addClass('active');
+            //$('#grid-toggle').addClass('active');
             $('#hph-pause').hide();
 
             this[s_content].find("#grid-toggle").on('click', {
