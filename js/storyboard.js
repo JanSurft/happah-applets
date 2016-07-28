@@ -28,9 +28,7 @@ define(['jquery', 'translator'], function($, Translator) {
                 this.points = [];
                 this.title = "";
                 this.description = "";
-                this.showCurve = true;
                 this.show = false;
-                //this.isStatic = false;
             }
 
         } //class Storyboard.Frame

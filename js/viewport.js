@@ -19,7 +19,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
     var s_counter = Symbol('counter');
     var s_addControls = Symbol('addcontrols');
     var s_scrollbar = Symbol('scrollbar');
-    var s_altered = Symbol('altered');
     var s_zoom = Symbol('zoom');
 
     // Overlay
@@ -146,39 +145,38 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_scene].redraw();
         }
 
-        applyFrame(frame) {
-            // Set the label text
-            $('#hph-label').text("Frame: " + frame.title);
+        nextFrame() {
+            if (this[s_currentFrame] < this[s_storyboard].frame.length - 1) {
+                this[s_currentFrame]++;
+            }
 
-            // Set the relevant flags
-            this[s_scene].curveState = frame.showCurve;
+            // enable the frame by switching the show flag
+            this[s_storyboard].frame[this[s_currentFrame]].show = true;
+
+            this.currentFrame();
+        }
+
+        currentFrame() {
+            if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
+                $('#hph-forward').css("color", "#333");
+            else
+                $('#hph-forward').css("color", "grey");
+
+            // Apply frame here TODO
+            //this[s_scene].curveState = frame.showCurve;
 
             this.rebuildStoryboard();
 
-            this[s_scene].meshes = this[s_storyboard].frame[this[s_currentFrame]].meshes;
-            // TODO use set meshes
-            var points = this[s_storyboard].frame[this[s_currentFrame]].points;
-            var impostors = [];
-            /*
-                for (var i = 0; i < points.length; i++) {
-                    for (var k = 0; k < points[i].length; k++) {
-                        var imp = new sphericalimpostor.SphericalImpostor(2);
-                        imp.material.uniforms.diffuse.value.set(0x00dd33);
-                        imp.position.copy(points[i][k]);
-                        impostors.push(imp);
-                    }
-                }
-                */
-            /*
-            if (points[0] != null) {
-                for (var i in points[this[s_currentFrame]]) {
-                    var imp = new sphericalimpostor.SphericalImpostor(3);
-                    imp.position.copy(points[this[s_currentFrame]][i]);
-                    imp.material.uniforms.diffuse.value.set(0x404040);
-                    impostors.push(imp);
-                }
+            var points = new Array();
+            var meshes = new Array();
+            for (var i = 0; i <= this[s_currentFrame]; i++) {
+                meshes = meshes.concat(this[s_storyboard].frame[i].meshes);
+                points = points.concat(this[s_storyboard].frame[i].points);
             }
-            */
+            this[s_scene].meshes = meshes;
+            // TODO use set meshes
+            var impostors = [];
+
             if (points[0] != null) {
                 for (var i in points) {
                     var imp = new sphericalimpostor.SphericalImpostor(3);
@@ -190,24 +188,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             this[s_scene].points = impostors;
         }
 
-        nextFrame() {
-            if (this[s_currentFrame] < this[s_storyboard].frame.length - 1) {
-                this[s_currentFrame]++;
-            }
-
-            this.currentFrame();
-        }
-
-        currentFrame() {
-            if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
-                $('#hph-forward').css("color", "#333");
-            else
-                $('#hph-forward').css("color", "grey");
-
-            this.applyFrame(this[s_storyboard].frame[this[s_currentFrame]]);
-        }
-
         previousFrame() {
+            this[s_storyboard].frame[this[s_currentFrame]].show = false;
+
             if (this[s_currentFrame] > 0)
                 this[s_currentFrame]--;
 
@@ -265,6 +248,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
             if (this[s_scene].altered) {
                 this.currentFrame();
+                // Get things to draw
+
+                // Set the relevant flags
+
                 this[s_scene].paint();
             }
 
