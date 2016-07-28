@@ -10,16 +10,12 @@
      var s_tourStates = Symbol('tourstates');
      var s_helpStates = Symbol('helpstates');
 
+     // For debug only
+     var s_text = Symbol('text');
+
      class Guide {
          constructor() {
-             MathJax.Hub.Config({
-                 tex2jax: {
-                     inlineMath: [
-                         ['$', '$'],
-                         ['\\(', '\\)']
-                     ]
-                 }
-             });
+             this[s_text] = "$$\sqrt{b^2-4ac}.$$";
              /*
              this[s_helpStates] = [{
                  title: 'Help',
@@ -36,7 +32,15 @@
 
              this[s_tourStates] = [{
                  title: 'Help',
-                 html: '<p>Adding Control-points: doubleclick on one end of the control-polygon.</p><p>Moving control-points: you can move control-points by drag and drop.</p><p> Change division ratio by moving the scrollbar-handle in the bottom.</p><p> Zoom in or out by scrolling your mousewheel.</p>',
+                 tex2jax: {
+                     inlineMath: [
+                         ['$', '$'],
+                         ['\\(', '\\)']
+                     ]
+                 },
+                 //html: this[s_text],
+                 html: '<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax:{inlineMath: [["$","$"], ["\\(","\\)"]]}});</script><p>When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</p>',
+                 //html: '<p>Adding Control-points: doubleclick on one end of the control-polygon.</p><p>Moving control-points: you can move control-points by drag and drop.</p><p> Change division ratio by moving the scrollbar-handle in the bottom.</p><p> Zoom in or out by scrolling your mousewheel.</p>',
                  buttons: {
                      Tour: 1,
                      Ok: 2
@@ -46,8 +50,7 @@
                  submit: this.tourSubmit
              }, {
                  title: 'Welcome',
-                 //html: 'Ready to take a quick tour through editors functionality?',
-                 html: '<div>When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</div>',
+                 html: 'Ready to take a quick tour through editors functionality?',
                  buttons: {
                      Next: 1
                  },

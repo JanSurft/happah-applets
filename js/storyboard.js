@@ -29,8 +29,8 @@ define(['jquery', 'translator'], function($, Translator) {
                 this.title = "";
                 this.description = "";
                 this.showCurve = true;
-                this.isStatic = false;
-                // TODO: showpoly shall work, need button though
+                this.show = false;
+                //this.isStatic = false;
             }
 
         } //class Storyboard.Frame
