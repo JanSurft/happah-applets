@@ -181,12 +181,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             */
             if (points[0] != null) {
                 for (var i in points) {
-                    for (var k in points[i]) {
-                        var imp = new sphericalimpostor.SphericalImpostor(3);
-                        imp.position.copy(points[i][k]);
-                        imp.material.uniforms.diffuse.value.set(0x404040);
-                        impostors.push(imp);
-                    }
+                    var imp = new sphericalimpostor.SphericalImpostor(3);
+                    imp.position.copy(points[i]);
+                    imp.material.uniforms.diffuse.value.set(0x404040);
+                    impostors.push(imp);
                 }
             }
             this[s_scene].points = impostors;

@@ -128,61 +128,33 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
             frame0.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
             frame0.title = "Kontrollpolygon";
             result.append(frame0);
-            var i;
-            var meshesMinusOne = [insertSegmentStrip(this[s_controlPoints], 0x3d3d3d)];
 
             var _this = this;
-            // Add a frame for each iteration of decasteljau
-            for (i = 1; i < this[s_controlPoints].length - 1 || i < 3; i++) {
+
+            // new approach
+            if (this[s_controlPoints].length == 0) {
+                return result;
+            }
+
+            // array of points for every iteration
+            var tmppoints = new Array();
+            this.evaluate(ratio, function add(points) {
+                tmppoints.push(points);
+            });
+
+            // Make a frame for each iteration of the algorithm
+            for (var i in tmppoints) {
                 var frame = new STORYBOARD.Storyboard.Frame();
-                frame.title = "Schritt: " + i;
-
-                // Add previous polygons in grey
-                /*
-                for (var k = 1; k < i; k++) {
-                    frame.meshes.push(insertSegmentStrip(this.subdivide(k, ratio), 0x535353));
-                }
-                for (var k in result.frame) {
-                    for (var v in result.frame[k].meshes) {
-                        var mesh = result.frame[k].meshes[v];
-                        if (mesh != null)
-                            mesh.material.color.set(0x3d3d3d);
-                        frame.meshes.push(mesh);
-                    }
-                }
-                */
-                for (var k in meshesMinusOne) {
-                    frame.meshes[k] = meshesMinusOne[k];
-                }
-
-                // Start and end point need to be included
-                //frame.points.push(this[s_controlPoints][0]);
-                //frame.points.push(this[s_controlPoints][this[s_controlPoints].length - 2]);
-                this.evaluate(ratio, function add(points) {
-                    frame.points.push(points);
-                });
-                var points = this.subdivide(i, ratio);
-                // Add geometry of current
-                if (frame.points[i - 1] != null) {
-                    var mesh = insertSegmentStrip(frame.points[i - 1], 0x3d3d3d);
-                    frame.meshes.push(mesh);
-                    var mesh2 = insertSegmentStrip(frame.points[i - 1], 0x3d3d3d);
-                    meshesMinusOne.push(mesh2);
-                }
-                frame.meshes.push(insertSegmentStrip(points, 0xff0000));
+                frame.title = "Schritt: " + i + 1;
+                frame.points = tmppoints[i];
+                frame.meshes.push(insertSegmentStrip(tmppoints[i], 0xff0000));
                 result.append(frame);
             }
 
-            //TODO: add point to last frame, so you can move it around
             var frameLast = new STORYBOARD.Storyboard.Frame();
             frameLast.title = "Grenzkurve";
-            frameLast.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0x3d3d3d);
-            frameLast.meshes[1] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
-
-            this.evaluate(ratio, function add(points) {
-                frameLast.points;
-            });
-            console.log(frameLast.points);
+            frameLast.meshes[0] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
+            frameLast.points = tmppoints[2];
 
             result.append(frameLast);
 
