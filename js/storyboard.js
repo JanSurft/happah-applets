@@ -25,6 +25,7 @@ define(['jquery', 'translator'], function($, Translator) {
 
             constructor() {
                 this.meshes = [];
+                this.mesh;
                 this.points = [];
                 this.title = "";
                 this.description = "";

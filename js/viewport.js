@@ -162,17 +162,23 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             else
                 $('#hph-forward').css("color", "grey");
 
-            // Apply frame here TODO
-            //this[s_scene].curveState = frame.showCurve;
+            //Set the label text
+            $('#hph-label').text("Frame: " + this[s_storyboard].frame[this[s_currentFrame]].title);
 
             this.rebuildStoryboard();
 
             var points = new Array();
             var meshes = new Array();
-            for (var i = 0; i <= this[s_currentFrame]; i++) {
-                meshes = meshes.concat(this[s_storyboard].frame[i].meshes);
+            for (var i = 0; i < this[s_currentFrame]; i++) {
+                meshes.push(this[s_storyboard].frame[i].mesh);
                 points = points.concat(this[s_storyboard].frame[i].points);
+
+                // Paint previous meshes in grey
+                this[s_storyboard].frame[i].mesh.material.color = new THREE.Color(0x3d3d3d);
+                this[s_storyboard].frame[i].mesh.material.needsUpdate = true;
             }
+            meshes.push(this[s_storyboard].frame[this[s_currentFrame]].mesh);
+            points = points.concat(this[s_storyboard].frame[this[s_currentFrame]].points);
             this[s_scene].meshes = meshes;
             // TODO use set meshes
             var impostors = [];
@@ -215,6 +221,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
         set sequence(state) {
             this[s_sequence] = state;
+        }
+
+        set curveState(state) {
+            this[s_storyboard].frame[this[s_storyboard].frame.length - 1].show = state;
+            this.currentFrame();
         }
 
         /** Called whenever the mouse wheel is moved */

@@ -10,6 +10,7 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
     var s_gridEnabled = Symbol('gridenabled');
     //var s_addModeEnabled = Symbol('addmodeenabled');
     var s_showControlPoly = Symbol('showcontrolpoly');
+    var s_showCurve = Symbol('showcurve');
     var s_content = Symbol('content');
     var s_sequence = Symbol('sequence');
 
@@ -23,6 +24,7 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
             this[s_showControlPoly] = true;
             this[s_viewport].gridState = false;
             this[s_sequence] = false;
+            this[s_showCurve] = false;
             //$('#grid-toggle').addClass('active');
             $('#hph-pause').hide();
 
@@ -53,6 +55,9 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
             this[s_content].find("#show-help").on('click', {
                 _this: this
             }, this.help);
+            this[s_content].find("#curve-toggle").on('click', {
+                _this: this
+            }, this.toggleCurve);
         }
 
         toggleGrid(event) {
@@ -111,6 +116,17 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
         help(event) {
             var tourPrompt = new guide.Guide();
             tourPrompt.showHelp();
+        }
+        toggleCurve(event) {
+            var state = !event.data._this[s_showCurve];
+            event.data._this[s_showCurve] = state;
+
+            if (state) {
+                $('#curve-toggle').addClass('active');
+            } else {
+                $('#curve-toggle').removeClass('active');
+            }
+            event.data._this[s_viewport].curveState = state;
         }
 
     } // Class Menu
