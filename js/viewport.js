@@ -162,23 +162,34 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
             else
                 $('#hph-forward').css("color", "grey");
 
+            // Get a temporary variable
+            var currentFrame = this[s_storyboard].frame[this[s_currentFrame]];
+
             //Set the label text
-            $('#hph-label').text("Frame: " + this[s_storyboard].frame[this[s_currentFrame]].title);
+            $('#hph-label').text("Frame: " + currentFrame.title);
 
             this.rebuildStoryboard();
 
             var points = new Array();
             var meshes = new Array();
             for (var i = 0; i < this[s_currentFrame]; i++) {
-                meshes.push(this[s_storyboard].frame[i].mesh);
+                var frame = this[s_storyboard].frame[i];
+                meshes.push(frame.meshes[0]);
+                //meshes.push(this[s_storyboard].frame[i].meshes[0]);
+                for (var k in frame.meshes) {
+                    meshes.push(frame.meshes[k]);
+                }
+
                 points = points.concat(this[s_storyboard].frame[i].points);
 
                 // Paint previous meshes in grey
-                this[s_storyboard].frame[i].mesh.material.color = new THREE.Color(0x3d3d3d);
-                this[s_storyboard].frame[i].mesh.material.needsUpdate = true;
+                frame.meshes[0].material.color = new THREE.Color(0xff0000);
+                frame.meshes[0].material.needsUpdate = true;
+                //this[s_storyboard].frame[i].mesh.material.color = new THREE.Color(0x3d3d3d);
+                //this[s_storyboard].frame[i].mesh.material.needsUpdate = true;
             }
-            meshes.push(this[s_storyboard].frame[this[s_currentFrame]].mesh);
-            points = points.concat(this[s_storyboard].frame[this[s_currentFrame]].points);
+            meshes.push(currentFrame.meshes[0]);
+            points = points.concat(currentFrame.points);
             this[s_scene].meshes = meshes;
             // TODO use set meshes
             var impostors = [];

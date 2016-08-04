@@ -125,7 +125,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
         storyboard(ratio = 0.5) {
             var result = new STORYBOARD.Storyboard();
             var frame0 = new STORYBOARD.Storyboard.Frame();
-            frame0.mesh = insertSegmentStrip(this[s_controlPoints], 0xff0000);
+            frame0.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
             frame0.title = "Kontrollpolygon";
             result.append(frame0);
 
@@ -142,18 +142,46 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                 tmppoints.push(points);
             });
 
+            // TODO: Create an extra frame for line segments to have different
+            // color. That way it can be toggled like the limes curve!
+
+
+
+
             // Make a frame for each iteration of the algorithm
             for (var i in tmppoints) {
                 var frame = new STORYBOARD.Storyboard.Frame();
                 frame.title = "Schritt: " + i;
                 frame.points = tmppoints[i];
                 frame.mesh = insertSegmentStrip(tmppoints[i], 0xff0000);
+
+                // TBD: remove this
+                frame.meshes.push(frame.mesh);
+
+                // Skip control polygon
+                // Create new mesh
+                for (var k in tmppoints[i]) {
+                    var segmentStack = new Array();
+
+                    // Push first one from last iteration
+                    if (i == 0) {
+                        segmentStack.push(this[s_controlPoints][k]);
+                    } else {
+                        segmentStack.push(tmppoints[i - 1][k]);
+                    }
+
+                    // Now add one point from current iteration
+                    segmentStack.push(tmppoints[i][k]);
+
+                    var msh = insertSegmentStrip(segmentStack, 0x3d3d3d);
+                    frame.meshes.push(msh);
+                }
                 result.append(frame);
             }
 
             var frameLast = new STORYBOARD.Storyboard.Frame();
             frameLast.title = "Grenzkurve";
-            frameLast.mesh = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
+            frameLast.meshes[0] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
             frameLast.points = tmppoints[2];
 
             result.append(frameLast);
