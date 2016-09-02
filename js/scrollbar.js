@@ -185,7 +185,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_raycaster].ray.origin.copy(mouseVector.unproject(this[s_camera])); //.applyMatrix4(this[s_camera].matrixWorldInverse));
                 this[s_raycaster].ray.direction.set(0, -1, 0);
             } else {
-                console.error('THREE.Raycaster: Unsupported camera type.');
+                console.error('Raycaster: Unsupported camera type: ');
+                console.error(this[s_camera]);
             }
 
             // Set up ray from mouse position

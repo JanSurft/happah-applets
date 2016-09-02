@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: 'js',
+    baseUrl: '../js',
     shim: {
         'bootstrap': {
             deps: ['jquery']
@@ -52,20 +52,3 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
         Rekursionstiefe: 2
     };
 });
-
-//TODO: animate? why not just paint?
-//TODO: take animate out of scene
-//TODO: fix fragDepth
-//TODO: simplify vertex shaders
-//TODO: move shaders into module
-//TODO: move camera from position 0 to position 1 (use quaternion)
-//TODO: check spherical impostor implementation; one billboard for all impostors; use drawarrayinstances from webgl2
-//TODO: shader preprocessor
-//TODO: trackballcontrols: reimplement removing dep on camera
-//TODO: single insert() method for all inserts with type variable in object classes
-//TODO: webgl2...use features such as instanced arrays
-//TODO: data should be only once in memory with flags about how to render it
-//TODO: event-based rendering instead of infinite loop
-//TODO: ray/sphere intersection in fragment shader...also important for point manipulation
-//TODO: interval overlay for choosing ratio in de casteljau algorithm
-//TODO: install and use compass

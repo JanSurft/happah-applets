@@ -127,6 +127,7 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
                 $('#curve-toggle').removeClass('active');
             }
             event.data._this[s_viewport].curveState = state;
+            console.log("toggle curve called");
         }
 
     } // Class Menu

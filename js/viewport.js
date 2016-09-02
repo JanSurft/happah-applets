@@ -5,7 +5,7 @@
 // TODO: make it less of a 'god' class
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols'], function($, THREE, THREE, dragcontrols, trackballcontrols, sphericalimpostor, scrollbar, addcontrols) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols'], function($, THREE, THREE, dragcontrols, sphericalimpostor, scrollbar, addcontrols) {
     var s_camera = Symbol('camera');
     var s_dragControls = Symbol('dragControls');
     var s_renderer = Symbol('renderer');
@@ -189,10 +189,19 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
                 //this[s_storyboard].frame[i].mesh.material.needsUpdate = true;
             }
             meshes.push(currentFrame.meshes[0]);
+
+            // Limes curve
+            var limesCurve = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
+
+            if (limesCurve.show == true) {
+                console.log("asdfljks");
+                meshes.push(limesCurve.meshes[0]);
+            }
             points = points.concat(currentFrame.points);
             this[s_scene].meshes = meshes;
             // TODO use set meshes
             var impostors = [];
+
 
             if (points[0] != null) {
                 for (var i in points) {
@@ -236,6 +245,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'trackballcontro
 
         set curveState(state) {
             this[s_storyboard].frame[this[s_storyboard].frame.length - 1].show = state;
+            console.log(this[s_storyboard].frame[this[s_storyboard].frame.length - 1]);
             this.currentFrame();
         }
 
