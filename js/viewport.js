@@ -66,18 +66,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_counter] = 0;
 
             this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
-            this[s_camera].position.z = 0; // 0 for orthographic camera
-            this[s_camera].position.y = 1;
-            this[s_camera].position.x = 0; // 0 for orthographic camera
-            this[s_camera].lookAt(scene.position);
-            this[s_camera].zoom = 2.5;
-            this[s_camera].updateProjectionMatrix();
 
             //this[s_overlayCam] = new THREE.PerspectiveCamera(45, $(canvas).width() / $(canvas).height(), 1, 1000);
             this[s_overlayCam] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
-            this[s_overlayCam].position.z = 0; // 0 for orthographic camera
-            this[s_overlayCam].position.y = 1;
-            this[s_overlayCam].position.x = 0; // 0 for orthographic camera
+            this[s_overlayCam].position.set(0, 1, 0); // 0 for orthographic camera
             this[s_overlayCam].lookAt(scene.position);
             this[s_overlayCam].zoom = 2.2;
             this[s_overlayCam].updateProjectionMatrix();
@@ -106,20 +98,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_scrollbar].value = 0.5;
             this[s_addControls] = new addcontrols.AddControls(this, this[s_scene], this[s_camera]);
 
-            // Initialize some points
-            this[s_addControls].addControlPoints([
-                new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-                new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
-            ]);
-
             // Trackball controls for camera movement TBD...
             this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);
             this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
             this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
-
-            //this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onMouseMove, false);
-            //this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onMouseKeyDown, false);
-            //this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onMouseKeyUp, false);
 
             // Drag controls for dragging and dropping objects
             this[s_dragControls].listenTo(this[s_renderer].domElement);
@@ -143,6 +125,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             // In any case when the storyboard is rebuilt, the scene has to be
             // updated.
             this[s_scene].redraw();
+        }
+
+        get addControls() {
+            return this[s_addControls];
         }
 
         nextFrame() {
@@ -247,6 +233,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_storyboard].frame[this[s_storyboard].frame.length - 1].show = state;
             console.log(this[s_storyboard].frame[this[s_storyboard].frame.length - 1]);
             this.currentFrame();
+        }
+
+        get camera() {
+            return this[s_camera];
         }
 
         /** Called whenever the mouse wheel is moved */

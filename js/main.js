@@ -32,11 +32,20 @@ require.config({
 
 require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
     var scene = new happah.Scene();
-    var storyboard = new happah.Storyboard();
     var algorithm = new happah.Curve(scene.controlPoints);
     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
+    viewport.camera.position.set(0, 1, 0);
+    viewport.camera.lookAt(scene.position);
+    viewport.camera.zoom = 2.5;
+    viewport.camera.updateProjectionMatrix();
     //scene.algorithm = deCasteljau;
     //scene.algorithm = new happah.Curve(scene.controlPoints);
+
+    // Initialize some points
+    viewport.addControls.addControlPoints([
+        new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
+        new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+    ]);
 
     viewport.update();
 
