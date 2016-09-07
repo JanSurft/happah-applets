@@ -1,6 +1,4 @@
 define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
-    var s_lights = Symbol('lights');
-
     /** Flags for drawing preferences */
     // Set to true if scene has been altered.
     var s_altered = Symbol('altered');
@@ -23,15 +21,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                 this[s_meshes] = [new THREE.Object3D()];
                 this._controlPointImpostors = new THREE.Object3D();
 
-                this[s_lights] = new THREE.Object3D();
-
-                var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, 1);
-                this[s_lights].add(hemisphereLight);
-                var dirLight = new THREE.DirectionalLight(0xffffff);
-                dirLight.position.set(200, 200, 1000).normalize();
-                this[s_lights].add(dirLight);
-
-                this.add(this[s_lights]);
                 this[s_altered] = true;
                 this[s_showPoly] = true;
                 this[s_showCurve] = true;

@@ -5,7 +5,7 @@
 // TODO: make it less of a 'god' class
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols'], function($, THREE, THREE, dragcontrols, sphericalimpostor, scrollbar, addcontrols) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols', 'defaults'], function($, THREE, THREE, dragcontrols, sphericalimpostor, scrollbar, addcontrols, defaults) {
     var s_camera = Symbol('camera');
     var s_dragControls = Symbol('dragControls');
     var s_renderer = Symbol('renderer');
@@ -37,8 +37,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_currentFrame] = 0;
             this[s_scene] = scene;
             this[s_scene].meshes = this[s_storyboard].frame[0].meshes;
-            this[s_scene].algorithm = algorithm;
-
 
             // TBD..
             $(this[s_scene]).bind('update.happah', function() {
@@ -65,10 +63,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_sequence] = false;
             this[s_counter] = 0;
 
-            this[s_camera] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
+            this[s_camera] = defaults.Defaults.orthographicCamera();
+            this[s_overlayCam] = defaults.Defaults.orthographicCamera();
 
-            //this[s_overlayCam] = new THREE.PerspectiveCamera(45, $(canvas).width() / $(canvas).height(), 1, 1000);
-            this[s_overlayCam] = new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
             this[s_overlayCam].position.set(0, 1, 0); // 0 for orthographic camera
             this[s_overlayCam].lookAt(scene.position);
             this[s_overlayCam].zoom = 2.2;
@@ -84,15 +81,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
             // Screen overlay
             this[s_overlay] = new THREE.Scene();
-            var lights = new THREE.Object3D();
 
-            var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, 1);
-            lights.add(hemisphereLight);
-            var dirLight = new THREE.DirectionalLight(0xffffff);
-            dirLight.position.set(200, 200, 1000).normalize();
-            lights.add(dirLight);
-
-            this[s_overlay].add(lights);
+            // Lighting
+            this[s_overlay].add(defaults.Defaults.basicLights);
+            this[s_scene].add(defaults.Defaults.basicLights);
 
             this[s_scrollbar] = new scrollbar.Scrollbar(this[s_overlay], this[s_controls], this[s_overlayCam], $(canvas), this);
             this[s_scrollbar].value = 0.5;
@@ -129,6 +121,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
         get addControls() {
             return this[s_addControls];
+        }
+
+        addLight(lights) {
+            this[s_scene].add(lights);
+            this[s_overlay].add(lights);
         }
 
         nextFrame() {

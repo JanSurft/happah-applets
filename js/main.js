@@ -54,12 +54,6 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
     var l = new happah.Menu(".btn-group", scene, viewport);
     console.log("happah initialized.");
 
-
-
-    var defaults = {
-        algorithm: 'De Casteljau',
-        Rekursionstiefe: 2
-    };
 });
 
 //TODO: animate? why not just paint?
