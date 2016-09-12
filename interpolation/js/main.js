@@ -32,10 +32,18 @@ require.config({
 
 require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
     var scene = new happah.Scene();
-    var algorithm = new happah.Curve(scene.controlPoints);
+    var algorithm = new happah.Line(scene.controlPoints);
     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
-    //scene.algorithm = deCasteljau;
-    //scene.algorithm = new happah.Curve(scene.controlPoints);
+    viewport.camera.position.set(0, 1, 0);
+    viewport.camera.lookAt(scene.position);
+    viewport.camera.zoom = 2.5;
+    viewport.camera.updateProjectionMatrix();
+
+    // Initialize some points
+    viewport.addControls.addControlPoints([
+        new THREE.Vector3(-50, 0, -30),
+        new THREE.Vector3(-40, 0, 30)
+    ]);
 
     viewport.update();
 
@@ -43,11 +51,4 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
     //var i = new happah.Menu(".dropdown-menu", scene, viewport);
     //var l = new happah.Menu(".btn-group", scene, viewport);
     console.log("happah initialized.");
-
-
-
-    var defaults = {
-        algorithm: 'De Casteljau',
-        Rekursionstiefe: 2
-    };
 });
