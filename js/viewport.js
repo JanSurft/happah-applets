@@ -63,8 +63,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_sequence] = false;
             this[s_counter] = 0;
 
-            this[s_camera] = defaults.Defaults.orthographicCamera();
-            this[s_overlayCam] = defaults.Defaults.orthographicCamera();
+            this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
+            this[s_overlayCam] = defaults.Defaults.orthographicCamera($(canvas));
 
             this[s_overlayCam].position.set(0, 1, 0); // 0 for orthographic camera
             this[s_overlayCam].lookAt(scene.position);
@@ -77,14 +77,14 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             // TODO:
             //this[s_controls].addEventListener('change', this.test);
 
-            this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
-
             // Screen overlay
             this[s_overlay] = new THREE.Scene();
 
+            this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
+
             // Lighting
-            this[s_overlay].add(defaults.Defaults.basicLights);
-            this[s_scene].add(defaults.Defaults.basicLights);
+            this[s_overlay].add(defaults.Defaults.basicLights());
+            this[s_scene].add(defaults.Defaults.basicLights());
 
             this[s_scrollbar] = new scrollbar.Scrollbar(this[s_overlay], this[s_controls], this[s_overlayCam], $(canvas), this);
             this[s_scrollbar].value = 0.5;
@@ -98,7 +98,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             // Drag controls for dragging and dropping objects
             this[s_dragControls].listenTo(this[s_renderer].domElement);
             this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
-            this[s_renderer].domElement.addEventListener('mousewheel', this.mouseWheel, false);
+            this[s_renderer].domElement.addEventListener('onmousewheel', this.mouseWheel, false);
 
             // Scrollbar controls
             this[s_scrollbar].listenTo(this[s_renderer].domElement);
@@ -240,6 +240,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
         mouseWheel(event) {
             event.preventDefault();
 
+		console.log("Mouse wheel moved!");
+
             var delta;
 
             if (event.wheelDelta) {
@@ -282,7 +284,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_controls].update();
 
             // Handle sequence here
-            this[s_counter]++;
+            this[s_counter] = this[s_counter]++ %101;
             if (this[s_sequence] && this[s_counter] % 100 == 0) {
                 this.nextFrame();
             }

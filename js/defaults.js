@@ -8,15 +8,15 @@
  /////////////////////////////////////////////////////////////////////////////
  define(['three', 'jquery'], function(THREE, $) {
      class Defaults {
-         orthographicCamera() {
-             return new THREE.OrthographicCamera($(canvas).width() / -2, $(canvas).width() / 2, $(canvas).height() / 2, $(canvas).height() / -2, -500, 1000);
+         static orthographicCamera(canvas) {
+             return new THREE.OrthographicCamera(canvas.width() / -2, canvas.width() / 2, canvas.height() / 2, canvas.height() / -2, -500, 1000);
          }
-         perspectiveCamera() {
-             this[s_overlayCam] = new THREE.PerspectiveCamera(45,
-                 $(canvas).width() / $(canvas).height(), 1, 1000);
+         static perspectiveCamera(canvas) {
+             return new THREE.PerspectiveCamera(45,
+                 canvas.width() / canvas.height(), 1, 1000);
          }
-         basicLights() {
-             lights = new THREE.Object3D();
+         static basicLights() {
+             var lights = new THREE.Object3D();
              var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, 1);
              lights.add(hemisphereLight);
              var dirLight = new THREE.DirectionalLight(0xffffff);

@@ -39,14 +39,14 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                // dragged object or it won't work!
                // TODO: make the size a multiple of the impostor's radius!
                // TODO: don't make the plane a geometry
-               this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({
+               this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
-                    visible: false
+                    visible: true
                }));
                this[s_offset] = new THREE.Vector3();
                this[s_scene].add(this[s_selectionPlane]);
-               this[s_selectionPlane].lookAt(this[s_camera].position);
+               this[s_selectionPlane].lookAt(this[s_camera].getWorldDirection());
           }
 
           enable() {
@@ -60,7 +60,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                domElement.addEventListener('mouseup', this.mouseUp, false);
                domElement.addEventListener('mousedown', this.mouseDown, false);
           }
-          stopListening(domElement) {
+          stopListeningTo(domElement) {
                domElement.removeEventListener('mousemove', this.mouseMove, false);
                domElement.removeEventListener('mouseup', this.mouseUp, false);
                domElement.removeEventListener('mousedown', this.mouseDown, false);
@@ -97,8 +97,8 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
 
-               // Not needed because the camera orientation does not change.
-               //this[s_selectionPlane].lookAt(this[s_camera].position);
+               // Make sure the plane points towards the camera
+                         this[s_selectionPlane].lookAt(this[s_camera].position.clone().multiplyScalar(10));
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
@@ -172,8 +172,9 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                     if (intersects.length > 0) {
                          // TODO: is this really necessary?
                          this[s_selectionPlane].position.copy(intersects[0].position);
-                         //this[s_selectionPlane].lookAt(this[s_camera].position);
                     }
+                         // Update normal-vector
+                         this[s_selectionPlane].lookAt(this[s_camera].position.clone().add(intersects[0].position));
                }
           }
 
