@@ -97,9 +97,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
 
-               // Make sure the plane points towards the camera
-                         this[s_selectionPlane].lookAt(this[s_camera].position.clone().multiplyScalar(10));
-
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
                // Get 3D vector from 3D mouse position using 'unproject'
@@ -172,9 +169,10 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                     if (intersects.length > 0) {
                          // TODO: is this really necessary?
                          this[s_selectionPlane].position.copy(intersects[0].position);
-                    }
+
                          // Update normal-vector
                          this[s_selectionPlane].lookAt(this[s_camera].position.clone().add(intersects[0].position));
+                    }
                }
           }
 
