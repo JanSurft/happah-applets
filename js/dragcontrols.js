@@ -16,6 +16,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
      var s_selectionPlane = Symbol('plane');
      var s_offset = Symbol('offset');
      var s_enabled = Symbol('enabled');
+     var s_arrow = Symbol('arrow');
 
      class DragControls {
 
@@ -42,7 +43,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500), new THREE.MeshBasicMaterial({
                     color: 0x00ee22,
                     alphaTest: 0,
-                    visible: true
+                    visible: false
                }));
                this[s_offset] = new THREE.Vector3();
                this[s_scene].add(this[s_selectionPlane]);
@@ -99,12 +100,6 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
-               // Get 3D vector from 3D mouse position using 'unproject'
-               // Only in 3D.
-
-               // Set the raycaster position // TODO: only in 3D?
-               //this[s_raycaster].set(this[s_camera].position, vector.sub(this[s_camera].position).normalize());
-
                // Find all intersected objects
                var intersects = this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children, true);
 
@@ -142,6 +137,8 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                // vector.unproject(this[s_camera]);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
+               // Multiply the origin vector of the ray so it's far behind the camera
+               //this[s_raycaster].ray.origin.sub(this[s_raycaster].ray.direction);
                // this[s_camera].position, vector.sub(this[s_camera].position).normalize());
                // ^Only in 3D.
 
