@@ -20,6 +20,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
     var s_addControls = Symbol('addcontrols');
     var s_scrollbar = Symbol('scrollbar');
     var s_zoom = Symbol('zoom');
+     var s_drawlastframe = Symbol('drawlastframe');
 
     // Overlay
     var s_overlay = Symbol('overlay');
@@ -173,12 +174,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             }
             meshes.push(currentFrame.meshes[0]);
 
-            // Limes curve
-            var limesCurve = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
+            // Limes curve is obviously the last frame
+            var lastFrame = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
 
-            if (limesCurve.show == true) {
-                console.log("asdfljks");
-                meshes.push(limesCurve.meshes[0]);
+            if (this[s_drawlastframe] == true) {
+                meshes.push(lastFrame.meshes[0]);
             }
             points = points.concat(currentFrame.points);
             this[s_scene].meshes = meshes;
@@ -227,8 +227,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
         }
 
         set curveState(state) {
-            this[s_storyboard].frame[this[s_storyboard].frame.length - 1].show = state;
-            console.log(this[s_storyboard].frame[this[s_storyboard].frame.length - 1]);
+             this[s_drawlastframe] = state;
             this.currentFrame();
         }
 
@@ -238,9 +237,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
         /** Called whenever the mouse wheel is moved */
         mouseWheel(event) {
-            event.preventDefault();
+            console.log("Mouse wheel moved!");
 
-		console.log("Mouse wheel moved!");
+            event.preventDefault();
 
             var delta;
 

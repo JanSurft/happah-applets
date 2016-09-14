@@ -34,7 +34,7 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
     var scene = new happah.Scene();
     var algorithm = new happah.Curve(scene.controlPoints);
     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
-    viewport.camera.position.set(1, 1, 1);
+    viewport.camera.position.set(0, 1, 0);
     viewport.camera.lookAt(scene.position);
     viewport.camera.zoom = 2.5;
     viewport.camera.updateProjectionMatrix();
