@@ -2,7 +2,6 @@
 //
 // Viewport
 // @author Tarek Wilkening (tarek_wilkening@web.de)
-// TODO: make it less of a 'god' class
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols', 'defaults'], function($, THREE, THREE, dragcontrols, sphericalimpostor, scrollbar, addcontrols, defaults) {
@@ -20,7 +19,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
     var s_addControls = Symbol('addcontrols');
     var s_scrollbar = Symbol('scrollbar');
     var s_zoom = Symbol('zoom');
-     var s_drawlastframe = Symbol('drawlastframe');
+    var s_drawlastframe = Symbol('drawlastframe');
 
     // Overlay
     var s_overlay = Symbol('overlay');
@@ -99,7 +98,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             // Drag controls for dragging and dropping objects
             this[s_dragControls].listenTo(this[s_renderer].domElement);
             this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
-            this[s_renderer].domElement.addEventListener('onmousewheel', this.mouseWheel, false);
+            this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
 
             // Scrollbar controls
             this[s_scrollbar].listenTo(this[s_renderer].domElement);
@@ -227,7 +226,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
         }
 
         set curveState(state) {
-             this[s_drawlastframe] = state;
+            this[s_drawlastframe] = state;
             this.currentFrame();
         }
 
@@ -237,8 +236,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
         /** Called whenever the mouse wheel is moved */
         mouseWheel(event) {
-            console.log("Mouse wheel moved!");
-
             event.preventDefault();
 
             var delta;
@@ -249,11 +246,12 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                 // This works with Firefox
                 delta = -event.detail / 2;
             } else {
-                delta = 0;
+                delta = -event.deltaY;
             }
             // Zoom speed
             delta = delta * 0.06;
 
+            console.log(delta);
             if (this[s_camera].zoom + delta < 0) {
                 delta = 0;
             }
@@ -283,7 +281,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
             this[s_controls].update();
 
             // Handle sequence here
-            this[s_counter] = this[s_counter]++ %101;
+            this[s_counter] = this[s_counter]++ % 101;
             if (this[s_sequence] && this[s_counter] % 100 == 0) {
                 this.nextFrame();
             }
