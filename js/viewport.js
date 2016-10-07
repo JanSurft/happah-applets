@@ -155,35 +155,37 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
                var points = new Array();
                var meshes = new Array();
+
+               // Collect all meshes and points from previous iterations
                for (var i = 0; i < this[s_currentFrame]; i++) {
                     var frame = this[s_storyboard].frame[i];
-                    meshes.push(frame.meshes[0]);
-                    //meshes.push(this[s_storyboard].frame[i].meshes[0]);
-                    for (var k in frame.meshes) {
-                         meshes.push(frame.meshes[k]);
-                    }
 
-                    points = points.concat(this[s_storyboard].frame[i].points);
+                    // Concat mesh/point arrays
+                    meshes = meshes.concat(frame.meshes);
+                    points = points.concat(frame.points);
+                    //points = this[s_storyboard].frame[i].points;
 
                     // Paint previous meshes in grey
+                    // meshes[0] is the least recently added one.
                     frame.meshes[0].material.color = new THREE.Color(0xff0000);
                     frame.meshes[0].material.needsUpdate = true;
-                    //this[s_storyboard].frame[i].mesh.material.color = new THREE.Color(0x3d3d3d);
-                    //this[s_storyboard].frame[i].mesh.material.needsUpdate = true;
                }
-               meshes.push(currentFrame.meshes[0]);
+
+               // Add the current frame's mesh
+               meshes = meshes.concat(currentFrame.meshes);
+               points = points.concat(currentFrame.points);
 
                // Limes curve is obviously the last frame
                var lastFrame = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
 
+               // If curve is enabled, add curve
                if (this[s_drawlastframe] == true) {
                     meshes.push(lastFrame.meshes[0]);
                }
-               points = points.concat(currentFrame.points);
                this[s_scene].meshes = meshes;
+
                // TODO use set meshes
                var impostors = [];
-
 
                if (points[0] != null) {
                     for (var i in points) {
