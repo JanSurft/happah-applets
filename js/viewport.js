@@ -182,11 +182,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                if (this[s_drawlastframe] == true) {
                     meshes.push(lastFrame.meshes[0]);
                }
-               this[s_scene].meshes = meshes;
 
-               // TODO use set meshes
                var impostors = [];
 
+               // Convert points to impostors
                if (points[0] != null) {
                     for (var i in points) {
                          var imp = new sphericalimpostor.SphericalImpostor(3);
@@ -196,6 +195,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     }
                }
                this[s_scene].points = impostors;
+               this[s_scene].meshes = meshes;
           }
 
           previousFrame() {
