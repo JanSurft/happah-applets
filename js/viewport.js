@@ -139,63 +139,15 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                this.currentFrame();
           }
 
+          // TODO: move everything to update
           currentFrame() {
                if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
                     $('#hph-forward').css("color", "#333");
                else
                     $('#hph-forward').css("color", "grey");
 
-               // Get a temporary variable
-               var currentFrame = this[s_storyboard].frame[this[s_currentFrame]];
-
-               //Set the label text
-               $('#hph-label').text("Frame: " + currentFrame.title);
-
+               // Adapt the frames to the new conditions
                this.rebuildStoryboard();
-
-               var points = new Array();
-               var meshes = new Array();
-
-               // Collect all meshes and points from previous iterations
-               for (var i = 0; i < this[s_currentFrame]; i++) {
-                    var frame = this[s_storyboard].frame[i];
-
-                    // Concat mesh/point arrays
-                    meshes = meshes.concat(frame.meshes);
-                    points = points.concat(frame.points);
-                    //points = this[s_storyboard].frame[i].points;
-
-                    // Paint previous meshes in grey
-                    // meshes[0] is the least recently added one.
-                    frame.meshes[0].material.color = new THREE.Color(0xff0000);
-                    frame.meshes[0].material.needsUpdate = true;
-               }
-
-               // Add the current frame's mesh
-               meshes = meshes.concat(currentFrame.meshes);
-               points = points.concat(currentFrame.points);
-
-               // Limes curve is obviously the last frame
-               var lastFrame = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
-
-               // If curve is enabled, add curve
-               if (this[s_drawlastframe] == true) {
-                    meshes.push(lastFrame.meshes[0]);
-               }
-
-               var impostors = [];
-
-               // Convert points to impostors
-               if (points[0] != null) {
-                    for (var i in points) {
-                         var imp = new sphericalimpostor.SphericalImpostor(3);
-                         imp.position.copy(points[i]);
-                         imp.material.uniforms.diffuse.value.set(0x404040);
-                         impostors.push(imp);
-                    }
-               }
-               this[s_scene].points = impostors;
-               this[s_scene].meshes = meshes;
           }
 
           previousFrame() {
@@ -266,14 +218,61 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                requestAnimationFrame(this.update.bind(this));
 
                if (this[s_scene].altered) {
-                    this.currentFrame();
-                    // Get things to draw
+                    this.rebuildStoryboard();
 
-                    // Set the relevant flags
+                    // Get a temporary variable
+                    var currentFrame = this[s_storyboard].frame[this[s_currentFrame]];
 
+                    //Set the label text
+                    $('#hph-label').text("Frame: " + currentFrame.title);
+
+                    var points = new Array();
+                    var meshes = new Array();
+
+                    // Collect all meshes and points from previous iterations
+                    for (var i = 0; i < this[s_currentFrame]; i++) {
+                         var frame = this[s_storyboard].frame[i];
+
+                         // Concat mesh/point arrays
+                         meshes = meshes.concat(frame.meshes);
+                         points = points.concat(frame.points);
+                         //points = this[s_storyboard].frame[i].points;
+
+                         // Paint previous meshes in grey
+                         // meshes[0] is the least recently added one.
+                         frame.meshes[0].material.color = new THREE.Color(0xff0000);
+                         frame.meshes[0].material.needsUpdate = true;
+                    }
+
+                    // Add the current frame's mesh
+                    meshes = meshes.concat(currentFrame.meshes);
+                    points = points.concat(currentFrame.points);
+
+                    // Limes curve is obviously the last frame
+                    var lastFrame = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
+
+                    // If curve is enabled, add curve
+                    if (this[s_drawlastframe] == true) {
+                         meshes.push(lastFrame.meshes[0]);
+                    }
+
+                    var impostors = [];
+
+                    // Convert points to impostors
+                    if (points[0] != null) {
+                         for (var i in points) {
+                              var imp = new sphericalimpostor.SphericalImpostor(3);
+                              imp.position.copy(points[i]);
+                              imp.material.uniforms.diffuse.value.set(0x404040);
+                              impostors.push(imp);
+                         }
+                    }
+                    this[s_scene].points = impostors;
+                    this[s_scene].meshes = meshes;
                     this[s_scene].paint();
                }
 
+               // Render scene + scene overlay
                this[s_renderer].clear();
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_renderer].clearDepth();
