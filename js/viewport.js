@@ -234,6 +234,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                          var frame = this[s_storyboard].frame[i];
 
                          // Concat mesh/point arrays
+                         // TODO: pushback since meshes contains a single
                          meshes = meshes.concat(frame.meshes);
                          points = points.concat(frame.points);
                          //points = this[s_storyboard].frame[i].points;
