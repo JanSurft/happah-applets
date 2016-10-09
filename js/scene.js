@@ -58,8 +58,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     // Remove points first
                     for (var i in this[s_points]) {
                          this.remove(this[s_points][i]);
-                         if (points != null && points[i] != null)
-                              this.add(points[i]);
                     }
                     this[s_points] = points;
                     this.redraw();
@@ -94,6 +92,10 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                          // Add all meshes
                          for (var i in this[s_meshes]) {
                               this.add(this[s_meshes][i]);
+                         }
+                         // Add all points
+                         for (var i in this[s_points]) {
+                              this.add(this[s_points][i]);
                          }
 
                     }

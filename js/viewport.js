@@ -229,20 +229,19 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     var points = new Array();
                     var meshes = new Array();
 
+                    // TODO: find different way
                     // Collect all meshes and points from previous iterations
                     for (var i = 0; i < this[s_currentFrame]; i++) {
                          var frame = this[s_storyboard].frame[i];
 
                          // Concat mesh/point arrays
-                         // TODO: pushback since meshes contains a single
                          meshes = meshes.concat(frame.meshes);
                          points = points.concat(frame.points);
                          //points = this[s_storyboard].frame[i].points;
 
-                         // Paint previous meshes in grey
                          // meshes[0] is the least recently added one.
-                         frame.meshes[0].material.color = new THREE.Color(0xff0000);
-                         frame.meshes[0].material.needsUpdate = true;
+                         //frame.meshes[0].material.color = new THREE.Color(0xff0000);
+                         //frame.meshes[0].material.needsUpdate = true;
                     }
 
                     // Add the current frame's mesh
@@ -254,22 +253,24 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
                     // If curve is enabled, add curve
                     if (this[s_drawlastframe] == true) {
-                         meshes.push(lastFrame.meshes[0]);
+                         // meshes.push(lastFrame.meshes[0]);
+                         meshes = meshes.concat(lastFrame.meshes);
                     }
 
                     var impostors = [];
 
                     // Convert points to impostors
-                    if (points[0] != null) {
-                         for (var i in points) {
-                              var imp = new sphericalimpostor.SphericalImpostor(3);
-                              imp.position.copy(points[i]);
-                              imp.material.uniforms.diffuse.value.set(0x404040);
-                              impostors.push(imp);
-                         }
+                    for (var i in points) {
+                         var imp = new sphericalimpostor.SphericalImpostor(3);
+                         imp.position.copy(points[i]);
+                         //imp.material.uniforms.diffuse.value.set(0x404040);
+                         impostors.push(imp);
                     }
+
                     this[s_scene].points = impostors;
                     this[s_scene].meshes = meshes;
+                    //for (var i in meshes)
+                    //this[s_scene].add(meshes[i]);
                     this[s_scene].paint();
                }
 
