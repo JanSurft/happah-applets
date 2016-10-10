@@ -228,6 +228,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
                     var points = new Array();
                     var meshes = new Array();
+                    /*
 
                     // TODO: find different way
                     // Collect all meshes and points from previous iterations
@@ -243,7 +244,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                          //frame.meshes[0].material.color = new THREE.Color(0xff0000);
                          //frame.meshes[0].material.needsUpdate = true;
                     }
-
+                    */
                     // Add the current frame's mesh
                     meshes = meshes.concat(currentFrame.meshes);
                     points = points.concat(currentFrame.points);
@@ -259,28 +260,34 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
                     var impostors = [];
 
+                    // FIXME
+                    /*
                     // Convert points to impostors
                     for (var i in points) {
                          var imp = new sphericalimpostor.SphericalImpostor(3);
                          imp.position.copy(points[i]);
-                         //imp.material.uniforms.diffuse.value.set(0x404040);
+                         imp.material.uniforms.diffuse.value.set(0x404040);
                          impostors.push(imp);
                     }
+                    */
 
-                    this[s_scene].points = impostors;
+                    // TODO make this better loookign
+                    this[s_scene].points = points;
                     this[s_scene].meshes = meshes;
                     //for (var i in meshes)
                     //this[s_scene].add(meshes[i]);
                     this[s_scene].paint();
+
+                    // FIXME: does this belong inside the if-block?
+                    // Render scene + scene overlay
+                    this[s_renderer].clear();
+                    this[s_renderer].render(this[s_scene], this[s_camera]);
+                    this[s_renderer].clearDepth();
+                    this[s_renderer].render(this[s_overlay], this[s_overlayCam]);
+
+                    this[s_controls].update();
                }
 
-               // Render scene + scene overlay
-               this[s_renderer].clear();
-               this[s_renderer].render(this[s_scene], this[s_camera]);
-               this[s_renderer].clearDepth();
-               this[s_renderer].render(this[s_overlay], this[s_overlayCam]);
-
-               this[s_controls].update();
 
                // Handle sequence here
                this[s_counter] = this[s_counter]++ % 101;

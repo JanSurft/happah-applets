@@ -4,7 +4,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
+define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THREE, STORYBOARD, sphericalimpostor) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
 
@@ -160,8 +160,13 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                     // Also add the newly generated polygon
                     frame.meshes[0] = insertSegmentStrip(tmppoints[i], 0xFF0000);
 
-                    // Current points will be drawn in black
-                    frame.points = tmppoints[i];
+                    // Generate impostors
+                    for (var k in tmppoints[i]) {
+                         var m = new sphericalimpostor.SphericalImpostor(3);
+                         m.position.copy(tmppoints[i][k]);
+                         m.material.uniforms.diffuse.value.set(0x404040);
+                         frame.points.push(m);
+                    }
 
                     var segmentStack = new Array();
 
@@ -171,7 +176,7 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                          segmentStack.push(tmppoints[i - 1][k]);
 
                          // Now add one point from current iteration
-                         segmentStack.push(frame.points[k]);
+                         segmentStack.push(tmppoints[i][k]);
                     }
                     // Add last point from previous iteration
                     segmentStack.push(tmppoints[i - 1][tmppoints[i - 1].length - 1]);
@@ -185,7 +190,12 @@ define(['jquery', 'three', 'storyboard'], function($, THREE, STORYBOARD) {
                          var strip = (k % 2 == 0) ?
                               insertSegmentStrip(segment, 0x3D3D3D) : insertSegmentStrip(segment, 0xFF0000);
                          frame.meshes.push(strip);
+
                     }
+                    // Merge with the previous frame's meshes
+                    frame.meshes = frame.meshes.concat(result.frame[result.frame.length - 1].meshes);
+                    frame.points = frame.points.concat(result.frame[result.frame.length - 1].points);
+
                     result.append(frame);
                }
 
