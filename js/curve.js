@@ -17,6 +17,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
           /** Default constructor. */
           constructor(controlPoints) {
                this[s_controlPoints] = controlPoints;
+               this.storyboard = this.storyboard.bind(this);
           }
 
           evaluate(t = 0.5, callback = null) {
@@ -128,15 +129,12 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
            */
           storyboard(ratio = 0.5) {
                // Create the first frame by hand
-               var result = new STORYBOARD.Storyboard();
+               var result = new STORYBOARD.Storyboard(this);
                var frame0 = new STORYBOARD.Storyboard.Frame();
                frame0.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Kontrollpolygon";
                result.append(frame0);
 
-               var _this = this;
-
-               // trivial case
                if (this[s_controlPoints].length == 0) {
                     return result;
                }
@@ -160,6 +158,8 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                     // Also add the newly generated polygon
                     frame.meshes[0] = insertSegmentStrip(tmppoints[i], 0xFF0000);
 
+                    //frame.points = tmppoints[i];
+
                     // Generate impostors
                     for (var k in tmppoints[i]) {
                          var m = new sphericalimpostor.SphericalImpostor(3);
@@ -167,6 +167,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                          m.material.uniforms.diffuse.value.set(0x404040);
                          frame.points.push(m);
                     }
+
 
                     var segmentStack = new Array();
 
@@ -194,7 +195,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                     }
                     // Merge with the previous frame's meshes
                     frame.meshes = frame.meshes.concat(result.frame[result.frame.length - 1].meshes);
-                    frame.points = frame.points.concat(result.frame[result.frame.length - 1].points);
+                    //frame.points = frame.points.concat(result.frame[result.frame.length - 1].points);
 
                     result.append(frame);
                }

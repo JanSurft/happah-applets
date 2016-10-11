@@ -218,7 +218,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                requestAnimationFrame(this.update.bind(this));
 
                if (this[s_scene].altered) {
-                    this.rebuildStoryboard();
+                    // TODO replace with storyboard.update()
+                    //this.rebuildStoryboard();
+                    this[s_storyboard].update(this[s_scrollbar].value);
 
                     // Get a temporary variable
                     var currentFrame = this[s_storyboard].frame[this[s_currentFrame]];
@@ -258,10 +260,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                          meshes = meshes.concat(lastFrame.meshes);
                     }
 
+                    /*
                     var impostors = [];
 
                     // FIXME
-                    /*
                     // Convert points to impostors
                     for (var i in points) {
                          var imp = new sphericalimpostor.SphericalImpostor(3);
