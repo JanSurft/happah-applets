@@ -219,8 +219,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
                if (this[s_scene].altered) {
                     // TODO replace with storyboard.update()
-                    //this.rebuildStoryboard();
-                    this[s_storyboard].update(this[s_scrollbar].value);
+                    this.rebuildStoryboard();
 
                     // Get a temporary variable
                     var currentFrame = this[s_storyboard].frame[this[s_currentFrame]];
@@ -228,8 +227,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     //Set the label text
                     $('#hph-label').text("Frame: " + currentFrame.title);
 
-                    var points = new Array();
-                    var meshes = new Array();
                     /*
 
                     // TODO: find different way
@@ -248,20 +245,18 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     }
                     */
                     // Add the current frame's mesh
-                    meshes = meshes.concat(currentFrame.meshes);
-                    points = points.concat(currentFrame.points);
+                    var meshes = currentFrame.meshes;
+                    var points = currentFrame.points;
 
                     // Limes curve is obviously the last frame
                     var lastFrame = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
 
                     // If curve is enabled, add curve
                     if (this[s_drawlastframe] == true) {
-                         // meshes.push(lastFrame.meshes[0]);
                          meshes = meshes.concat(lastFrame.meshes);
                     }
 
-                    /*
-                    var impostors = [];
+                    var impostors = new Array();
 
                     // FIXME
                     // Convert points to impostors
@@ -271,10 +266,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                          imp.material.uniforms.diffuse.value.set(0x404040);
                          impostors.push(imp);
                     }
-                    */
 
                     // TODO make this better loookign
-                    this[s_scene].points = points;
+                    this[s_scene].points = impostors;
                     this[s_scene].meshes = meshes;
                     //for (var i in meshes)
                     //this[s_scene].add(meshes[i]);

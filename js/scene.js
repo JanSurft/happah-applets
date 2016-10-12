@@ -10,6 +10,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      //var s_geometries = Symbol('geometries');
      // Store a set of meshes
      var s_meshes = Symbol('meshes');
+
+     // Rename points -> impostors to reduce confusion
      var s_points = Symbol('points');
 
      class Scene extends THREE.Scene {

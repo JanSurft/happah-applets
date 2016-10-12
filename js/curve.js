@@ -129,64 +129,64 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
            */
           storyboard(ratio = 0.5) {
                // Create the first frame by hand
-               var result = new STORYBOARD.Storyboard(this);
+               var storyboard = new STORYBOARD.Storyboard(this);
                var frame0 = new STORYBOARD.Storyboard.Frame();
                frame0.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
-               frame0.title = "Kontrollpolygon";
-               result.append(frame0);
+               frame0.title = "Controlpolygon";
+               storyboard.append(frame0);
 
                if (this[s_controlPoints].length == 0) {
-                    return result;
+                    return storyboard;
                }
 
                // matrix of points for every iteration
-               var tmppoints = new Array();
+               var pointMatrix = new Array();
 
-               // FIXME
-               tmppoints.push(this[s_controlPoints]);
+               // First set of points is the control polygon
+               pointMatrix.push(this[s_controlPoints]);
 
                // fill matrix with points from each iteration
                this.evaluate(ratio, function add(points) {
-                    tmppoints.push(points);
+                    pointMatrix.push(points);
                });
 
                // Skip the control polygon
-               for (var i = 1; i < tmppoints.length; i++) {
+               for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new STORYBOARD.Storyboard.Frame();
-                    frame.title = "Schritt: " + i;
+                    frame.title = "Step: " + i;
 
                     // Also add the newly generated polygon
-                    frame.meshes[0] = insertSegmentStrip(tmppoints[i], 0xFF0000);
-
-                    //frame.points = tmppoints[i];
+                    frame.meshes.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
+                    frame.points = pointMatrix[i];
 
                     // Generate impostors
-                    for (var k in tmppoints[i]) {
+                    /** this is done by the viewport
+                    for (var k in pointMatrix[i]) {
                          var m = new sphericalimpostor.SphericalImpostor(3);
-                         m.position.copy(tmppoints[i][k]);
+                         m.position.copy(pointMatrix[i][k]);
                          m.material.uniforms.diffuse.value.set(0x404040);
                          frame.points.push(m);
                     }
+                    */
 
-
-                    var segmentStack = new Array();
+                    var pointStack = new Array();
 
                     // The previous iteration has one point more.
-                    for (var k in frame.points) {
+                    for (var k in pointMatrix[i]) {
                          // Push first one from last iteration
-                         segmentStack.push(tmppoints[i - 1][k]);
+                         pointStack.push(pointMatrix[i - 1][k]);
 
                          // Now add one point from current iteration
-                         segmentStack.push(tmppoints[i][k]);
+                         pointStack.push(pointMatrix[i][k]);
                     }
                     // Add last point from previous iteration
-                    segmentStack.push(tmppoints[i - 1][tmppoints[i - 1].length - 1]);
+                    pointStack.push(pointMatrix[i - 1][pointMatrix[i - 1].length - 1]);
 
                     // Iterate over stacksize and make a segment from 2 points
-                    for (var k = segmentStack.length; k > 1; k--) {
+                    for (var k = pointStack.length; k > 1; k--) {
                          var segment = new Array();
-                         segment.push(segmentStack[k - 1]);
-                         segment.push(segmentStack[k - 2]);
+                         segment.push(pointStack[k - 1]);
+                         segment.push(pointStack[k - 2]);
                          // Paint the strips in the interval's color
                          var strip = (k % 2 == 0) ?
                               insertSegmentStrip(segment, 0x3D3D3D) : insertSegmentStrip(segment, 0xFF0000);
@@ -194,21 +194,21 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
 
                     }
                     // Merge with the previous frame's meshes
-                    frame.meshes = frame.meshes.concat(result.frame[result.frame.length - 1].meshes);
-                    //frame.points = frame.points.concat(result.frame[result.frame.length - 1].points);
+                    frame.meshes = frame.meshes.concat(storyboard.frame[storyboard.frame.length - 1].meshes);
+                    frame.points = frame.points.concat(storyboard.frame[storyboard.frame.length - 1].points);
 
-                    result.append(frame);
+                    storyboard.append(frame);
                }
 
                // Create the last frame also by hand
                var frameLast = new STORYBOARD.Storyboard.Frame();
                frameLast.title = "Grenzkurve";
                frameLast.meshes[0] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
-               frameLast.points = tmppoints[2];
+               //frameLast.points = pointMatrix[2];
 
-               result.append(frameLast);
+               storyboard.append(frameLast);
 
-               return result;
+               return storyboard;
           }
 
      }
