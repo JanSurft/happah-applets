@@ -185,8 +185,6 @@ define(['jquery', 'three'], function($, THREE) {
                raycast(raycaster, intersects) {
                     var distance = raycaster.ray.distanceToPoint(this.position);
                     if (distance <= this.radius) {
-                         // TODO: push mesh or new Object3D?
-                         //       this way we need to adjust intersects.
                          intersects.push(this);
                     }
                }
