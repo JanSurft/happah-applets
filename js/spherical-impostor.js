@@ -183,9 +183,11 @@ define(['jquery', 'three'], function($, THREE) {
 
                // @Override raycast function for easy intersect
                raycast(raycaster, intersects) {
-                    var distance = raycaster.ray.distanceToPoint(this.position);
-                    if (distance <= this.radius) {
-                         intersects.push(this);
+                    if (raycaster.ray.distanceToPoint(this.position) <= this.radius + 1) {
+                         var intersectionPoint = raycaster.ray.closestPointToPoint(this.position);
+                         intersects.unshift({
+                              1337, intersectionPoint, this.geometry.faces[0], 0, 0, this
+                         });
                     }
                }
 
