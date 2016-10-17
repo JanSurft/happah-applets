@@ -13,7 +13,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      // Member variables
      var s_raycaster = Symbol('raycaster');
      var s_selectionPlane = Symbol('plane');
-     var s_selectionRay = Symbol('ray');
      var s_selectionLine = Symbol('line');
      var s_selectedObject = Symbol('selectedobject');
      var s_enabled = Symbol('enabled');
@@ -70,21 +69,19 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     color: 0x4D4D4D
                });
                this[s_bar] = new THREE.Mesh(geo, mat);
-               this[s_bar].position.set(0, 0, 100);
+               this[s_bar].position.set(0, -100, 100);
 
                // Handle to move along the scrollbar
-               //this[s_handle] = new happah.SphericalImpostor(3);
-               //this[s_handle].material.uniforms.diffuse.value.set(0xff5555);
                var boxGeometry = new THREE.BoxGeometry(4, 8, 8);
                var boxMaterial = new THREE.MeshBasicMaterial({
                     color: 0x5d5d5d
                });
                this[s_handle] = new THREE.Mesh(boxGeometry, boxMaterial);
-               this[s_handle].position.set(0, 6, 100);
+               this[s_handle].position.set(0, -20, 100);
 
                // Sections to devide interval into separate colors
-               this[s_leftVec] = new THREE.Vector3(-75, 6, 100);
-               this[s_rightVec] = new THREE.Vector3(75, 6, 100);
+               this[s_leftVec] = new THREE.Vector3(-75, -94, 100);
+               this[s_rightVec] = new THREE.Vector3(75, -94, 100);
                var lineGeo = new THREE.Geometry();
                var lineMat = new THREE.LineBasicMaterial({
                     color: 0xFF0000,
@@ -114,9 +111,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                this[s_selectionPlane] = new THREE.Plane(new THREE.Vector3(0, 10, 0), 0);
 
-               this[s_selectionRay] = new THREE.Ray();
-               this[s_selectionLine] = new THREE.Line3(new THREE.Vector3(-175, 6, 100),
-                    new THREE.Vector3(175, 6, 100));
+               this[s_selectionLine] = new THREE.Line3(new THREE.Vector3(-175, -94, 100),
+                    new THREE.Vector3(175, -94, 100));
 
           }
           enable() {
@@ -172,25 +168,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
 
-
-               // Set the raycaster
-               // Don't make the ray project into world space
-               // Unproject mouseposition to get corrent coordinates then
-               // transform back into screenspace
-               if (this[s_camera] instanceof THREE.PerspectiveCamera) {
-                    // TODO: adapt to perspective camera
-                    this[s_raycaster].ray.origin.set(0, 0, 0); //setFromMatrixPosition(this[s_camera].matrixWorldInverse);
-                    this[s_raycaster].ray.direction.set(mouseVector.x, mouseVector.y, 0.5).sub(this[s_raycaster].ray.origin).normalize();
-               } else if (this[s_camera] instanceof THREE.OrthographicCamera) {
-                    this[s_raycaster].ray.origin.copy(mouseVector.unproject(this[s_camera])); //.applyMatrix4(this[s_camera].matrixWorldInverse));
-                    this[s_raycaster].ray.direction.set(0, -1, 0);
-               } else {
-                    console.error('Raycaster: Unsupported camera type: ');
-                    console.error(this[s_camera]);
-               }
-
                // Set up ray from mouse position
-               this[s_selectionRay].set(this[s_raycaster].ray.origin, this[s_raycaster].ray.direction);
+               this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
                // Find all intersected objects
                var intersects = this[s_raycaster].intersectObject(this[s_handle]);
@@ -221,11 +200,11 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
 
                // Set up ray from mouse position
-               this[s_selectionRay].set(mouseVector.unproject(this[s_camera]), new THREE.Vector3(0, -1, 0));
+               this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
                if (this[s_selectedObject]) {
                     // Reposition the object based on the intersection point with the plane
-                    var newPos = this[s_selectionLine].closestPointToPoint(this[s_selectionRay].intersectPlane(this[s_selectionPlane]));
+                    var newPos = this[s_selectionLine].closestPointToPoint(this[s_raycaster].ray.intersectPlane(this[s_selectionPlane]));
                     this[s_handle].position.copy(newPos);
 
                     // Update scrollbar value
