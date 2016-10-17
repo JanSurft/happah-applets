@@ -274,15 +274,15 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     //this[s_scene].add(meshes[i]);
                     this[s_scene].paint();
 
-                    // FIXME: does this belong inside the if-block?
-                    // Render scene + scene overlay
-                    this[s_renderer].clear();
-                    this[s_renderer].render(this[s_scene], this[s_camera]);
-                    this[s_renderer].clearDepth();
-                    this[s_renderer].render(this[s_overlay], this[s_overlayCam]);
-
-                    this[s_controls].update();
                }
+               // FIXME: does this belong inside the if-block?
+               // Render scene + scene overlay
+               this[s_renderer].clear();
+               this[s_renderer].render(this[s_scene], this[s_camera]);
+               this[s_renderer].clearDepth();
+               this[s_renderer].render(this[s_overlay], this[s_overlayCam]);
+
+               this[s_controls].update();
 
 
                // Handle sequence here
