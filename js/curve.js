@@ -153,7 +153,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                // Skip the control polygon
                for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new STORYBOARD.Storyboard.Frame();
-                    frame.title = "Step: " + i;
+                    frame.title = "Step " + i;
 
                     // Also add the newly generated polygon
                     frame.meshes.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
@@ -202,7 +202,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
 
                // Create the last frame also by hand
                var frameLast = new STORYBOARD.Storyboard.Frame();
-               frameLast.title = "Grenzkurve";
+               frameLast.title = "Limes curve";
                frameLast.meshes[0] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
                //frameLast.points = pointMatrix[2];
 
