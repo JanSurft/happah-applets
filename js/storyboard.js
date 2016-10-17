@@ -6,10 +6,8 @@ define(['jquery', 'translator'], function($, Translator) {
 
      class Storyboard {
 
-          constructor(algorithm) {
-               this[s_algorithm] = algorithm;
+          constructor() {
                this[s_frames] = [];
-               this.update = this.update.bind(this);
           }
 
           append(frame) {
