@@ -9,7 +9,7 @@
  define(['three', 'jquery'], function(THREE, $) {
       class Defaults {
            static orthographicCamera(canvas) {
-                return new THREE.OrthographicCamera(canvas.width() / -2, canvas.width() / 2, canvas.height() / 2, canvas.height() / -2, 10, 1000);
+                return new THREE.OrthographicCamera(canvas.width() / -2, canvas.width() / 2, canvas.height() / 2, canvas.height() / -2, 10, 10000);
            }
            static perspectiveCamera(canvas) {
                 return new THREE.PerspectiveCamera(45,
