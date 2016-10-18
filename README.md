@@ -5,10 +5,12 @@ Visualizing geometric algorithms.
 This project targets students. Giving them an interactive way to interact with
 the teached algorithms.
 
-# Building
+# Building Dependencies
 
-To build the necessary shader library please execute the following script twice.
-At first run it WILL cause an error, because the directories are not present
-yet.
+  * jre as dependency of Google Closure Compiler
+  * python2
+  * python-yaml
+
+# Building
 
   ./util/build/build.sh
