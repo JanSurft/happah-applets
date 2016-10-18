@@ -159,16 +159,6 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                     frame.meshes.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
                     frame.points = pointMatrix[i];
 
-                    // Generate impostors
-                    /** this is done by the viewport
-                    for (var k in pointMatrix[i]) {
-                         var m = new sphericalimpostor.SphericalImpostor(3);
-                         m.position.copy(pointMatrix[i][k]);
-                         m.material.uniforms.diffuse.value.set(0x404040);
-                         frame.points.push(m);
-                    }
-                    */
-
                     var pointStack = new Array();
 
                     // The previous iteration has one point more.
@@ -194,7 +184,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
 
                     }
                     // Merge with the previous frame's meshes
-                    frame.meshes = frame.meshes.concat(storyboard.frame[storyboard.frame.length - 1].meshes);
+                    //frame.meshes = frame.meshes.concat(storyboard.frame[storyboard.frame.length - 1].meshes);
                     frame.points = frame.points.concat(storyboard.frame[storyboard.frame.length - 1].points);
 
                     storyboard.append(frame);
