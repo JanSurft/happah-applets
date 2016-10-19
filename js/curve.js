@@ -155,8 +155,6 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                     var frame = new STORYBOARD.Storyboard.Frame();
                     frame.title = "Step " + i;
 
-                    // Also add the newly generated polygon
-                    frame.meshes.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
                     frame.points = pointMatrix[i];
 
                     var pointStack = new Array();
@@ -173,7 +171,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                     pointStack.push(pointMatrix[i - 1][pointMatrix[i - 1].length - 1]);
 
                     // Iterate over stacksize and make a segment from 2 points
-                    for (var k = pointStack.length; k > 1; k--) {
+                    for (var k = 2; k <= pointStack.length; k++) {
                          var segment = new Array();
                          segment.push(pointStack[k - 1]);
                          segment.push(pointStack[k - 2]);
@@ -183,8 +181,17 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                          frame.meshes.push(strip);
 
                     }
+
                     // Merge with the previous frame's meshes
-                    //frame.meshes = frame.meshes.concat(storyboard.frame[storyboard.frame.length - 1].meshes);
+                    if (i != 1) {
+                         frame.meshes = frame.meshes.concat(storyboard.frame[storyboard.frame.length - 1].meshes);
+
+                         // Remove the last mesh from the previous iteration
+                         // to prevent overlapping lines
+                         frame.meshes.pop();
+                    }
+                    // Also add the newly generated polygon
+                    frame.meshes.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
                     frame.points = frame.points.concat(storyboard.frame[storyboard.frame.length - 1].points);
 
                     storyboard.append(frame);
