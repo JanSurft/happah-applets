@@ -19,7 +19,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
      var s_addControls = Symbol('addcontrols');
      var s_scrollbar = Symbol('scrollbar');
      var s_zoom = Symbol('zoom');
-     var s_drawlastframe = Symbol('drawlastframe');
+     var s_drawCurve = Symbol('drawcurve');
+     var s_drawPoly = Symbol('drawpoly');
 
      // Overlay
      var s_overlay = Symbol('overlay');
@@ -180,7 +181,12 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
           }
 
           set curveState(state) {
-               this[s_drawlastframe] = state;
+               this[s_drawCurve] = state;
+               this.currentFrame();
+          }
+
+          set polyState(state) {
+               this[s_drawPoly] = state;
                this.currentFrame();
           }
 
@@ -248,12 +254,14 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     var meshes = currentFrame.meshes;
                     var points = currentFrame.points;
 
-                    // Limes curve is obviously the last frame
-                    var lastFrame = this[s_storyboard].frame[this[s_storyboard].frame.length - 1];
-
                     // If curve is enabled, add curve
-                    if (this[s_drawlastframe] == true) {
-                         meshes = meshes.concat(lastFrame.meshes);
+                    if (this[s_drawCurve] == true) {
+                         // Curve is the last frame
+                         meshes = meshes.concat(this[s_storyboard].frame[this[s_storyboard].frame.length - 1]);
+                    }
+                    // If control-polygon is enabled, add first frame
+                    if (this[s_drawPoly]) {
+                         meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
                     }
 
                     var impostors = new Array();
