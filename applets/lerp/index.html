@@ -57,17 +57,19 @@
                          <label id="hph-label" name="hph-label">Start</label>
                     </td>
                     <h3>Description:</h3>
-                    <p>Im ersten Schritt unterteilt der Algorithmus die Kanten des
-                         Kontrollpolygons. Für t = 0.5, wird der Mittelpunkt der
-                         jeweiligen Kante für die nächste Iteration verwendet.
-                         (Benutze die Tasten um die einzelnen Schritte anzuzeigen)
-                         Die so entstehenden, neuen Punkte werden dann zu einer
-                         Kurve verbunden. Im nächsten Schritt werden die Kanten
-                         erneut in der Mitte unterteilt, bei den Kanten handelt
-                         es sich jedoch dieses Mal um die verbundenen Mittelpunkte
-                         der vorherigen Iteration. Mit Doppelklick auf Anfangs-
-                         oder Endpunkt, können neue Kontrollpunkte hinzugefügt
-                         werden.
+                    <p>Pick two control points by clicking inside scene. Click on
+                         the right arrow to get to the next frame! the algorithm
+                         will then create a new point $t$ between the points. The
+                         new point divides the red line into two intervals (red/black).
+                         The size of each interval is defined by the scrollbar
+                         handle, which you can move along the axis by drag-and-drop!
+                         Let's say your first point is $a$ and your second point
+                         is $b$ then $t = a + t*(b-a)$, where $t$ is the value
+                         of your handle within the interval. Notice the how the
+                         color of the interval is represented on the scrollbar's
+                         axis. When $a \ne 0$, there are two solutions to \(ax^2
+                         + bx + c = 0\) and they are $$x = {-b \pm \sqrt{b^2-4ac}
+                         \over 2a}.$$
                     </p>
                </div>
           </div>
