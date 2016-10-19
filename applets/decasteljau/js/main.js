@@ -1,5 +1,5 @@
 require.config({
-     baseUrl: 'js',
+     baseUrl: '../../js',
      shim: {
           'bootstrap': {
                deps: ['jquery']
@@ -25,6 +25,7 @@ require.config({
           TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
           TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
           bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap",
+          //happah: "../../../js/happah",
           //shader: '../lib/shader',
           //shaders: '../shaders'
      }

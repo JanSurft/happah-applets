@@ -48,6 +48,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                context.getExtension('EXT_frag_depth');
 
                var parameters = {
+                    antialias: false,
                     canvas: canvas,
                     context: context
                };
