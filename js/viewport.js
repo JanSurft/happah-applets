@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols', 'defaults'], function($, THREE, THREE, dragcontrols, sphericalimpostor, scrollbar, addcontrols, defaults) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols', 'defaults'], function($, THREE, THREE, dragcontrols, sphericalimpostor, SCROLLBAR, ADDCONTROLS, defaults) {
      var s_camera = Symbol('camera');
      var s_dragControls = Symbol('dragControls');
      var s_renderer = Symbol('renderer');
@@ -88,9 +88,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                this[s_overlay].add(defaults.Defaults.basicLights());
                this[s_scene].add(defaults.Defaults.basicLights());
 
-               this[s_scrollbar] = new scrollbar.Scrollbar(this[s_overlay], this[s_controls], this[s_overlayCam], $(canvas), this);
+               this[s_scrollbar] = new SCROLLBAR.Scrollbar(this[s_overlay], this[s_controls], this[s_overlayCam], this);
                this[s_scrollbar].value = 0.5;
-               this[s_addControls] = new addcontrols.AddControls(this, this[s_scene], this[s_camera]);
+               this[s_addControls] = new ADDCONTROLS.AddControls(this, this[s_scene], this[s_camera], 0);
 
                // Trackball controls for camera movement TBD...
                this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);
@@ -164,9 +164,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
           clearScene() {
                this[s_scene].removeControlPoints();
                this[s_addControls].enterAddMode();
-
-               // Update the cursor
-               this[s_renderer].domElement.style.cursor = "crosshair";
           }
 
           set gridState(state) {
