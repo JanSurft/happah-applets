@@ -8,8 +8,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      var s_camera = Symbol('camera');
      var s_scene = Symbol('scene');
      var s_viewport = Symbol('viewport');
+     var s_viewPlane = Symbol('viewplane');
 
-     // For testing purposes only
      var s_addMode = Symbol('addMode');
      var s_isHead = Symbol('ishead');
 
@@ -23,6 +23,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                this[s_viewport] = viewport;
                this[s_addMode] = false;
                this[s_camera] = camera;
+               this[s_viewPlane] = new THREE.Plane();
           }
 
           /** Force add mode */
@@ -128,8 +129,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                          return;
                     }
 
-                    // Intersect with XZ-plane
-                    var position = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
+                    // Intersect with viewplane to create a new position
+                    this[s_viewPlane].set(this[s_camera].getWorldDirection(), 0);
+                    var position = raycaster.ray.intersectPlane(this[s_viewPlane]);
 
                     // Add a new point to the specified position
                     this.addControlPoints([position], this[s_isHead]);
