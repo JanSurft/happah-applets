@@ -201,9 +201,11 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                var frameLast = new STORYBOARD.Storyboard.Frame();
                frameLast.title = "Limes curve";
                frameLast.meshes[0] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
-               //frameLast.points = pointMatrix[2];
 
-               storyboard.append(frameLast);
+               // Can't create a curve from two points.
+               if (this[s_controlPoints].length > 2) {
+                    storyboard.append(frameLast);
+               }
 
                return storyboard;
           }
