@@ -12,14 +12,17 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
      var s_addMode = Symbol('addMode');
      var s_isHead = Symbol('ishead');
+     var s_limit = Symbol('limit');
 
      class AddControls {
 
-          constructor(viewport, scene, camera) {
+          /** Limit of zero means infinite */
+          constructor(viewport, scene, camera, limit = 0) {
                this.onMouseDoubleclick = this.onMouseDoubleclick.bind(this);
                this.onMouseClick = this.onMouseClick.bind(this);
 
                this[s_scene] = scene;
+               this[s_limit] = limit;
                this[s_viewport] = viewport;
                this[s_addMode] = false;
                this[s_camera] = camera;
@@ -28,7 +31,11 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
           /** Force add mode */
           enterAddMode() {
-               this[s_addMode] = true;
+               if (this[s_scene].controlPoints.length < this[s_limit] || this[s_limit] == 0) {
+                    this[s_addMode] = true;
+               } else {
+                    console.warn("Control-point limit reached!");
+               }
           }
 
           /** Adds a control point to the scene */
@@ -99,9 +106,12 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
                // Toggle add mode
                if (intersects[0]) {
-                    this[s_addMode] = true;
-                    // Set the cursor
-                    event.currentTarget.style.cursor = "crosshair";
+                    this.enterAddMode();
+
+                    if (this[s_addMode]) {
+                         // Set the cursor
+                         event.currentTarget.style.cursor = "crosshair";
+                    }
                }
           }
 
@@ -123,7 +133,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     var intersects = raycaster.intersectObjects(impostors, true);
 
                     // Exit add mode.
-                    if (intersects[0]) {
+                    if (intersects[0] || (this[s_scene].controlPoints.length >= this[s_limit] && this[s_limit] != 0)) {
                          this[s_addMode] = false;
                          event.currentTarget.style.cursor = "default";
                          return;
