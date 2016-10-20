@@ -9,11 +9,16 @@ python2 build.py --include common --output ../../build/js/shaders.js
 python2 build.py --include common --minify --output ../../build/js/shaders.min.js
 
 # generate lang files
-for f in ../../i18n/*.yaml 
+for dir in ../../applets/*/
 do
-    filename=$(basename "$f")
-    extension="${filename##*.}"
-    filename="${filename%.*}"
-    echo " * Generating Language file for locale $filename"
-    python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)' < $f > ../../build/i18n/$filename.json
+  app_name=$(basename "$dir")
+  mkdir -p ../../applets/$app_name/build/i18n
+  echo " * generating locales for app $app_name"
+  for file in $dir/i18n/*.yaml
+    do
+        filename=$(basename "$file")
+        filename="${filename%.*}"
+        out_file=../../applets/$app_name/build/i18n/$filename.json
+        python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)' < $file > $out_file
+    done
 done
