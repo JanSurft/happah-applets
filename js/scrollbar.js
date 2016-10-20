@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      var s_camera = Symbol('camera');
-     var s_scene = Symbol('scene');
      var s_controls = Symbol('controls');
 
      // Member variables
@@ -27,13 +26,11 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
 
      class Scrollbar {
 
-          constructor(scene, controls, camera, canvas, viewport) {
+          constructor(scene, controls, camera, viewport) {
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
                this.mouseUp = this.mouseUp.bind(this);
 
-               var midScreen = -canvas.height() / 6;
-               this[s_scene] = scene;
                this[s_controls] = controls;
                this[s_camera] = camera;
                this[s_enabled] = true;
@@ -98,16 +95,17 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                lineGeo2.vertices.push(this[s_leftVec]);
                lineMat = new THREE.LineBasicMaterial({
                     color: 0x000000,
-                    linewidth: 3
+                    linewidth: 5
                });
                this[s_lineLeft] = new THREE.Line(lineGeo2, lineMat);
+               this[s_lineRight].geometry.verticesNeedUpdate = true;
 
-               this[s_scene].add(this[s_lineRight]);
-               this[s_scene].add(this[s_lineLeft]);
+               scene.add(this[s_lineRight]);
+               scene.add(this[s_lineLeft]);
 
                // Add to camera space
-               this[s_scene].add(this[s_bar]);
-               this[s_scene].add(this[s_handle]);
+               scene.add(this[s_bar]);
+               scene.add(this[s_handle]);
 
                this[s_selectionPlane] = new THREE.Plane(new THREE.Vector3(0, 10, 0), 0);
 
