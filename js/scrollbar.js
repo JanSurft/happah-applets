@@ -208,6 +208,14 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     // Update scrollbar value
                     this[s_value] = (newPos.x / 150) + 0.5;
 
+                    // In case we are beyond the leftVec
+                    if (this[s_handle].position.x < this[s_leftVec].x) {
+                         // hide the black line
+                         this[s_lineLeft].visible = false;
+                    } else {
+                         this[s_lineLeft].visible = true;
+                    }
+
                     // Update our line sections
                     this[s_lineRight].geometry.verticesNeedUpdate = true;
                     this[s_lineLeft].geometry.verticesNeedUpdate = true;
