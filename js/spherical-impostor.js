@@ -188,6 +188,16 @@ define(['jquery', 'three'], function($, THREE) {
                     }
                }
 
+               clone(recursive) {
+                    var result = super.clone(recursive);
+                    result.radius = this.radius;
+                    result.geometry.attributes.position.copy(this.geometry.attributes.position);
+                    result.geometry.attributes.inputImpostorSpaceCoordinates.copy(this.geometry.attributes.inputImpostorSpaceCoordinates);
+                    result.geometry.attributes.center.copy(this.geometry.attributes.center);
+                    result.material.uniforms.uRadius.value = this.material.uniforms.uRadius.value;
+                    return result;
+               }
+
           } //class SphericalImpostor
 
      return {

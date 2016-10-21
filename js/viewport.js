@@ -266,8 +266,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
                     // FIXME
                     // Convert points to impostors
+                    var impostor_template = new sphericalimpostor.SphericalImpostor(3);
                     for (var i in points) {
-                         var imp = new sphericalimpostor.SphericalImpostor(3);
+                         var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
                          imp.material.uniforms.diffuse.value.set(0x404040);
                          impostors.push(imp);
