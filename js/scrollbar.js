@@ -8,8 +8,6 @@
 define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
      var s_camera = Symbol('camera');
      var s_controls = Symbol('controls');
-
-     // Member variables
      var s_raycaster = Symbol('raycaster');
      var s_selectionPlane = Symbol('plane');
      var s_selectionLine = Symbol('line');
@@ -214,6 +212,12 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                          this[s_lineLeft].visible = false;
                     } else {
                          this[s_lineLeft].visible = true;
+                    }
+                    // Same goes for the right line
+                    if (this[s_handle].position.x > this[s_rightVec].x) {
+                         this[s_lineRight].visible = false;
+                    } else {
+                         this[s_lineRight].visible = true;
                     }
 
                     // Update our line sections
