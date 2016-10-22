@@ -125,6 +125,22 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                return this[s_addControls];
           }
 
+          get overlay() {
+               return this[s_overlay];
+          }
+
+          get renderer() {
+               return this[s_renderer];
+          }
+
+          get controls() {
+               return this[s_controls];
+          }
+
+          get overlayCam() {
+               return this[s_overlayCam];
+          }
+
           addLight(lights) {
                this[s_scene].add(lights);
                this[s_overlay].add(lights);
