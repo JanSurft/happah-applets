@@ -34,9 +34,14 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
+     var pos = new THREE.Vector3(0, -30, 100);
+     var value = 0.3;
      var algorithm = new happah.Curve(scene.controlPoints);
-     var viewport = new happah.Viewport(canvas, scene, algorithm);
-     var scrollbar = new happah.Scrollbar(new THREE.Vector3(canvas.width / 2, -30, 100), scene, viewport.controls, viewport.overlayCam, viewport);
+     var viewport = new happah.Viewport(scene, algorithm);
+     var scrollbar = new happah.Scrollbar(pos, viewport);
+     scrollbar.value = 0.4;
+     algorithm.scrollbar = scrollbar;
+     value = scrollbar.value;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
