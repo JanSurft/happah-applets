@@ -28,7 +28,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
      class Viewport {
 
-          constructor(scene, algorithm, controls) {
+          constructor(canvas, scene, algorithm) {
                this.update = this.update.bind(this);
                this.mouseWheel = this.mouseWheel.bind(this);
                var _this = this;
@@ -44,8 +44,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     _this.update();
                });
 
-               var canvas = $('.hph-canvas')[0];
-               console.log(canvas);
                var context = canvas.getContext('webgl');
                context.getExtension('EXT_frag_depth');
 
@@ -77,7 +75,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
                this[s_controls] = new THREE.TrackballControls(this[s_camera]);
                this[s_controls].noZoom = true;
-               //this[s_controls] = controls;
 
                // TODO:
                //this[s_controls].addEventListener('change', this.test);
@@ -91,8 +88,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                this[s_overlay].add(defaults.Defaults.basicLights());
                this[s_scene].add(defaults.Defaults.basicLights());
 
-               //this[s_scrollbar] = new SCROLLBAR.Scrollbar(this[s_overlay], this[s_controls], this[s_overlayCam], this);
-               //this[s_scrollbar].value = 0.5;
                this[s_addControls] = new ADDCONTROLS.AddControls(this, this[s_scene], this[s_camera], 0);
 
                // Trackball controls for camera movement TBD...
@@ -251,23 +246,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     //Set the label text
                     $('#hph-label').text("Frame: " + currentFrame.title);
 
-                    /*
-
-                    // TODO: find different way
-                    // Collect all meshes and points from previous iterations
-                    for (var i = 0; i < this[s_currentFrame]; i++) {
-                         var frame = this[s_storyboard].frame[i];
-
-                         // Concat mesh/point arrays
-                         meshes = meshes.concat(frame.meshes);
-                         points = points.concat(frame.points);
-                         //points = this[s_storyboard].frame[i].points;
-
-                         // meshes[0] is the least recently added one.
-                         //frame.meshes[0].material.color = new THREE.Color(0xff0000);
-                         //frame.meshes[0].material.needsUpdate = true;
-                    }
-                    */
                     // Add the current frame's mesh
                     var meshes = currentFrame.meshes;
                     var points = currentFrame.points;
