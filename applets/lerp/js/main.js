@@ -35,6 +35,10 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
      var scene = new happah.Scene();
      var algorithm = new happah.Curve(scene.controlPoints);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
+     var scrollbar = new happah.Scrollbar(new THREE.Vector3(0, -30, 100), viewport);
+     algorithm.scrollbar = scrollbar;
+     scrollbar.listenTo(viewport.renderer.domElement);
+     viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
