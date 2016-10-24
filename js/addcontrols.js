@@ -32,6 +32,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
           /** Force add mode */
           enterAddMode() {
                if (this[s_scene].controlPoints.length < this[s_limit] || this[s_limit] == 0) {
+                    // Change cursor
+                    this[s_viewport].renderer.domElement.style.cursor = "crosshair";
                     this[s_addMode] = true;
                } else {
                     console.warn("Control-point limit reached!");
@@ -107,11 +109,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                // Toggle add mode
                if (intersects[0]) {
                     this.enterAddMode();
-
-                    if (this[s_addMode]) {
-                         // Set the cursor
-                         event.currentTarget.style.cursor = "crosshair";
-                    }
                }
           }
 
@@ -135,7 +132,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     // Exit add mode.
                     if (intersects[0] || (this[s_scene].controlPoints.length >= this[s_limit] && this[s_limit] != 0)) {
                          this[s_addMode] = false;
-                         event.currentTarget.style.cursor = "default";
+                         this[s_viewport].renderer.domElement.style.cursor = "default";
                          return;
                     }
 
