@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+     integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+     crossorigin="anonymous">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+     <link rel="stylesheet" type="text/css" href="../../css/happah.css"></link>
+     <link rel="stylesheet" type="text/css" href="../../css/impromptu.css"></link>
+     <script src="../../build/js/shaders.js"></script>
+     <script src="../../three.js-master/build/three.min.js"></script>
+     <script data-main="js/main" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+     <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+     </script>
+     <script src="../../js/geomify.js"></script>
+</head>
+
+<body>
+     <div class="container">
+          <div class="row firstrow">
+               <div class="col-md-12">
+                    <div class="pull-left">
+                         <h3>General De Casteljau algorithm</h3>
+                    </div>
+                    <div class="pull-right">
+                         <div class="btn-group tool-bar-top">
+                              <a href="#" class="btn btn-default fa fa-th" title="Toggle grid" id="grid-toggle"> Grid</a>
+                              <a href="#" class="btn btn-default fa fa-low-vision" title="Toggle control-polygon"
+                              id="poly-toggle"> Control polygon</a>
+                              <a href="#" class="btn btn-default fa fa-area-chart" title="Toggle curve" id="curve-toggle"> Curve</a>
+                              <a title="Remove control-points" href="#" class="btn btn-default fa fa-trash" id="clear-all"> Clear</a>
+                              <a title="Start tour" href="#" class="btn btn-default fa fa-info" id="show-help"> Guide</a>
+                         </div>
+                    </div>
+               </div>
+          </div>
+          <div class="row">
+               <div class="col-md-12" id="hph-canvas-wrapper">
+                    <canvas class="hph-canvas"></canvas>
+               </div>
+          </div>
+          <div class="row center" id="hph-controls">
+               <div class="btn-group">
+                    <a class="btn btn-default" title="Previous frame" id="hph-backward"><i class="fa fa-chevron-left"></i></a>
+                    <a class="btn btn-default" title="Play" id="hph-play"><i class="fa fa-play"></i></a>
+                    <a class="btn btn-default" title="Pause" id="hph-pause"><i class="fa fa-pause"></i></a>
+                    <a class="btn btn-default" title="Next frame" id="hph-forward"><i class="fa fa-chevron-right"></i></a>
+               </div>
+          </div>
+          <div class="row">
+               <div class="col-md-12" id="hph-description">
+                    <td colspan="4">
+                         <label id="hph-label" name="hph-label">Start</label>
+                    </td>
+                    <h3>Description:</h3>
+                    <p>De Casteljau's algorithm with different ratios
+                    </p>
+               </div>
+          </div>
+     </div>
+</body>
+
+</html>

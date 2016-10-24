@@ -39,9 +39,12 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
      var algorithm = new happah.Curve(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
+     var scrollbar2 = new happah.Scrollbar(new THREE.Vector3(150, -30, 0), viewport);
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
+     scrollbar2.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
+     viewport.overlay.add(scrollbar2);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
@@ -51,8 +54,7 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
 
      // Initialize some points
      viewport.addControls.addControlPoints([
-          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30)
      ]);
 
      viewport.update();

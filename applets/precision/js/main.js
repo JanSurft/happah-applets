@@ -51,8 +51,7 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
 
      // Initialize some points
      viewport.addControls.addControlPoints([
-          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30)
      ]);
 
      viewport.update();
