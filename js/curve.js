@@ -150,6 +150,8 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                storyboard.append(frame0);
 
                if (this[s_controlPoints].length == 0) {
+                    // Add a dummy mesh
+                    frame0.meshes[0] = new THREE.Object3D();
                     return storyboard;
                }
 
