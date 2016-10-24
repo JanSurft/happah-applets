@@ -7,6 +7,7 @@
 define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THREE, STORYBOARD, sphericalimpostor) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
+     var s_scrollbar = Symbol('scrollbar');
 
      /**
       * Encapsulate functionality of De' Casteljau algorithm.
@@ -15,12 +16,15 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
      class Curve {
 
           /** Default constructor. */
-          constructor(controlPoints) {
+          constructor(controlPoints, scrollbar) {
                this[s_controlPoints] = controlPoints;
                this.storyboard = this.storyboard.bind(this);
+
+               this[s_scrollbar] = scrollbar;
+               this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
           }
 
-          evaluate(t = 0.5, callback = null) {
+          evaluate(t = this[s_scrollbar].value, callback = null) {
                var segmentLength = this[s_controlPoints].length;
                var points = new Array(segmentLength);
                points[0] = new Array(segmentLength);
@@ -44,6 +48,10 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                return points[points.length - 1][0];
           }
 
+          set scrollbar(scrollbar) {
+               this[s_scrollbar] = scrollbar;
+          }
+
           /**
            * Calculate a curve segment strip  using the subdivision treat of the
            * De' Casteljau algorithm.
@@ -56,7 +64,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
            *
            * @return an array of ordered 3D Vectors on the curve
            */
-          subdivide(nSubdivisions = 4, t = 0.5) {
+          subdivide(nSubdivisions = 4, t = this[s_scrollbar].value) {
                // preCalculate necessary array length to avoid later size
                // changes
                var segmentLength = this[s_controlPoints].length;
@@ -127,7 +135,13 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
            * Returns a storyboard with frames that contain the different steps
            * of the algorithm
            */
-          storyboard(ratio = 0.5) {
+          storyboard() {
+               var ratio;
+               if (this[s_scrollbar] == null) {
+                    ratio = 0.5;
+               } else {
+                    ratio = this[s_scrollbar].value;
+               }
                // Create the first frame by hand
                var storyboard = new STORYBOARD.Storyboard(this);
                var frame0 = new STORYBOARD.Storyboard.Frame();

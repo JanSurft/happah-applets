@@ -25,16 +25,22 @@ require.config({
           TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
           TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
           bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap",
-          //happah: "../../../js/happah",
           //shader: '../lib/shader',
           //shaders: '../shaders'
      }
 });
 
 require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
+     // Canvas element
+     var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
+     var pos = new THREE.Vector3(150, -30, 100);
      var algorithm = new happah.Curve(scene.controlPoints);
-     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
+     var viewport = new happah.Viewport(canvas, scene, algorithm);
+     var scrollbar = new happah.Scrollbar(pos, viewport);
+     algorithm.scrollbar = scrollbar;
+     scrollbar.listenTo(viewport.renderer.domElement);
+     viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;

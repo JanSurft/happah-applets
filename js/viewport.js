@@ -88,8 +88,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                this[s_overlay].add(defaults.Defaults.basicLights());
                this[s_scene].add(defaults.Defaults.basicLights());
 
-               this[s_scrollbar] = new SCROLLBAR.Scrollbar(this[s_overlay], this[s_controls], this[s_overlayCam], this);
-               this[s_scrollbar].value = 0.5;
                this[s_addControls] = new ADDCONTROLS.AddControls(this, this[s_scene], this[s_camera], 0);
 
                // Trackball controls for camera movement TBD...
@@ -103,7 +101,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
 
                // Scrollbar controls
-               this[s_scrollbar].listenTo(this[s_renderer].domElement);
+               //this[s_scrollbar].listenTo(this[s_renderer].domElement);
 
                // For adding controlpoints
                this[s_addControls].listenTo(this[s_renderer].domElement);
@@ -114,7 +112,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
           // Call if the storyboard is out of date
           rebuildStoryboard() {
-               this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
+               //this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
+               this[s_storyboard] = this[s_algorithm].storyboard();
 
                // In any case when the storyboard is rebuilt, the scene has to be
                // updated.
@@ -123,6 +122,22 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
           get addControls() {
                return this[s_addControls];
+          }
+
+          get overlay() {
+               return this[s_overlay];
+          }
+
+          get renderer() {
+               return this[s_renderer];
+          }
+
+          get controls() {
+               return this[s_controls];
+          }
+
+          get overlayCam() {
+               return this[s_overlayCam];
           }
 
           addLight(lights) {
@@ -231,23 +246,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     //Set the label text
                     $('#hph-label').text("Frame: " + currentFrame.title);
 
-                    /*
-
-                    // TODO: find different way
-                    // Collect all meshes and points from previous iterations
-                    for (var i = 0; i < this[s_currentFrame]; i++) {
-                         var frame = this[s_storyboard].frame[i];
-
-                         // Concat mesh/point arrays
-                         meshes = meshes.concat(frame.meshes);
-                         points = points.concat(frame.points);
-                         //points = this[s_storyboard].frame[i].points;
-
-                         // meshes[0] is the least recently added one.
-                         //frame.meshes[0].material.color = new THREE.Color(0xff0000);
-                         //frame.meshes[0].material.needsUpdate = true;
-                    }
-                    */
                     // Add the current frame's mesh
                     var meshes = currentFrame.meshes;
                     var points = currentFrame.points;
