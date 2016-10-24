@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// AddControls
+// AddControls - for adding controlpoints to the scene
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
           /** Force add mode */
           enterAddMode() {
                if (this[s_scene].controlPoints.length < this[s_limit] || this[s_limit] == 0) {
-                    // Change cursor
+                    // Change cursor to crosshair
                     this[s_viewport].renderer.domElement.style.cursor = "crosshair";
                     this[s_addMode] = true;
                } else {
@@ -58,7 +58,6 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                }
 
                this[s_viewport].rebuildStoryboard();
-               //$(this).trigger('update.happah');
           }
 
           /** Returns the position of an HTML element */
