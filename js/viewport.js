@@ -5,7 +5,12 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols', 'defaults'], function($, THREE, THREE, dragcontrols, sphericalimpostor, SCROLLBAR, ADDCONTROLS, defaults) {
+define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
+     'spherical-impostor', 'addcontrols', 'defaults'
+], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, defaults) {
+     const background_color = 0xFFFFFF;
+     const helper_points_color = 0x404040;
+
      var s_addControls = Symbol('addcontrols');
      var s_algorithm = Symbol('algorithm');
      var s_camera = Symbol('camera');
@@ -17,7 +22,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
      var s_drawPoly = Symbol('drawpoly');
      var s_grid = Symbol('grid');
      var s_overlay = Symbol('overlay');
-     var s_overlayCam = Symbol('overlayCam');
+     var s_camera_overlay = Symbol('overlayCam');
      var s_renderer = Symbol('renderer');
      var s_scene = Symbol('scene');
      var s_scrollbar = Symbol('scrollbar');
@@ -28,94 +33,65 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
      class Viewport {
 
           constructor(canvas, scene, algorithm) {
-               this.update = this.update.bind(this);
-               this.mouseWheel = this.mouseWheel.bind(this);
                var _this = this;
+               var context = canvas.getContext('webgl');
+               context.getExtension('EXT_frag_depth');
 
-               this[s_storyboard] = algorithm.storyboard();
+               this.mouseWheel = this.mouseWheel.bind(this);
+               this.update = this.update.bind(this);
+
                this[s_algorithm] = algorithm;
+               this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
+               this[s_camera_overlay] = this[s_camera].clone()
+               this[s_camera_overlay].position.set(0, 1, 0); // 0 for orthographic camera
+               this[s_camera_overlay].lookAt(scene.position);
+               this[s_camera_overlay].zoom = 2.2;
+               this[s_camera_overlay].updateProjectionMatrix();
+               this[s_controls] = new THREE.TrackballControls(this[s_camera]);
+               this[s_controls].noZoom = true;
+               this[s_counter] = 0;
                this[s_currentFrame] = 0;
-               this[s_scene] = scene;
-               this[s_scene].meshes = this[s_storyboard].frame[0].meshes;
+               this[s_grid] = new THREE.GridHelper(500, 20);
+               this[s_grid].position.y = -0.001;
+               this[s_overlay] = new THREE.Scene();
+               this[s_overlay].add(defaults.Defaults.basicLights());
+               this[s_renderer] = new THREE.WebGLRenderer({
+                    antialias: true,
+                    canvas: canvas,
+                    context: context
+               });
+               this[s_renderer].autoClear = false; // For dual-scene-rendering
+               this[s_renderer].setClearColor(background_color);
+               this[s_renderer].setSize($(canvas).width(), $(canvas).height());
+               this[s_sequence] = false;
+               this[s_storyboard] = algorithm.storyboard();
 
+               this[s_scene] = scene;
+               this[s_scene].add(defaults.Defaults.basicLights());
+               this[s_scene].meshes = this[s_storyboard].frame[0].meshes;
                // TBD..
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
                });
 
-               var context = canvas.getContext('webgl');
-               context.getExtension('EXT_frag_depth');
-
-               var parameters = {
-                    antialias: false,
-                    canvas: canvas,
-                    context: context
-               };
-               this[s_renderer] = new THREE.WebGLRenderer(parameters);
-               this[s_renderer].setClearColor(0xFFFFFF);
-               this[s_renderer].setSize($(canvas).width(), $(canvas).height());
-
-               // For dual-scene-rendering
-               this[s_renderer].autoClear = false;
-
-               this[s_grid] = new THREE.GridHelper(500, 20);
-               this[s_grid].position.y = -0.001;
-
-               this[s_sequence] = false;
-               this[s_counter] = 0;
-
-               this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
-               this[s_overlayCam] = defaults.Defaults.orthographicCamera($(canvas));
-
-               this[s_overlayCam].position.set(0, 1, 0); // 0 for orthographic camera
-               this[s_overlayCam].lookAt(scene.position);
-               this[s_overlayCam].zoom = 2.2;
-               this[s_overlayCam].updateProjectionMatrix();
-
-               this[s_controls] = new THREE.TrackballControls(this[s_camera]);
-               this[s_controls].noZoom = true;
-
-               // TODO:
-               //this[s_controls].addEventListener('change', this.test);
-
-               // Screen overlay
-               this[s_overlay] = new THREE.Scene();
-
-               this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
-
-               // Lighting
-               this[s_overlay].add(defaults.Defaults.basicLights());
-               this[s_scene].add(defaults.Defaults.basicLights());
-
+               // for adding control points
                this[s_addControls] = new ADDCONTROLS.AddControls(this, this[s_scene], this[s_camera], 0);
-
-               // Trackball controls for camera movement TBD...
-               this[s_renderer].domElement.addEventListener('mousemove', this[s_controls].onDocumentMouseMove, false);
-               this[s_renderer].domElement.addEventListener('mousedown', this[s_controls].onDocumentMouseDown, false);
-               this[s_renderer].domElement.addEventListener('mouseup', this[s_controls].onDocumentMouseUp, false);
-
-               // Drag controls for dragging and dropping objects
-               this[s_dragControls].listenTo(this[s_renderer].domElement);
-               this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
-               this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
-
-               // Scrollbar controls
-               //this[s_scrollbar].listenTo(this[s_renderer].domElement);
-
-               // For adding controlpoints
                this[s_addControls].listenTo(this[s_renderer].domElement);
 
-               // Update
-               this.currentFrame();
+               // to move objects
+               this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
+               this[s_dragControls].listenTo(this[s_renderer].domElement);
+
+               // add event listeners for user interactions
+               this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
+               this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
           }
 
           // Call if the storyboard is out of date
           rebuildStoryboard() {
-               //this[s_storyboard] = this[s_algorithm].storyboard(this[s_scrollbar].value);
                this[s_storyboard] = this[s_algorithm].storyboard();
-
-               // In any case when the storyboard is rebuilt, the scene has to be
-               // updated.
+               // as a new storyboard represents a different scene,
+               // the scene needs to be updated
                this[s_scene].redraw();
           }
 
@@ -136,7 +112,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
           }
 
           get overlayCam() {
-               return this[s_overlayCam];
+               return this[s_camera_overlay];
           }
 
           addLight(lights) {
@@ -148,10 +124,8 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                if (this[s_currentFrame] < this[s_storyboard].frame.length - 1) {
                     this[s_currentFrame]++;
                }
-
                // enable the frame by switching the show flag
                this[s_storyboard].frame[this[s_currentFrame]].show = true;
-
                this.currentFrame();
           }
 
@@ -161,17 +135,14 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                     $('#hph-forward').css("color", "#333");
                else
                     $('#hph-forward').css("color", "grey");
-
                // Adapt the frames to the new conditions
                this.rebuildStoryboard();
           }
 
           previousFrame() {
                this[s_storyboard].frame[this[s_currentFrame]].show = false;
-
                if (this[s_currentFrame] > 0)
                     this[s_currentFrame]--;
-
                this.currentFrame();
           }
 
@@ -206,12 +177,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                return this[s_camera];
           }
 
-          /** Called whenever the mouse wheel is moved */
+          // the mouse wheel controls the camera zoom
           mouseWheel(event) {
                event.preventDefault();
-
                var delta;
-
                if (event.wheelDelta) {
                     delta = event.wheelDeltaY / 35;
                } else if (event.detail) {
@@ -222,11 +191,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
                }
                // Zoom speed
                delta = delta * 0.06;
-
                if (this[s_camera].zoom + delta < 0) {
                     delta = 0;
                }
-
                this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
                this[s_scene].redraw();
@@ -234,68 +201,52 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impos
 
           update() {
                requestAnimationFrame(this.update.bind(this));
-
                if (this[s_scene].altered) {
                     // TODO replace with storyboard.update()
                     this.rebuildStoryboard();
-
-                    // Get a temporary variable
                     var currentFrame = this[s_storyboard].frame[this[s_currentFrame]];
-
-                    //Set the label text
+                    // Set the label text in the bottom left corner
                     $('#hph-label').text("Frame: " + currentFrame.title);
-
-                    // Add the current frame's mesh
+                    // copy old scene objects
                     var meshes = currentFrame.meshes;
                     var points = currentFrame.points;
-
+                    // control-polygon is the first rendered frame
+                    if (this[s_drawPoly]) {
+                         meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
+                    }
                     // If curve is enabled, add curve
                     if (this[s_drawCurve] == true) {
                          // Curve is the last frame
                          meshes = meshes.concat(this[s_storyboard].frame[this[s_storyboard].frame.length - 1]);
                     }
-                    // If control-polygon is enabled, add first frame
-                    if (this[s_drawPoly]) {
-                         meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
-                    }
-
+                    // generate impostors for helper points
                     var impostors = new Array();
-
-                    // FIXME
-                    // Convert points to impostors
                     var impostor_template = new sphericalimpostor.SphericalImpostor(3);
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
-                         imp.material.uniforms.diffuse.value.set(0x404040);
+                         imp.material.uniforms.diffuse.value.set(helper_points_color);
                          impostors.push(imp);
                     }
-
-                    // TODO make this better loookign
                     this[s_scene].points = impostors;
                     this[s_scene].meshes = meshes;
-                    //for (var i in meshes)
-                    //this[s_scene].add(meshes[i]);
                     this[s_scene].paint();
-
                }
                // FIXME: does this belong inside the if-block?
                // Render scene + scene overlay
                this[s_renderer].clear();
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_renderer].clearDepth();
-               this[s_renderer].render(this[s_overlay], this[s_overlayCam]);
+               this[s_renderer].render(this[s_overlay], this[s_camera_overlay]);
 
                this[s_controls].update();
 
-
-               // Handle sequence here
+               // FIXME: use time for animation speed
                this[s_counter] = this[s_counter]++ % 101;
                if (this[s_sequence] && this[s_counter] % 100 == 0) {
                     this.nextFrame();
                }
           }
-
      } //class Viewport
 
      return {
