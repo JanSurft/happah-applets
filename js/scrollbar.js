@@ -37,7 +37,7 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     // direction is always straight down
                     this[s_camera] = viewport.overlayCam;
                     this[s_enabled] = true;
-                    this[s_value] = 0;
+                    this[s_value] = 0.5;
 
                     // TODO: remove reference to viewport
                     this[s_viewport] = viewport;

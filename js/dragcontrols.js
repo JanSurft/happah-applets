@@ -41,7 +41,7 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                // TODO: make the size a multiple of the impostor's radius!
                // TODO: don't make the plane a geometry
                this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500), new THREE.MeshBasicMaterial({
-                    color: 0x00ee22,
+                    color: 0x00EE22,
                     alphaTest: 0,
                     visible: false
                }));
@@ -53,14 +53,17 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
           enable() {
                this[s_enabled] = true;
           }
+
           disable() {
                this[s_enabled] = false;
           }
+
           listenTo(domElement) {
                domElement.addEventListener('mousemove', this.mouseMove, false);
                domElement.addEventListener('mouseup', this.mouseUp, false);
                domElement.addEventListener('mousedown', this.mouseDown, false);
           }
+
           stopListeningTo(domElement) {
                domElement.removeEventListener('mousemove', this.mouseMove, false);
                domElement.removeEventListener('mouseup', this.mouseUp, false);
@@ -72,14 +75,12 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
                var position = new THREE.Vector2(0, 0);
 
                while (element) {
-                    //console.log("parent: " + element.className);
                     position.x += (element.offsetLeft - element.scrollLeft + element.clientLeft);
                     position.y += (element.offsetTop - element.scrollTop + element.clientTop);
                     element = element.offsetParent;
                }
                return position;
           }
-
 
           /** Called when a mouse button is pressed */
           mouseDown(event) {

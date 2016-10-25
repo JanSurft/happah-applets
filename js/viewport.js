@@ -85,6 +85,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
                this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
+               this.update();
           }
 
           // Call if the storyboard is out of date
