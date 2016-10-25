@@ -52,9 +52,8 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
           new THREE.Vector3(0, 0, -66)
      ]);
 
-     viewport.update();
-
      var menu = new happah.Menu(".btn-group", scene, viewport);
+
      console.log("happah initialized.");
 
 });
