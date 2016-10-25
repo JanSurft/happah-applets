@@ -2,29 +2,28 @@
 //
 // Viewport
 // @author Tarek Wilkening (tarek_wilkening@web.de)
+// @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', 'dragcontrols', 'spherical-impostor', 'scrollbar', 'addcontrols', 'defaults'], function($, THREE, THREE, dragcontrols, sphericalimpostor, SCROLLBAR, ADDCONTROLS, defaults) {
-     var s_camera = Symbol('camera');
-     var s_dragControls = Symbol('dragControls');
-     var s_renderer = Symbol('renderer');
-     var s_scene = Symbol('scene');
-     var s_controls = Symbol('trackballControls');
-     var s_grid = Symbol('grid');
-     var s_storyboard = Symbol('storyboard');
-     var s_currentFrame = Symbol('currentframe');
-     var s_algorithm = Symbol('algorithm');
-     var s_sequence = Symbol('sequence');
-     var s_counter = Symbol('counter');
      var s_addControls = Symbol('addcontrols');
-     var s_scrollbar = Symbol('scrollbar');
-     var s_zoom = Symbol('zoom');
+     var s_algorithm = Symbol('algorithm');
+     var s_camera = Symbol('camera');
+     var s_controls = Symbol('trackballControls');
+     var s_counter = Symbol('counter');
+     var s_currentFrame = Symbol('currentframe');
+     var s_dragControls = Symbol('dragControls');
      var s_drawCurve = Symbol('drawcurve');
      var s_drawPoly = Symbol('drawpoly');
-
-     // Overlay
+     var s_grid = Symbol('grid');
      var s_overlay = Symbol('overlay');
      var s_overlayCam = Symbol('overlayCam');
+     var s_renderer = Symbol('renderer');
+     var s_scene = Symbol('scene');
+     var s_scrollbar = Symbol('scrollbar');
+     var s_sequence = Symbol('sequence');
+     var s_storyboard = Symbol('storyboard');
+     var s_zoom = Symbol('zoom');
 
      class Viewport {
 
