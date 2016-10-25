@@ -80,6 +80,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                domElement.removeEventListener('dblclick', this.onMouseDoubleclick, false);
                domElement.removeEventListener('click', this.onMouseClick, false);
           }
+          set limit(limit) {
+               this[s_limit] = limit;
+          }
 
           onMouseDoubleclick(event) {
                // Get current mouse position on screen

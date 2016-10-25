@@ -43,8 +43,9 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
-     //scene.algorithm = deCasteljau;
-     //scene.algorithm = new happah.Curve(scene.controlPoints);
+
+     // Limit amount of controlpoints
+     viewport.addControls.limit = 2;
 
      // Initialize some points
      viewport.addControls.addControlPoints([
