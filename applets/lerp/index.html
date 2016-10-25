@@ -58,18 +58,28 @@
                     </td>
                     <h3>Description:</h3>
                     <p>Pick two control points by clicking inside scene. Click on
-                         the right arrow to get to the next frame! the algorithm
-                         will then create a new point $t$ between the points. The
-                         new point divides the red line into two intervals (red/black).
-                         The size of each interval is defined by the scrollbar
-                         handle, which you can move along the axis by drag-and-drop!
-                         Let's say your first point is $a$ and your second point
-                         is $b$ then $t = a + t*(b-a)$, where $t$ is the value
-                         of your handle within the interval. Notice the how the
-                         color of the interval is represented on the scrollbar's
-                         axis. When $a \ne 0$, there are two solutions to \(ax^2
-                         + bx + c = 0\) and they are $$x = {-b \pm \sqrt{b^2-4ac}
-                         \over 2a}.$$
+                         the right arrow to get to the next frame!
+                         <br>The algorithm will then create a new point \(c\) between
+                         the points. The new point divides the red line into two
+                         intervals (red/black). The size of each interval is defined
+                         by the scrollbar-handle (black square), which you can
+                         move along the axis by drag-and-drop!
+                         <br>Let's say your first point is \(a\) and your second point
+                         is \(b\) then you get a new point \(c\) with:
+                         <br>
+                         <center>\(c = a + t*(b-a)\)
+                         </center>
+                         <br>Where \(t\) is the value of your handle within the interval.
+                         <br>Notice how the color of the interval is represented on
+                         the scrollbar's axis. This process is called \(linear-interpolation\).
+                         <br>If you move the handle out of the interval \(0-1\) you
+                         create a new point by \(linear-extrapolation\).
+                         <br>If you repeat the process of linear interpolation with
+                         the newly generated point, you get to De Casteljau's algorithm
+                         which is explained in the next section.
+                         <br>
+                         <center><a href="../decasteljau/index.html">Next Section</a>
+                         </center>
                     </p>
                </div>
           </div>
