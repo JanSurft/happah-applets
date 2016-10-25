@@ -22,7 +22,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
      var s_drawPoly = Symbol('drawpoly');
      var s_grid = Symbol('grid');
      var s_overlay = Symbol('overlay');
-     var s_camera_overlay = Symbol('overlayCam');
+     var s_cameraOverlay = Symbol('overlayCam');
      var s_renderer = Symbol('renderer');
      var s_scene = Symbol('scene');
      var s_scrollbar = Symbol('scrollbar');
@@ -42,11 +42,11 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
 
                this[s_algorithm] = algorithm;
                this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
-               this[s_camera_overlay] = this[s_camera].clone()
-               this[s_camera_overlay].position.set(0, 1, 0); // 0 for orthographic camera
-               this[s_camera_overlay].lookAt(scene.position);
-               this[s_camera_overlay].zoom = 2.2;
-               this[s_camera_overlay].updateProjectionMatrix();
+               this[s_cameraOverlay] = this[s_camera].clone()
+               this[s_cameraOverlay].position.set(0, 1, 0); // 0 for orthographic camera
+               this[s_cameraOverlay].lookAt(scene.position);
+               this[s_cameraOverlay].zoom = 2.2;
+               this[s_cameraOverlay].updateProjectionMatrix();
                this[s_counter] = 0;
                this[s_currentFrame] = 0;
                this[s_grid] = new THREE.GridHelper(500, 20);
@@ -114,7 +114,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
           }
 
           get overlayCam() {
-               return this[s_camera_overlay];
+               return this[s_cameraOverlay];
           }
 
           addLight(lights) {
@@ -239,7 +239,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                this[s_renderer].clear();
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_renderer].clearDepth();
-               this[s_renderer].render(this[s_overlay], this[s_camera_overlay]);
+               this[s_renderer].render(this[s_overlay], this[s_cameraOverlay]);
 
                this[s_trackballControls].update();
 
