@@ -14,7 +14,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
      var s_addControls = Symbol('addcontrols');
      var s_algorithm = Symbol('algorithm');
      var s_camera = Symbol('camera');
-     var s_controls = Symbol('trackballControls');
+     var s_trackballControls = Symbol('trackballControls');
      var s_counter = Symbol('counter');
      var s_currentFrame = Symbol('currentframe');
      var s_dragControls = Symbol('dragControls');
@@ -47,8 +47,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                this[s_camera_overlay].lookAt(scene.position);
                this[s_camera_overlay].zoom = 2.2;
                this[s_camera_overlay].updateProjectionMatrix();
-               this[s_controls] = new THREE.TrackballControls(this[s_camera]);
-               this[s_controls].noZoom = true;
                this[s_counter] = 0;
                this[s_currentFrame] = 0;
                this[s_grid] = new THREE.GridHelper(500, 20);
@@ -74,12 +72,15 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                     _this.update();
                });
 
+               this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
+               this[s_trackballControls].noZoom = true;
+
                // for adding control points
                this[s_addControls] = new ADDCONTROLS.AddControls(this, this[s_scene], this[s_camera], 0);
                this[s_addControls].listenTo(this[s_renderer].domElement);
 
                // to move objects
-               this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_controls], this[s_camera]);
+               this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_trackballControls], this[s_camera]);
                this[s_dragControls].listenTo(this[s_renderer].domElement);
 
                // add event listeners for user interactions
@@ -109,7 +110,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
           }
 
           get controls() {
-               return this[s_controls];
+               return this[s_trackballControls];
           }
 
           get overlayCam() {
@@ -240,7 +241,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                this[s_renderer].clearDepth();
                this[s_renderer].render(this[s_overlay], this[s_camera_overlay]);
 
-               this[s_controls].update();
+               this[s_trackballControls].update();
 
                // FIXME: use time for animation speed
                this[s_counter] = this[s_counter]++ % 101;
