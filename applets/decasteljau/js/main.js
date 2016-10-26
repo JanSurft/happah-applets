@@ -49,8 +49,8 @@ require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], func
 
      // Initialize some points
      viewport.addControls.addControlPoints([
-          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30),
-          new THREE.Vector3(40, 0, 30), new THREE.Vector3(50, 0, -30),
+          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
+          new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
      ]);
 
      var menu = new happah.Menu(".btn-group", scene, viewport);
