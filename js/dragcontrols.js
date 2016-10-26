@@ -145,6 +145,8 @@ define(['jquery', 'three', 'happah'], function($, THREE, happah) {
 
                if (this[s_selectedObject]) {
                     // Scene has changed so we need to redraw.
+                    // TODO: this is causing bad behaviour with quickly
+                    // drag+drop we need the viewport to update immediately.
                     this[s_scene].redraw();
 
                     // Check the position where the plane is intersected
