@@ -126,8 +126,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                if (this[s_currentFrame] < this[s_storyboard].frame.length - 1) {
                     this[s_currentFrame]++;
                }
-               // enable the frame by switching the show flag
-               this[s_storyboard].frame[this[s_currentFrame]].show = true;
                this.currentFrame();
           }
 
@@ -142,7 +140,6 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
           }
 
           previousFrame() {
-               this[s_storyboard].frame[this[s_currentFrame]].show = false;
                if (this[s_currentFrame] > 0)
                     this[s_currentFrame]--;
                this.currentFrame();
@@ -217,9 +214,9 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                          meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
                     }
                     // If curve is enabled, add curve
-                    if (this[s_drawCurve] == true) {
+                    if (this[s_drawCurve]) {
                          // Curve is the last frame
-                         meshes = meshes.concat(this[s_storyboard].frame[this[s_storyboard].frame.length - 1]);
+                         meshes = meshes.concat(this[s_storyboard].frame[this[s_storyboard].frame.length - 1].meshes);
                     }
                     // generate impostors for helper points
                     var impostors = new Array();
