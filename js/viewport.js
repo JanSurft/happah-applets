@@ -49,6 +49,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                this[s_cameraOverlay].updateProjectionMatrix();
                this[s_counter] = 0;
                this[s_currentFrame] = 0;
+               this[s_drawPoly] = true;
                this[s_grid] = new THREE.GridHelper(500, 20);
                this[s_grid].position.y = -0.001;
                this[s_overlay] = new THREE.Scene();
@@ -210,7 +211,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                     var meshes = currentFrame.meshes;
                     var points = currentFrame.points;
                     // control-polygon is the first rendered frame
-                    if (this[s_drawPoly]) {
+                    //if (this[s_drawPoly] && this[s_currentFrame] != 0) {
+                    //     meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
+                    //}
+                    if (this[s_drawPoly] && this[s_currentFrame] == this[s_storyboard].frame.length - 1) {
                          meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
                     }
                     // If curve is enabled, add curve
