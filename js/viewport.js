@@ -10,6 +10,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
 ], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, defaults) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
+     const helper_points_radius = 3;
 
      var s_addControls = Symbol('addcontrols');
      var s_algorithm = Symbol('algorithm');
@@ -67,7 +68,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
 
                this[s_scene] = scene;
                this[s_scene].add(defaults.Defaults.basicLights());
-               this[s_scene].meshes = this[s_storyboard].frame[0].meshes;
+               this[s_scene].meshes = this[s_storyboard].frame(0).meshes;
                // TBD..
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
@@ -124,15 +125,16 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
           }
 
           nextFrame() {
-               if (this[s_currentFrame] < this[s_storyboard].frame.length - 1) {
-                    this[s_currentFrame]++;
-               }
-               this.currentFrame();
+               //if (this[s_currentFrame] < this[s_storyboard].size() - 1) {
+               //    this[s_currentFrame]++;
+               //}
+               this[s_storyboard].nextFrame();
+               this[s_scene].redraw();
           }
 
           // TODO: move everything to update
           currentFrame() {
-               if (this[s_currentFrame] < this[s_storyboard].frame.length - 1)
+               if (this[s_currentFrame] < this[s_storyboard].size() - 1)
                     $('#hph-forward').css("color", "#333");
                else
                     $('#hph-forward').css("color", "grey");
@@ -141,9 +143,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
           }
 
           previousFrame() {
-               if (this[s_currentFrame] > 0)
-                    this[s_currentFrame]--;
-               this.currentFrame();
+               //if (this[s_currentFrame] > 0)
+               //    this[s_currentFrame]--;
+               this[s_storyboard].previousFrame();
+               this[s_scene].redraw();
           }
 
           clearScene() {
@@ -204,8 +207,10 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                requestAnimationFrame(this.update.bind(this));
                if (this[s_scene].altered) {
                     // TODO replace with storyboard.update()
-                    this.rebuildStoryboard();
-                    var currentFrame = this[s_storyboard].frame[this[s_currentFrame]];
+                    //this.rebuildStoryboard();
+                    this[s_storyboard].rebuild();
+                    //var currentFrame = this[s_storyboard].frame(this[s_currentFrame]);
+                    var currentFrame = this[s_storyboard].currentFrame();
                     // Set the label text in the bottom left corner
                     $('#hph-label').text("Frame: " + currentFrame.title);
                     // copy old scene objects
@@ -215,17 +220,17 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
                     //if (this[s_drawPoly] && this[s_currentFrame] != 0) {
                     //     meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
                     //}
-                    if (this[s_drawPoly] && this[s_currentFrame] == this[s_storyboard].frame.length - 1) {
-                         meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
+                    if (this[s_drawPoly] && this[s_currentFrame] == this[s_storyboard].size() - 1) {
+                         meshes = meshes.concat(this[s_storyboard].firstFrame().meshes);
                     }
                     // If curve is enabled, add curve
                     if (this[s_drawCurve]) {
                          // Curve is the last frame
-                         meshes = meshes.concat(this[s_storyboard].frame[this[s_storyboard].frame.length - 1].meshes);
+                         meshes = meshes.concat(this[s_storyboard].lastFrame().meshes);
                     }
                     // generate impostors for helper points
                     var impostors = new Array();
-                    var impostor_template = new sphericalimpostor.SphericalImpostor(3);
+                    var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);

@@ -200,7 +200,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
 
                     // Merge with the previous frame's meshes
                     if (i != 1) {
-                         frame.meshes = frame.meshes.concat(storyboard.frame[storyboard.frame.length - 1].meshes);
+                         frame.meshes = frame.meshes.concat(storyboard.frame(storyboard.size() - 1).meshes);
 
                          // Remove the last mesh from the previous iteration
                          // to prevent overlapping lines
@@ -208,7 +208,7 @@ define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THRE
                     }
                     // Also add the newly generated polygon
                     frame.meshes.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
-                    frame.points = frame.points.concat(storyboard.frame[storyboard.frame.length - 1].points);
+                    frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
 
                     storyboard.append(frame);
                }
