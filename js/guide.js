@@ -187,7 +187,6 @@
                      },
                      submit: this.tourSubmit
                 }];
-                console.log(this[s_tourStates]);
            }
 
            tourStart() {
@@ -206,7 +205,6 @@
                      $.prompt.nextState();
                      return false;
                 } else if (v === 3) {
-                     console.log($.prompt.states);
                      $.prompt(this[s_tourStates]);
                      return true;
                 }
