@@ -76,30 +76,26 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                }
 
                paint() {
-                    // Only re-calculate if things have changed.
-                    if (this[s_altered]) {
-                         console.log("redraw impostors/lines");
-                         this[s_altered] = false;
+                    console.log("redraw impostors/lines");
+                    this[s_altered] = false;
 
-                         // The very first mesh is the control-polygon
-                         if (this[s_showPoly]) {
-                              this.add(this._controlPointImpostors);
-                              this.add(this[s_meshes][0]);
-                         }
-                         // Update controlpoints positions,
-                         // in case they have been altered by drag-and-drop
-                         for (var i in this.controlPoints) {
-                              this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
-                         }
-                         // Add all meshes
-                         for (var i in this[s_meshes]) {
-                              this.add(this[s_meshes][i]);
-                         }
-                         // Add all points
-                         for (var i in this[s_points]) {
-                              this.add(this[s_points][i]);
-                         }
-
+                    // The very first mesh is the control-polygon
+                    if (this[s_showPoly]) {
+                         this.add(this._controlPointImpostors);
+                         this.add(this[s_meshes][0]);
+                    }
+                    // Update controlpoints positions,
+                    // in case they have been altered by drag-and-drop
+                    for (var i in this.controlPoints) {
+                         this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
+                    }
+                    // Add all meshes
+                    for (var i in this[s_meshes]) {
+                         this.add(this[s_meshes][i]);
+                    }
+                    // Add all points
+                    for (var i in this[s_points]) {
+                         this.add(this[s_points][i]);
                     }
                }
 
