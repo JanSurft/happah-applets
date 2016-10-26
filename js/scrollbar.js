@@ -62,9 +62,9 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     textGeo.translate(75 - offset, 5, 0);
                     geo.merge(textGeo);
                     geo.merge(coneGeometry);
-                    boxGeometry.translate(-75, 0, 0);
+                    boxGeometry.translate(-75, 0, 3);
                     geo.merge(boxGeometry);
-                    boxGeometry.translate(75, 0, 0);
+                    boxGeometry.translate(75, 0, 3);
                     geo.merge(boxGeometry);
                     geo.rotateX(3 * Math.PI / 2);
                     var mat = new THREE.MeshBasicMaterial({
@@ -82,8 +82,8 @@ define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
                     this[s_handle].position.set(0, 6, 0);
 
                     // Sections to devide interval into separate colors
-                    this[s_leftVec] = new THREE.Vector3(-75, 6, 0);
-                    this[s_rightVec] = new THREE.Vector3(75, 6, 0);
+                    this[s_leftVec] = new THREE.Vector3(-75, 2, 0);
+                    this[s_rightVec] = new THREE.Vector3(75, 2, 0);
                     var lineGeo = new THREE.Geometry();
                     var lineMat = new THREE.LineBasicMaterial({
                          color: 0xFF0000,
