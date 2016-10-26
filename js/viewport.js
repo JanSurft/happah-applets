@@ -149,6 +149,7 @@ define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
           clearScene() {
                this[s_scene].removeControlPoints();
                this[s_addControls].enterAddMode();
+               this[s_currentFrame] = 0;
           }
 
           set gridState(state) {
