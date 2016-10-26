@@ -48,7 +48,7 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
                }, this.previous);
                this[s_content].find("#hph-play").on('click', {
                     _this: this
-               }, this.current);
+               }, this.play);
                this[s_content].find("#hph-pause").on('click', {
                     _this: this
                }, this.pause);
@@ -93,12 +93,11 @@ define(['jquery', 'three', 'guide'], function($, THREE, guide) {
                event.data._this[s_viewport].previousFrame();
           }
 
-          current(event) {
+          play(event) {
                // Switch visibility of play/pause button
                $('#hph-pause').show();
                $('#hph-play').hide();
 
-               //event.data._this[s_viewport].currentFrame();
                event.data._this[s_viewport].sequence = true;
           }
 
