@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'storyboard'], function($, THREE, happah) {
+define(['jquery', 'three', './storyboard'], function($, THREE, happah) {
     var s_controlPoints = Symbol('controlPoints');
 
     class Line {

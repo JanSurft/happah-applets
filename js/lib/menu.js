@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'guide'], function($, THREE, guide) {
+define(['jquery', 'three', './guide'], function($, THREE, guide) {
      var s_scene = Symbol('scene');
      var s_viewport = Symbol('viewport');
      var s_gridEnabled = Symbol('gridenabled');

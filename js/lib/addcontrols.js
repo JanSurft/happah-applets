@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
+define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
      var s_camera = Symbol('camera');
      var s_scene = Symbol('scene');
      var s_viewport = Symbol('viewport');

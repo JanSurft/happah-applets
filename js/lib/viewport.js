@@ -5,8 +5,8 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', 'dragcontrols',
-     'spherical-impostor', 'addcontrols', 'defaults'
+define(['jquery', 'three', 'TrackballControls', './dragcontrols',
+     './spherical-impostor', './addcontrols', './defaults'
 ], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, defaults) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;

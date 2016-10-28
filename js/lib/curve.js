@@ -4,7 +4,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'storyboard', 'spherical-impostor'], function($, THREE, STORYBOARD, sphericalimpostor) {
+define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, THREE, STORYBOARD, sphericalimpostor) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');

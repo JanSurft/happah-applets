@@ -1,4 +1,4 @@
-define(['jquery', 'translator'], function($, Translator) {
+define(['jquery', './translator'], function($, Translator) {
      var s_algorithm = Symbol('algorithm');
      var s_frames = Symbol('frames');
      var s_currentFrame = Symbol('currentframe');

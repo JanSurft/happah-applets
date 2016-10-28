@@ -1,4 +1,4 @@
-define(['jquery', 'three', 'spherical-impostor'], function($, THREE, happah) {
+define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
      /** Flags for drawing preferences */
 
      // Set to true if scene has been altered.

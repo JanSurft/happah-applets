@@ -6,7 +6,8 @@
 *.exe
 *.o
 *.so
-/build
+js/build
+html/*/build
 /applets/*/build
 /three.js-master
 

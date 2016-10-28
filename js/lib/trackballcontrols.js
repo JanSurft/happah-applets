@@ -1,4 +1,4 @@
-define(['three', 'ray'], function(THREE, happah) {
+define(['three'], function(THREE) {
      var s_raycaster = Symbol('raycaster');
      var s_target = Symbol('target');
      var s_previousRay = Symbol('previousray');

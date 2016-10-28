@@ -25,12 +25,10 @@ require.config({
           TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
           TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
           bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap",
-          //shader: '../lib/shader',
-          //shaders: '../shaders'
      }
 });
 
-require(['happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
+require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
