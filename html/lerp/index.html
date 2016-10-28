@@ -3,20 +3,19 @@
 
 <head>
      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-     integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-     crossorigin="anonymous">
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+          crossorigin="anonymous">
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
      <link rel="stylesheet" type="text/css" href="../../css/happah.css"></link>
      <link rel="stylesheet" type="text/css" href="../../css/impromptu.css"></link>
-     <script src="../../build/js/shaders.js"></script>
+     <script src="../../js/build/shaders.js"></script>
      <script src="../../three.js-master/build/three.min.js"></script>
-     <script data-main="js/main" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+     <script data-main="../../js/lerp" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
      <script type="text/x-mathjax-config">
           MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
      </script>
-     <script src="../../js/geomify.js"></script>
+     <script src="../../js/lib/geomify.js"></script>
 </head>
 
 <body>
@@ -30,7 +29,7 @@
                          <div class="btn-group tool-bar-top">
                               <a href="#" class="btn btn-default fa fa-th" title="Toggle grid" id="grid-toggle"> Grid</a>
                               <a href="#" class="btn btn-default fa fa-low-vision" title="Toggle control-polygon"
-                              id="poly-toggle"> Control polygon</a>
+                                   id="poly-toggle"> Control polygon</a>
                               <a href="#" class="btn btn-default fa fa-area-chart" title="Toggle curve" id="curve-toggle"> Curve</a>
                               <a title="Remove control-points" href="#" class="btn btn-default fa fa-trash" id="clear-all"> Clear</a>
                               <a title="Start tour" href="#" class="btn btn-default fa fa-info" id="show-help"> Guide</a>
@@ -57,28 +56,27 @@
                          <label id="hph-label" name="hph-label">Start</label>
                     </td>
                     <h3>Description:</h3>
-                    <p>Pick two control points by clicking inside scene. Click on
-                         the right arrow to get to the next frame!
-                         <br>The algorithm will then create a new point \(c\) between
-                         the points. The new point divides the red line into two
-                         intervals (red/black). The size of each interval is defined
-                         by the scrollbar-handle (black square), which you can
-                         move along the axis by drag-and-drop!
-                         <br>Let's say your first point is \(a\) and your second point
-                         is \(b\) then you get a new point \(c\) with:
-                         <br>
-                         <center>\(c = a + t*(b-a)\)
-                         </center>
-                         <br>Where \(t\) is the value of your handle within the interval.
-                         <br>Notice how the color of the interval is represented on
-                         the scrollbar's axis. This process is called \(linear-interpolation\).
-                         <br>If you move the handle out of the interval \(0-1\) you
-                         create a new point by \(linear-extrapolation\).
-                         <br>If you repeat the process of linear interpolation with
+                    <p>
+                         Pick two control points by clicking inside scene. Click on the right arrow to get
+                         to the next frame!
+                         <br/> The algorithm will then create a new point \(c\)
+                         between the points. The new point divides the red line
+                         into two intervals (red/black). The size of each interval
+                         is defined by the scrollbar-handle (black square), which
+                         you can move along the axis by drag-and-drop! <br/> Let's
+                         say your first point is \(a\) and your second point is
+                         \(b\) then you get a new point \(c\) with: <br/>
+                         <center>\(c = a + t*(b-a)\) </center> <br/> Where \(t\) is the
+                         value of your handle within the interval. <br/> Notice
+                         how the color of the interval is represented on the scrollbar's
+                         axis. This process is called \(linear-interpolation\).
+                         <br/> If you move the handle out of the interval \(0-1\)
+                         you create a new point by \(linear-extrapolation\). <br/>                         If you repeat the process of linear interpolation with
                          the newly generated point, you get to De Casteljau's algorithm
                          which is explained in the next section.
-                         <br>
-                         <center><a href="../decasteljau/index.html">Next Section</a>
+                         <br/>
+                         <center>
+                              <a href="../decasteljau/index.html">Next Section</a>
                          </center>
                     </p>
                </div>
