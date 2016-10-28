@@ -16,6 +16,7 @@ define(['jquery', 'translator'], function($, Translator) {
           // TODO: this needs actual implementation
           rebuild() {
                var storyboard = this[s_algorithm].storyboard();
+               this[s_frames] = [];
                for (var i = 0; i < storyboard.size(); i++) {
                     this[s_frames].push(storyboard.frame(i));
                }
