@@ -34,7 +34,7 @@ require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax']
      var scene = new happah.Scene();
      // TODO: Get position relative to window size
      var pos = new THREE.Vector3(0, -30, 100);
-     var algorithm = new happah.Curve(scene.controlPoints);
+     var algorithm = new happah.DeCasteljauAlgorithm(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
      var scrollbar2 = new happah.Scrollbar(new THREE.Vector3(150, -30, 0), viewport);

@@ -30,7 +30,7 @@ require.config({
 
 require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
      var scene = new happah.Scene();
-     var algorithm = new happah.Curve(scene.controlPoints);
+     var algorithm = new happah.DeCasteljauAlgorithm(scene.controlPoints);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
      var scrollbar = new happah.Scrollbar(new THREE.Vector3(0, -30, 100), viewport);
      algorithm.scrollbar = scrollbar;

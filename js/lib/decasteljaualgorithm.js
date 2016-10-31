@@ -13,7 +13,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, 
       * Encapsulate functionality of De' Casteljau algorithm.
       * takes t as division ratio and a callback function
       */
-     class Curve {
+     class DeCasteljauAlgorithm {
 
           /** Default constructor. */
           constructor(controlPoints, scrollbar) {
@@ -229,6 +229,6 @@ define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, 
      }
 
      return {
-          Curve: Curve
+          DeCasteljauAlgorithm: DeCasteljauAlgorithm
      };
 });
