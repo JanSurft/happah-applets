@@ -20,10 +20,9 @@ require.config({
 });
 
 require(
-     ['QUnit', 'three', 'curvetest', 'decasteljaustoryboardtest'],
-     function(QUnit, THREE, curvetest, decasteljaustoryboardtest) {
-          curvetest.run();
-          decasteljaustoryboardtest.run();
+     ['QUnit', 'three', './decasteljaualgorithmtest'],
+     function(QUnit, THREE, DECASTELJAU_TEST) {
+          DECASTELJAU_TEST.run();
           QUnit.load();
           QUnit.start();
      }

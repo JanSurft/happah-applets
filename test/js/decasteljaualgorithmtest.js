@@ -7,7 +7,7 @@
 /** Unit tests for curve class. */
 
 "use strict";
-define(['../js/curve'], function(CURVE) {
+define(['../js/lib/decasteljaualgorithm.js'], function(DECASTELJAU_ALGORITHM) {
      var run = function() {
           test('Generated curve points of subdivision using de casteljau should equal precalced ones.', function() {
                var expectedResult = [
@@ -69,7 +69,7 @@ define(['../js/curve'], function(CURVE) {
                     new THREE.Vector3(16, 16, 0),
                     new THREE.Vector3(0, 16, 0),
                ];
-               var mycurve = new CURVE.Curve(controlpoints);
+               var mycurve = new DECASTELJAU_ALGORITHM.DeCasteljauAlgorithm(controlpoints);
                var curveSegments = mycurve.subdivide();
 
                // check result
