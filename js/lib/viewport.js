@@ -19,7 +19,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
      var s_counter = Symbol('counter');
      var s_currentFrame = Symbol('currentframe');
      var s_dragControls = Symbol('dragControls');
-     var s_drawCurve = Symbol('drawcurve');
      var s_drawPoly = Symbol('drawpoly');
      var s_grid = Symbol('grid');
      var s_overlay = Symbol('overlay');
@@ -167,10 +166,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_sequence] = state;
           }
 
-          set curveState(state) {
-               this[s_drawCurve] = state;
-               this.currentFrame();
-          }
 
           set polyState(state) {
                this[s_drawPoly] = state;
@@ -224,10 +219,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                          meshes = meshes.concat(this[s_storyboard].firstFrame().meshes);
                     }
                     // If curve is enabled, add curve
-                    if (this[s_drawCurve]) {
-                         // Curve is the last frame
-                         meshes = meshes.concat(this[s_storyboard].lastFrame().meshes);
-                    }
                     // generate impostors for helper points
                     var impostors = new Array();
                     var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
