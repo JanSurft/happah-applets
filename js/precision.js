@@ -1,40 +1,13 @@
 require.config({
      baseUrl: '../../js',
-     shim: {
-          'bootstrap': {
-               deps: ['jquery']
-          },
-          'three': {
-               exports: 'THREE'
-          },
-          'TrackballControls': {
-               deps: ['three'],
-               exports: 'THREE'
-          },
-          'TransformControls': {
-               deps: ['three'],
-               exports: 'THREE'
-          }
-     },
-     paths: {
-          i18n: "http://raw.githubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
-          impromptu: "https://cdn.rawgit.com/trentrichardson/jQuery-Impromptu/master/dist/jquery-impromptu.min",
-          mathjax: "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML",
-          jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
-          three: "http://threejs.org/build/three",
-          TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
-          TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
-          bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap",
-     }
 });
 
-require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
+require(['./lib/happah', './precision/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, PRECISION, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
-     // TODO: Get position relative to window size
      var pos = new THREE.Vector3(0, -30, 100);
-     var algorithm = new happah.Curve(scene.controlPoints);
+     var algorithm = new PRECISION.Algorithm(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
      algorithm.scrollbar = scrollbar;
@@ -46,7 +19,11 @@ require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax']
      viewport.camera.updateProjectionMatrix();
      // Initialize some points
      viewport.addControls.addControlPoints([
-          new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30)
+          new THREE.Vector3(50, 0, -100),
+          new THREE.Vector3(50, 0,  -50),
+          new THREE.Vector3(50, 0,    0),
+          new THREE.Vector3(50, 0,   50),
+          new THREE.Vector3(50, 0,  100)
      ]);
      var menu = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");
