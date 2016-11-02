@@ -19,11 +19,11 @@ require(['./lib/happah', './precision/algorithm', 'three', 'jquery', 'bootstrap'
      viewport.camera.updateProjectionMatrix();
      // Initialize some points
      viewport.addControls.addControlPoints([
-          new THREE.Vector3(50, 0, -100),
-          new THREE.Vector3(50, 0,  -50),
-          new THREE.Vector3(50, 0,    0),
+          new THREE.Vector3(50, 0,  100),
           new THREE.Vector3(50, 0,   50),
-          new THREE.Vector3(50, 0,  100)
+          new THREE.Vector3(50, 0,    0),
+          new THREE.Vector3(50, 0,  -50),
+          new THREE.Vector3(50, 0, -100),
      ]);
      var menu = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");
