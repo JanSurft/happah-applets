@@ -1,7 +1,7 @@
 define(['jquery', './translator'], function($, Translator) {
      var s_algorithm = Symbol('algorithm');
      var s_frames = Symbol('frames');
-     var s_currentFrame = Symbol('currentframe');
+     var s_index = Symbol('index');
 
      console.log(Translator.t('hello'));
 
@@ -10,16 +10,13 @@ define(['jquery', './translator'], function($, Translator) {
           constructor(algorithm) {
                this[s_algorithm] = algorithm;
                this[s_frames] = [];
-               this[s_currentFrame] = 0;
+               this[s_index] = 0;
           }
 
-          // TODO: this needs actual implementation
           rebuild() {
-               var storyboard = this[s_algorithm].storyboard();
-               this[s_frames] = [];
-               for (var i = 0; i < storyboard.size(); i++) {
-                    this[s_frames].push(storyboard.frame(i));
-               }
+               var storyboard = this[s_algorithm].storyboard(this[s_algorithm]);
+               storyboard.index = this[s_index];
+               return storyboard;
           }
 
           append(frame) {
@@ -42,31 +39,38 @@ define(['jquery', './translator'], function($, Translator) {
                return this[s_frames][0];
           }
 
+          get index() {
+               return this[s_index];
+          }
+          set index(index) {
+               this[s_index] = index;
+          }
+
           currentFrame() {
-               if (this[s_currentFrame] < this.size() - 1) {
+               if (this[s_index] < this.size() - 1) {
                     $('#hph-forward').css("color", "#333");
                } else {
                     $('#hph-forward').css("color", "grey");
                }
-               if (this[s_currentFrame] > 0) {
+               if (this[s_index] > 0) {
                     $('#hph-backward').css("color", "#333");
                } else {
                     $('#hph-backward').css("color", "grey");
                }
 
-               return this.frame(this[s_currentFrame]);
+               return this.frame(this[s_index]);
           }
 
           nextFrame() {
-               if (this[s_currentFrame] < this.size() - 1) {
-                    this[s_currentFrame]++;
+               if (this[s_index] < this.size() - 1) {
+                    this[s_index]++;
                }
                return this.currentFrame()
           }
 
           previousFrame() {
-               if (this[s_currentFrame] > 0) {
-                    this[s_currentFrame]--;
+               if (this[s_index] > 0) {
+                    this[s_index]--;
                }
                return this.currentFrame()
           }

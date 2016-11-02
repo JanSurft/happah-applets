@@ -93,9 +93,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
           // Call if the storyboard is out of date
           rebuildStoryboard() {
-               this[s_storyboard] = this[s_algorithm].storyboard();
-               // as a new storyboard represents a different scene,
-               // the scene needs to be updated
+               this[s_storyboard] = this[s_storyboard].rebuild();
                this[s_scene].redraw();
           }
 
@@ -207,8 +205,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                requestAnimationFrame(this.update.bind(this));
                if (this[s_scene].altered) {
                     // TODO replace with storyboard.update()
-                    //this.rebuildStoryboard();
-                    this[s_storyboard].rebuild();
+                    this.rebuildStoryboard();
                     //var currentFrame = this[s_storyboard].frame(this[s_currentFrame]);
                     var currentFrame = this[s_storyboard].currentFrame();
                     // Set the label text in the bottom left corner
