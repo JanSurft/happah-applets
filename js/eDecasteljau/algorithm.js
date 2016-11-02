@@ -63,20 +63,44 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     pointMatrix.push(points);
                });
 
-               for (var row in pointMatrix) {
-                    var frame = new HAPPAH.Storyboard.Frame();
-                    frame.points = pointMatrix[row];
+               var frame = new HAPPAH.Storyboard.Frame();
+               frame.points = pointMatrix[1];
+               var pointStack = new Array();
 
-                    for (var i = 0; i < pointMatrix[row].length - 2; i++) {
-                         pointMatrix[row][i].y += row * 10;
-                         pointMatrix[row][i + 1].y += row * 10;
-                         var segment = [pointMatrix[row][i], pointMatrix[row][i + 1]];
-                    }
+               // The previous iteration has one point more.
+               for (var k in pointMatrix[1]) {
+                    // Push first one from last iteration
+                    pointStack.push(pointMatrix[0][k]);
 
+                    // Now add one point from current iteration
+                    pointStack.push(pointMatrix[1][k]);
 
-                    //frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
-                    storyboard.append(frame);
+                    // Get relative point on the axis
+                    var projectPoint = pointMatrix[1][k].clone();
+                    projectPoint.z = 60;
+
+                    // Add dashed line between point and projection
+                    var line = insertDashedLine([pointMatrix[1][k], projectPoint], 0x000000);
+                    frame.meshes.push(line);
+
                }
+               // Add last point from previous iteration
+               pointStack.push(pointMatrix[0][pointMatrix[0].length - 1]);
+
+               // Iterate over stacksize and make a segment from 2 points
+               for (var k = 2; k <= pointStack.length; k++) {
+                    var segment = new Array();
+                    segment.push(pointStack[k - 1]);
+                    segment.push(pointStack[k - 2]);
+                    // Paint the strips in the interval's color
+                    var strip = (k % 2 == 0) ?
+                         insertSegmentStrip(segment, 0x3D3D3D) : insertSegmentStrip(segment, 0xFF0000);
+                    frame.meshes.push(strip);
+
+               }
+
+               //frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
+               storyboard.append(frame);
 
 
                return storyboard;

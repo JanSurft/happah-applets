@@ -47,7 +47,6 @@ require(['./lib/happah', './eDecasteljau/algorithm', './eDecasteljau/linedragcon
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-
      // X-Axis
      var geometry = new THREE.CylinderGeometry(1, 1, 190, 32);
      var coneGeo = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
@@ -59,6 +58,7 @@ require(['./lib/happah', './eDecasteljau/algorithm', './eDecasteljau/linedragcon
           color: 0x4d4d4d
      });
      axis = new THREE.Mesh(geometry, material);
+     axis.position.set(0, 0, 60);
      scene.add(axis);
 
      // Initialize some points
