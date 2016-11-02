@@ -38,6 +38,8 @@ require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax']
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
      var scrollbar2 = new happah.Scrollbar(new THREE.Vector3(150, -30, 0), viewport);
+     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+     dragControls.listenTo(viewport.renderer.domElement);
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      scrollbar2.listenTo(viewport.renderer.domElement);

@@ -11,6 +11,8 @@ require(['./lib/happah', './precision/algorithm', 'three', 'jquery', 'bootstrap'
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
      algorithm.scrollbar = scrollbar;
+     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+     dragControls.listenTo(viewport.renderer.domElement);
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
@@ -20,10 +22,10 @@ require(['./lib/happah', './precision/algorithm', 'three', 'jquery', 'bootstrap'
      // Initialize some points
      viewport.addControls.addControlPoints([
           new THREE.Vector3(50, 0, -100),
-          new THREE.Vector3(50, 0,  -50),
-          new THREE.Vector3(50, 0,    0),
-          new THREE.Vector3(50, 0,   50),
-          new THREE.Vector3(50, 0,  100)
+          new THREE.Vector3(50, 0, -50),
+          new THREE.Vector3(50, 0, 0),
+          new THREE.Vector3(50, 0, 50),
+          new THREE.Vector3(50, 0, 100)
      ]);
      var menu = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");

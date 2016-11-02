@@ -37,6 +37,8 @@ require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax']
      var algorithm = new happah.DeCasteljauAlgorithm(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
+     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+     dragControls.listenTo(viewport.renderer.domElement);
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);

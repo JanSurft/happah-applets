@@ -5,9 +5,9 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', './dragcontrols',
+define(['jquery', 'three', 'TrackballControls',
      './spherical-impostor', './addcontrols', './defaults'
-], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, defaults) {
+], function($, THREE, THREE, sphericalimpostor, ADDCONTROLS, defaults) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -18,7 +18,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
      var s_trackballControls = Symbol('trackballControls');
      var s_counter = Symbol('counter');
      var s_currentFrame = Symbol('currentframe');
-     var s_dragControls = Symbol('dragControls');
      var s_drawPoly = Symbol('drawpoly');
      var s_grid = Symbol('grid');
      var s_overlay = Symbol('overlay');
@@ -79,10 +78,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                // for adding control points
                this[s_addControls] = new ADDCONTROLS.AddControls(this, this[s_scene], this[s_camera], 0);
                this[s_addControls].listenTo(this[s_renderer].domElement);
-
-               // to move objects
-               this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_trackballControls], this[s_camera]);
-               this[s_dragControls].listenTo(this[s_renderer].domElement);
 
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
