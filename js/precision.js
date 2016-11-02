@@ -8,7 +8,7 @@ require(['./lib/happah', './precision/algorithm', 'three', 'jquery', 'bootstrap'
      var scene = new happah.Scene();
      var pos = new THREE.Vector3(0, -30, 100);
      var algorithm = new PRECISION.Algorithm(scene.controlPoints);
-     var viewport = new happah.Viewport(canvas, scene, algorithm);
+     var viewport = new happah.Viewport(canvas, scene, algorithm, {enableDragcontrols : false});
      var scrollbar = new happah.Scrollbar(pos, viewport);
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
