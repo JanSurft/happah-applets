@@ -12,7 +12,7 @@ define(['jquery', 'three', './happah'], function($, THREE, happah) {
 
      // Drag control variables
      var s_raycaster = Symbol('raycaster');
-     var s_selectedObject = Symbol('selected');
+     //var s_selectedObject = Symbol('selected');
      var s_selectionPlane = Symbol('plane');
      var s_offset = Symbol('offset');
      var s_enabled = Symbol('enabled');
@@ -109,13 +109,23 @@ define(['jquery', 'three', './happah'], function($, THREE, happah) {
                     this[s_controls].enabled = false;
 
                     // Set the selection - first intersected object
-                    this[s_selectedObject] = intersects[0];
+                    //this[s_selectedObject] = intersects[0];
+                    this.selectObject(intersects[0]);
 
                     // Calculate the offset
                     var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
 
                     this[s_offset].copy(intersects[0].point).sub(this[s_selectionPlane].position);
                }
+          }
+
+          selectObject(object) {
+               //this[s_selectedObject] = object;
+               this.selectedObject = object;
+          }
+
+          updatePosition(object, position) {
+               object.position.copy(position);
           }
 
           /** Called whenever a mouse button is moved */
@@ -139,11 +149,11 @@ define(['jquery', 'three', './happah'], function($, THREE, happah) {
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
                // Multiply the origin vector of the ray so it's far behind the camera
-               //this[s_raycaster].ray.origin.sub(this[s_raycaster].ray.direction);
+               // this[s_raycaster].ray.origin.sub(this[s_raycaster].ray.direction);
                // this[s_camera].position, vector.sub(this[s_camera].position).normalize());
                // ^Only in 3D.
 
-               if (this[s_selectedObject]) {
+               if (this.selectedObject) {
                     // Scene has changed so we need to redraw.
                     // TODO: this is causing bad behaviour with quickly
                     // drag+drop we need the viewport to update immediately.
@@ -159,9 +169,11 @@ define(['jquery', 'three', './happah'], function($, THREE, happah) {
                     }
 
                     // Reposition the object based on the intersection point with the plane
-                    this[s_selectedObject].position.copy(intersects[0].point.sub(this[s_offset]));
+                    //this[s_selectedObject].position.copy(intersects[0].point.sub(this[s_offset]));
+                    this.updatePosition(this.selectedObject, intersects[0].point.sub(this[s_offset]));
 
-                    this[s_selectionPlane].position.copy(this[s_selectedObject].position);
+
+                    this[s_selectionPlane].position.copy(this.selectedObject.position);
                } else {
                     // Update position of the plane if need
                     var intersects =
@@ -180,7 +192,8 @@ define(['jquery', 'three', './happah'], function($, THREE, happah) {
           mouseUp() {
                // Enable the controls
                this[s_controls].enabled = true;
-               this[s_selectedObject] = null;
+               //this[s_selectedObject] = null;
+               this.selectedObject = null;
           }
 
      } //class DragControls
