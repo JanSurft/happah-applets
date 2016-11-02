@@ -8,11 +8,11 @@
 // Let t be 2/3
 //                          p=te+(1-t)s
 //      *-----------------------*-----------*
-//     (s)                                 (e)
+//     (s)                      :          (e)
 //                      *-------.---*
-//
+//                      :           :
 //              *-------.---*-------.---*
-//
+//              :           :           :
 //      *-------.---*-------.---*-------.---* Step 0
 //     (s)                                 (e)
 //
@@ -25,7 +25,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
 
-     class Algorithm extends HAPPAH.DeCasteljauAlgorithm{
+     class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
           /** Default constructor. */
           constructor(controlPoints, scrollbar) {
@@ -34,6 +34,12 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                this[s_controlPoints] = controlPoints;
                this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
                this[s_scrollbar] = scrollbar;
+          }
+
+          // we need this, because scrolbar gets set after the constructor call
+          set scrollbar(scrollbar) {
+               this[s_scrollbar] = scrollbar;
+               super.scrollbar = scrollbar;
           }
 
           /**
