@@ -113,3 +113,20 @@ function insertSegmentStrip(points, color) {
      lineGeometry.computeLineDistances();
      return new THREE.Line(lineGeometry, lineMaterial);
 }
+
+function insertDashedLine(points, color) {
+     if (points == null || points.length == 0)
+          return null;
+
+     var lineGeometry = new THREE.Geometry();
+     var lineMaterial = new THREE.LineDashedMaterial({
+          color: color,
+          linewidth: 2
+     });
+
+     for (var i = 0; i < points.length; i++) {
+          lineGeometry.vertices.push(points[i]);
+     }
+     lineGeometry.computeLineDistances();
+     return new THREE.Line(lineGeometry, lineMaterial);
+}
