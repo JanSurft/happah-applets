@@ -6,8 +6,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', './dragcontrols',
-     './spherical-impostor', './addcontrols', './defaults'
-], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, defaults) {
+     './spherical-impostor', './addcontrols', './canvaslabel', './defaults'
+], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, LABEL, defaults) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -228,6 +228,12 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                          imp.position.copy(points[i]);
                          imp.material.uniforms.diffuse.value.set(helper_points_color);
                          impostors.push(imp);
+
+                         // Create a label for each point
+                         var label = new LABEL.CanvasLabel();
+                         label.addText("test");
+                         label.setPosition(points[i], this[s_camera]);
+
                     }
                     this[s_scene].points = impostors;
                     this[s_scene].meshes = meshes;
@@ -235,9 +241,9 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                }
                // FIXME: does this belong inside the if-block?
                // Render scene + scene overlay
-               this[s_renderer].clear();
+               //this[s_renderer].clear();
+               //this[s_renderer].clearDepth();
                this[s_renderer].render(this[s_scene], this[s_camera]);
-               this[s_renderer].clearDepth();
                this[s_renderer].render(this[s_overlay], this[s_cameraOverlay]);
 
                this[s_trackballControls].update();

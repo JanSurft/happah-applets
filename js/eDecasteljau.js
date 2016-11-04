@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', './eDecasteljau/algorithm', './eDecasteljau/linedragcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, CONTROLS, THREE, $) {
+require(['./lib/happah', './eDecasteljau/algorithm', './lib/canvaslabel', './eDecasteljau/linedragcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, LABEL, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -47,6 +47,10 @@ require(['./lib/happah', './eDecasteljau/algorithm', './eDecasteljau/linedragcon
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
+     // Experimental label stuff
+     //var label = new LABEL.CanvasLabel();
+     //label.addText("hallo Welt!");
+
      // X-Axis
      var geometry = new THREE.CylinderGeometry(1, 1, 190, 32);
      var coneGeo = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
@@ -64,10 +68,10 @@ require(['./lib/happah', './eDecasteljau/algorithm', './eDecasteljau/linedragcon
      // Initialize some points
      viewport.addControls.addControlPoints([
           new THREE.Vector3(-80, 0, 50),
-          new THREE.Vector3(-40, 0, 50),
-          new THREE.Vector3(0, 0, 50),
-          new THREE.Vector3(40, 0, 50),
-          new THREE.Vector3(80, 0, 50),
+          new THREE.Vector3(-40, 0, -30),
+          new THREE.Vector3(0, 0, -50),
+          new THREE.Vector3(40, 0, -100),
+          new THREE.Vector3(80, 0, -70),
      ]);
 
      var menu = new happah.Menu(".btn-group", scene, viewport);

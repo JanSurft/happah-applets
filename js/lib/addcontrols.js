@@ -92,6 +92,7 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                vector.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
                vector.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
 
+               console.log(event);
                // Create new raycaster from mouse position
                var raycaster = new THREE.Raycaster();
                raycaster.setFromCamera(vector, this[s_camera]);

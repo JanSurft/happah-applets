@@ -75,6 +75,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     // Now add one point from current iteration
                     pointStack.push(pointMatrix[1][k]);
 
+                    // TODO: this needs to be parameterized
                     // Get relative point on the axis
                     var projectPoint = pointMatrix[1][k].clone();
                     projectPoint.z = 60;
