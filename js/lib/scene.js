@@ -57,11 +57,14 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                }
 
                set points(points) {
-                    // Remove points first
-                    for (var i in this[s_points]) {
-                         this.remove(this[s_points][i]);
-                    }
+                    this.remove(this[s_points]);
                     this[s_points] = points;
+                    this.add(points);
+                    // Remove points first
+                    //for (var i in this[s_points]) {
+                         //this.remove(this[s_points][i]);
+                    //}
+                    //this[s_points] = points;
                     this.redraw();
                }
 
@@ -90,13 +93,9 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                          this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
                     }
                     // Add all meshes
-                    for (var i in this[s_meshes]) {
-                         this.add(this[s_meshes][i]);
-                    }
-                    // Add all points
-                    for (var i in this[s_points]) {
-                         this.add(this[s_points][i]);
-                    }
+                    //for (var i in this[s_meshes]) {
+                         //this.add(this[s_meshes][i]);
+                    //}
                }
 
                removeControlPoints() {

@@ -221,13 +221,13 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     }
                     // If curve is enabled, add curve
                     // generate impostors for helper points
-                    var impostors = new Array();
+                    var impostors = new THREE.Object3D();
                     var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
                          imp.material.uniforms.diffuse.value.set(helper_points_color);
-                         impostors.push(imp);
+                         impostors.add(imp);
 
                          // Create a label for each point
                          var label = new LABEL.CanvasLabel();
