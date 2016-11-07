@@ -5,6 +5,7 @@
  //////////////////////////////////////////////////////////////////////////////
  define(['jquery', 'three'], function($, THREE) {
       var s_element = Symbol('element');
+
       class CanvasLabel {
 
            constructor() {
@@ -32,7 +33,6 @@
                 pos.x = Math.round((pos.x + 1) * canvas.width / 2);
                 pos.y = Math.round((-pos.y + 1) * canvas.height / 2);
 
-                console.log(pos.x + "px");
                 this[s_element].css("left", pos.x + "px");
                 this[s_element].css("top", pos.y + "px");
            }

@@ -6,7 +6,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', './dragcontrols',
-     './spherical-impostor', './addcontrols', './canvaslabel', './defaults'
+     './spherical-impostor', './addcontrols', './labelmanager', './defaults'
 ], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, LABEL, defaults) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
@@ -29,6 +29,8 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
      var s_sequence = Symbol('sequence');
      var s_storyboard = Symbol('storyboard');
      var s_zoom = Symbol('zoom');
+     // TEST
+     var s_labelmanager = Symbol('labelmanager');
 
      class Viewport {
 
@@ -41,6 +43,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
                this.mouseWheel = this.mouseWheel.bind(this);
                this.update = this.update.bind(this);
+
 
                this[s_algorithm] = algorithm;
                this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
@@ -74,6 +77,9 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
                });
+               // -------TEST---------
+               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera]);
+               // -------/TEST---------
 
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].noZoom = true;
@@ -223,6 +229,8 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     // generate impostors for helper points
                     var impostors = new Array();
                     var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
+
+                    this[s_labelmanager].removeLabels();
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
@@ -230,9 +238,12 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                          impostors.push(imp);
 
                          // Create a label for each point
-                         var label = new LABEL.CanvasLabel();
-                         label.addText("test");
-                         label.setPosition(points[i], this[s_camera]);
+                         //var label = new LABEL.CanvasLabel();
+                         //label.addText("test");
+                         //label.setPosition(points[i], this[s_camera]);
+
+                         this[s_labelmanager].addLabel("hallo welt!", points[i]);
+
 
                     }
                     this[s_scene].points = impostors;
