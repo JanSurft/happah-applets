@@ -77,49 +77,39 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     pointMatrix.push(points);
                });
 
-               for (var i = 1; i < pointMatrix.length; i++) {
+               var redSegments = [];
+               var blackSegments = [];
+               var impostorPoints = [];
+
+               for (var frameIndex = 1; frameIndex < pointMatrix.length; frameIndex++) {
                     var frame = new HAPPAH.Storyboard.Frame();
-                    frame.title = "Step " + i;
-
-                    frame.points = pointMatrix[i];
-
-                    var pointStack = new Array();
-
-                    // The previous iteration has one point more.
-                    for (var k in pointMatrix[i]) {
-                         // Push first one from last iteration
-                         pointStack.push(pointMatrix[i - 1][k]);
-
-                         // Now add one point from current iteration
-                         pointStack.push(pointMatrix[i][k]);
-                    }
-                    // Add last point from previous iteration
-                    pointStack.push(pointMatrix[i - 1][pointMatrix[i - 1].length - 1]);
-
-                    // Iterate over stacksize and make a segment from 2 points
-                    for (var k = 2; k <= pointStack.length; k++) {
-                         var segment = new Array();
-                         segment.push(pointStack[k - 1]);
-                         segment.push(pointStack[k - 2]);
-                         // Paint the strips in the interval's color
-                         var strip = (k % 2 == 0) ?
-                              insertSegmentStrip(segment, 0x3D3D3D) : insertSegmentStrip(segment, 0xFF0000);
-                         frame.meshes.push(strip);
-
+                    var offset = 20;
+                    for (var row = 1; row <= frameIndex; row++) {
+                         for (var i in pointMatrix[row]) {
+                              var point = pointMatrix[row][i].clone();
+                              point.y += offset;
+                              frame.points.push(point);
+                         }
+                         if (row == frameIndex && frameIndex != pointMatrix.length - 1) {
+                              //for (var i = 0; i < pointMatrix[row].length - 1; i++) {
+                              var start = pointMatrix[row][0].clone();
+                              start.y += offset;
+                              var end = pointMatrix[row][pointMatrix[row].length - 1].clone();
+                              end.y += offset;
+                              var segment = new Array();
+                              segment.push(start);
+                              segment.push(end);
+                              var segment = [start, end];
+                              var strip = insertSegmentStrip(segment, 0xFF0000);
+                              frame.meshes.push(strip);
+                              //}
+                         }
+                         offset += 20;
                     }
 
-                    // Merge with the previous frame's meshes
-                    if (i != 1) {
-                         frame.meshes = frame.meshes.concat(storyboard.frame(storyboard.size() - 1).meshes);
-                         // Remove the last mesh from the previous iteration
-                         // to prevent overlapping lines
-                         frame.meshes.pop();
-                    }
-                    // Also add the newly generated polygon
-                    frame.meshes.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
-                    frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
                     storyboard.append(frame);
                }
+
                return storyboard;
           }
      }
