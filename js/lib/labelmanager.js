@@ -27,7 +27,7 @@
                 // CSS settings
                 label.css("position", "absolute");
                 label.css("z-index", "100");
-                label.css("color", "black");
+                label.css("color", "gold");
 
                 // Transform world-position vector to pixel coordinates
                 var pos = position.clone();
