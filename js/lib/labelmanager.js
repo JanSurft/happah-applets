@@ -4,9 +4,13 @@
  //
  //////////////////////////////////////////////////////////////////////////////
  define(['jquery', 'three'], function($, THREE) {
+      const label_offset_y = 10;
+      const label_color = "gold";
+
       var s_labelCount = Symbol('labelcount');
       var s_camera = Symbol('camera');
       var s_labels = Symbol('labels');
+      var s_topOffset = Symbol('topoffset');
 
       class LabelManager {
 
@@ -27,13 +31,13 @@
                 // CSS settings
                 label.css("position", "absolute");
                 label.css("z-index", "100");
-                label.css("color", "gold");
+                label.css("color", label_color);
 
                 // Transform world-position vector to pixel coordinates
                 var pos = position.clone();
                 pos.project(this[s_camera]);
                 pos.x = Math.round((pos.x + 1) * canvas.width / 2);
-                pos.y = Math.round((-pos.y + 1) * canvas.height / 2);
+                pos.y = Math.round((-pos.y + 1) * canvas.height / 2) + label_offset_y;
 
                 // Limit to canvas frame
                 pos.x = (pos.x > canvas.width) ? canvas.width : pos.x;
