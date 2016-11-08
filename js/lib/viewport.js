@@ -207,7 +207,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     //     lines = lines.concat(this[s_storyboard].frame[0].lines);
                     //}
                     //if (this[s_drawPoly] && this[s_currentFrame] == this[s_storyboard].size() - 1) {
-                         //lines = lines.concat(this[s_storyboard].firstFrame().lines);
+                    //lines = lines.concat(this[s_storyboard].firstFrame().lines);
                     //}
                     // If curve is enabled, add curve
                     // generate impostors for helper points
@@ -226,7 +226,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                          //label.addText("test");
                          //label.setPosition(points[i], this[s_camera]);
 
-                         this[s_labelmanager].addLabel("hallo welt!", points[i]);
+                         this[s_labelmanager].addLabel(Math.round(100 * points[i].x) / 100, points[i]);
 
 
                     }
