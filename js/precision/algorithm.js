@@ -56,13 +56,13 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.meshes[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.lines[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
                if (this[s_controlPoints].length == 0) {
                     // Add a dummy mesh
-                    frame0.meshes[0] = new THREE.Object3D();
+                    frame0.lines[0] = new THREE.Object3D();
                     return storyboard;
                }
 
@@ -101,7 +101,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                               segment.push(end);
                               var segment = [start, end];
                               var strip = insertSegmentStrip(segment, 0xFF0000);
-                              frame.meshes.push(strip);
+                              frame.lines.push(strip);
                               //}
                          }
                          offset += 20;

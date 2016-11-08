@@ -53,7 +53,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_cameraOverlay].zoom = 2.2;
                this[s_cameraOverlay].updateProjectionMatrix();
                this[s_counter] = 0;
-               this[s_currentFrame] = 0;
                this[s_drawPoly] = true;
                this[s_grid] = new THREE.GridHelper(500, 20);
                this[s_grid].position.y = -0.001;
@@ -72,7 +71,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
                this[s_scene] = scene;
                this[s_scene].add(defaults.Defaults.basicLights());
-               this[s_scene].meshes = this[s_storyboard].frame(0).meshes;
+               this[s_scene].lines = this[s_storyboard].frame(0).lines;
                // TBD..
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
@@ -102,7 +101,9 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
           // Call if the storyboard is out of date
           rebuildStoryboard() {
-               this[s_storyboard] = this[s_storyboard].rebuild();
+               var storyboard_index = this[s_storyboard].index;
+               this[s_storyboard] = this[s_algorithm].storyboard();
+               this[s_storyboard].index = storyboard_index;
                this[s_scene].redraw();
           }
 
@@ -132,26 +133,11 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
           }
 
           nextFrame() {
-               //if (this[s_currentFrame] < this[s_storyboard].size() - 1) {
-               //    this[s_currentFrame]++;
-               //}
                this[s_storyboard].nextFrame();
                this[s_scene].redraw();
           }
 
-          // TODO: move everything to update
-          currentFrame() {
-               if (this[s_currentFrame] < this[s_storyboard].size() - 1)
-                    $('#hph-forward').css("color", "#333");
-               else
-                    $('#hph-forward').css("color", "grey");
-               // Adapt the frames to the new conditions
-               this.rebuildStoryboard();
-          }
-
           previousFrame() {
-               //if (this[s_currentFrame] > 0)
-               //    this[s_currentFrame]--;
                this[s_storyboard].previousFrame();
                this[s_scene].redraw();
           }
@@ -159,7 +145,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
           clearScene() {
                this[s_scene].removeControlPoints();
                this[s_addControls].enterAddMode();
-               this[s_currentFrame] = 0;
           }
 
           set gridState(state) {
@@ -211,20 +196,19 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                if (this[s_scene].altered) {
                     // TODO replace with storyboard.update()
                     this.rebuildStoryboard();
-                    //var currentFrame = this[s_storyboard].frame(this[s_currentFrame]);
                     var currentFrame = this[s_storyboard].currentFrame();
                     // Set the label text in the bottom left corner
                     $('#hph-label').text("Frame: " + currentFrame.title);
                     // copy old scene objects
-                    var meshes = currentFrame.meshes;
+                    var lines = currentFrame.lines;
                     var points = currentFrame.points;
                     // control-polygon is the first rendered frame
                     //if (this[s_drawPoly] && this[s_currentFrame] != 0) {
-                    //     meshes = meshes.concat(this[s_storyboard].frame[0].meshes);
+                    //     lines = lines.concat(this[s_storyboard].frame[0].lines);
                     //}
-                    if (this[s_drawPoly] && this[s_currentFrame] == this[s_storyboard].size() - 1) {
-                         meshes = meshes.concat(this[s_storyboard].firstFrame().meshes);
-                    }
+                    //if (this[s_drawPoly] && this[s_currentFrame] == this[s_storyboard].size() - 1) {
+                         //lines = lines.concat(this[s_storyboard].firstFrame().lines);
+                    //}
                     // If curve is enabled, add curve
                     // generate impostors for helper points
                     var impostors = new THREE.Object3D();
@@ -247,7 +231,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
                     }
                     this[s_scene].points = impostors;
-                    this[s_scene].meshes = meshes;
+                    this[s_scene].lines = lines;
                     this[s_scene].paint();
                }
                // FIXME: does this belong inside the if-block?
