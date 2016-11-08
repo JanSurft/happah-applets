@@ -1,6 +1,6 @@
  //////////////////////////////////////////////////////////////////////////////
  //
- //
+ // @author: Tarek Wilkening (tarek_wilkening@web.de)
  //
  //////////////////////////////////////////////////////////////////////////////
  define(['jquery', 'three'], function($, THREE) {
@@ -32,13 +32,17 @@
                 // Transform world-position vector to pixel coordinates
                 var pos = position.clone();
                 pos.project(this[s_camera]);
-                pos.x = Math.round((pos.x + 1) * (canvas.width / 2));
-                pos.y = Math.round((-pos.y + 1) * (canvas.height / 2));
+                pos.x = Math.round((pos.x + 1) * canvas.width / 2);
+                pos.y = Math.round((-pos.y + 1) * canvas.height / 2);
 
-                var x = pos.x + "px";
-                var y = pos.y + "px";
-                label.css("left", x);
-                label.css("top", y);
+                // Limit to canvas frame
+                pos.x = (pos.x > canvas.width) ? canvas.width : pos.x;
+                pos.y = (pos.y > canvas.height - 20) ? canvas.height - 20 : pos.y;
+
+                pos.max(new THREE.Vector3(0, 0, 0));
+
+                label.css("left", pos.x + "px");
+                label.css("top", pos.y + "px");
 
                 // Add text to the label
                 label.append(text);
