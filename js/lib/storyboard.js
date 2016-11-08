@@ -1,5 +1,4 @@
 define(['jquery', './translator'], function($, Translator) {
-     var s_algorithm = Symbol('algorithm');
      var s_frames = Symbol('frames');
      var s_index = Symbol('index');
 
@@ -7,16 +6,9 @@ define(['jquery', './translator'], function($, Translator) {
 
      class Storyboard {
 
-          constructor(algorithm) {
-               this[s_algorithm] = algorithm;
+          constructor() {
                this[s_frames] = [];
                this[s_index] = 0;
-          }
-
-          rebuild() {
-               var storyboard = this[s_algorithm].storyboard(this[s_algorithm]);
-               storyboard.index = this[s_index];
-               return storyboard;
           }
 
           append(frame) {

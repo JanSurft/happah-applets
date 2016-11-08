@@ -102,7 +102,9 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
           // Call if the storyboard is out of date
           rebuildStoryboard() {
-               this[s_storyboard] = this[s_storyboard].rebuild();
+               var storyboard_index = this[s_storyboard].index;
+               this[s_storyboard] = this[s_algorithm].storyboard();
+               this[s_storyboard].index = storyboard_index;
                this[s_scene].redraw();
           }
 
@@ -132,26 +134,11 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
           }
 
           nextFrame() {
-               //if (this[s_currentFrame] < this[s_storyboard].size() - 1) {
-               //    this[s_currentFrame]++;
-               //}
                this[s_storyboard].nextFrame();
                this[s_scene].redraw();
           }
 
-          // TODO: move everything to update
-          currentFrame() {
-               if (this[s_currentFrame] < this[s_storyboard].size() - 1)
-                    $('#hph-forward').css("color", "#333");
-               else
-                    $('#hph-forward').css("color", "grey");
-               // Adapt the frames to the new conditions
-               this.rebuildStoryboard();
-          }
-
           previousFrame() {
-               //if (this[s_currentFrame] > 0)
-               //    this[s_currentFrame]--;
                this[s_storyboard].previousFrame();
                this[s_scene].redraw();
           }
@@ -211,7 +198,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                if (this[s_scene].altered) {
                     // TODO replace with storyboard.update()
                     this.rebuildStoryboard();
-                    //var currentFrame = this[s_storyboard].frame(this[s_currentFrame]);
                     var currentFrame = this[s_storyboard].currentFrame();
                     // Set the label text in the bottom left corner
                     $('#hph-label').text("Frame: " + currentFrame.title);
