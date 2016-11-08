@@ -17,7 +17,7 @@ require.config({
           }
      },
      paths: {
-          i18n: "http://rawgithubusercontent.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
+          i18n: "http://rawgit.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
           impromptu: "https://cdn.rawgit.com/trentrichardson/jQuery-Impromptu/master/dist/jquery-impromptu.min",
           mathjax: "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML",
           jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
