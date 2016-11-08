@@ -8,8 +8,8 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
      // If set: will draw control polygon
      var s_showPoly = Symbol('showpoly');
      //var s_geometries = Symbol('geometries');
-     // Store a set of meshes
-     var s_meshes = Symbol('meshes');
+     // Store a set of lines
+     var s_lines = Symbol('lines');
 
      // Rename points -> impostors to reduce confusion
      var s_points = Symbol('points');
@@ -20,8 +20,8 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     super();
                     this.controlPoints = [];
                     this.algorithmPoints = [];
-                    this[s_points] = [];
-                    this[s_meshes] = [new THREE.Object3D()];
+                    this[s_points] = new THREE.Object3D();
+                    this[s_lines] = [new THREE.Object3D()];
                     this._controlPointImpostors = new THREE.Object3D();
 
                     this[s_altered] = true;
@@ -47,12 +47,13 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     this[s_showCurve] = state;
                     this.redraw();
                }
-               set meshes(meshes) {
-                    // Remove the meshes first
-                    for (var i in this[s_meshes]) {
-                         this.remove(this[s_meshes][i]);
+               set lines(lines) {
+                    this.remove(this[s_lines])
+                    this[s_lines] = new THREE.Object3D()
+                    for (var i in lines) {
+                         this[s_lines].add(lines[i])
                     }
-                    this[s_meshes] = meshes;
+                    this.add(this[s_lines])
                     this.redraw();
                }
 
@@ -60,11 +61,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     this.remove(this[s_points]);
                     this[s_points] = points;
                     this.add(points);
-                    // Remove points first
-                    //for (var i in this[s_points]) {
-                         //this.remove(this[s_points][i]);
-                    //}
-                    //this[s_points] = points;
                     this.redraw();
                }
 
@@ -85,16 +81,16 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     // The very first mesh is the control-polygon
                     if (this[s_showPoly]) {
                          this.add(this._controlPointImpostors);
-                         this.add(this[s_meshes][0]);
+                         //this.add(this[s_lines]);
                     }
                     // Update controlpoints positions,
                     // in case they have been altered by drag-and-drop
                     for (var i in this.controlPoints) {
                          this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
                     }
-                    // Add all meshes
-                    //for (var i in this[s_meshes]) {
-                         //this.add(this[s_meshes][i]);
+                    // Add all lines
+                    //for (var i in this[s_lines]) {
+                         //this.add(this[s_lines][i]);
                     //}
                }
 

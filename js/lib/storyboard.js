@@ -72,7 +72,7 @@ define(['jquery', './translator'], function($, Translator) {
      Storyboard.Frame = class {
 
                constructor() {
-                    this.meshes = [];
+                    this.lines = [];
                     this.mesh;
                     this.points = [];
                     this.title = "";
