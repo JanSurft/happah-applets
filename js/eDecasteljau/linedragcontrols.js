@@ -11,7 +11,6 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
      class LineDragControls extends HAPPAH.DragControls {
                constructor(scene, controls, camera) {
                     super(scene, controls, camera);
-                    console.log("constructor called");
 
                     this[s_axis] = new THREE.Line3();
                }
