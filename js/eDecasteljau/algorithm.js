@@ -6,25 +6,35 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE, HAPPAH, LABEL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
+     var s_labelmanager = Symbol('labelmanager');
+     var s_camera = Symbol('camera');
 
      class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
           /** Default constructor. */
-          constructor(controlPoints, scrollbar) {
+          constructor(controlPoints, scrollbar, camera) {
                super(controlPoints, scrollbar);
                this.storyboard = this.storyboard.bind(this);
                this[s_controlPoints] = controlPoints;
                this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
                this[s_scrollbar] = scrollbar;
+               this[s_camera] = camera;
+               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera]);
           }
 
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
-               super.scrollbar = scrollbar;
+               // super.scrollbar = scrollbar;
+          }
+
+          set camera(camera) {
+               this[s_camera] = camera;
+               this[s_labelmanager] = new LABEL.LabelManager(camera);
+
           }
 
           /**
@@ -67,6 +77,9 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                frame.points = pointMatrix[1];
                var pointStack = new Array();
 
+               // Remove all labels
+               this[s_labelmanager].removeLabels();
+
                // The previous iteration has one point more.
                for (var k in pointMatrix[1]) {
                     // Push first one from last iteration
@@ -74,6 +87,9 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
 
                     // Now add one point from current iteration
                     pointStack.push(pointMatrix[1][k]);
+
+                    // Add a label
+                    this[s_labelmanager].addLabel(pointMatrix[1][k].x, pointMatrix[1][k]);
 
                     // TODO: this needs to be parameterized
                     // Get relative point on the axis
