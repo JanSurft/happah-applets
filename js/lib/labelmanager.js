@@ -40,7 +40,7 @@
                 pos.y = Math.round((-pos.y + 1) * canvas.height / 2) + label_offset_y;
 
                 // Limit to canvas frame
-                pos.x = (pos.x > canvas.width) ? canvas.width : pos.x;
+                pos.x = (pos.x > canvas.width - 20) ? canvas.width - 20 : pos.x;
                 pos.y = (pos.y > canvas.height - 20) ? canvas.height - 20 : pos.y;
 
                 pos.max(new THREE.Vector3(0, 0, 0));
