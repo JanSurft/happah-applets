@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
+require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -43,13 +43,17 @@ require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax']
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      scrollbar2.listenTo(viewport.renderer.domElement);
+
+     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
+     addControl.listenTo(viewport.renderer.domElement);
+
      viewport.overlay.add(scrollbar);
      viewport.overlay.add(scrollbar2);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
-     viewport.addControls.addControlPoints([
+     addControls.addControlPoints([
           new THREE.Vector3(-50, 0, -30), new THREE.Vector3(-40, 0, 30)
      ]);
      var menu = new happah.Menu(".btn-group", scene, viewport);

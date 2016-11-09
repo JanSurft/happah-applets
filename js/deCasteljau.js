@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
+require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -47,8 +47,11 @@ require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax']
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
+     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
+     addControls.listenTo(viewport.renderer.domElement);
+
      // Initialize some points
-     viewport.addControls.addControlPoints([
+     addControls.addControlPoints([
           new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
           new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
      ]);

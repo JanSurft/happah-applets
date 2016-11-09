@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, THREE, $) {
+require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, THREE, $) {
      var scene = new happah.Scene();
      var algorithm = new happah.DeCasteljauAlgorithm(scene.controlPoints);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
@@ -42,10 +42,12 @@ require(['./lib/happah', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax']
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
-     // Limit amount of controlpoints
-     viewport.addControls.limit = 2;
+
+     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 2);
+     addControls.listenTo(viewport.renderer.domElement);
+
      // Initialize some points
-     viewport.addControls.addControlPoints([
+     addControls.addControlPoints([
           new THREE.Vector3(0, 0, 66),
           new THREE.Vector3(0, 0, -66)
      ]);
