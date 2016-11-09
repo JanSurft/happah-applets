@@ -6,13 +6,12 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', './dragcontrols',
-     './spherical-impostor', './addcontrols', './labelmanager', './defaults'
-], function($, THREE, THREE, dragcontrols, sphericalimpostor, ADDCONTROLS, LABEL, defaults) {
+     './spherical-impostor', './labelmanager', './defaults'
+], function($, THREE, THREE, dragcontrols, sphericalimpostor, LABEL, defaults) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
 
-     var s_addControls = Symbol('addcontrols');
      var s_algorithm = Symbol('algorithm');
      var s_camera = Symbol('camera');
      var s_trackballControls = Symbol('trackballControls');
@@ -83,10 +82,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].noZoom = true;
 
-               // for adding control points
-               this[s_addControls] = new ADDCONTROLS.AddControls(this, this[s_scene], this[s_camera], 0);
-               this[s_addControls].listenTo(this[s_renderer].domElement);
-
                if (params['enableDragcontrols']) {
                     // to move objects
                     this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_trackballControls], this[s_camera]);
@@ -105,10 +100,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_storyboard] = this[s_algorithm].storyboard();
                this[s_storyboard].index = storyboard_index;
                this[s_scene].redraw();
-          }
-
-          get addControls() {
-               return this[s_addControls];
           }
 
           get overlay() {
