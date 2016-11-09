@@ -6,8 +6,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', './dragcontrols',
-     './spherical-impostor', './labelmanager', './defaults'
-], function($, THREE, THREE, dragcontrols, sphericalimpostor, LABEL, defaults) {
+     './spherical-impostor', './defaults'
+], function($, THREE, THREE, dragcontrols, sphericalimpostor, defaults) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -28,8 +28,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
      var s_sequence = Symbol('sequence');
      var s_storyboard = Symbol('storyboard');
      var s_zoom = Symbol('zoom');
-     // TEST
-     var s_labelmanager = Symbol('labelmanager');
 
      class Viewport {
 
@@ -75,9 +73,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
                });
-               // -------TEST---------
-               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera]);
-               // -------/TEST---------
 
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].noZoom = true;
@@ -210,21 +205,11 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     var impostors = new THREE.Object3D();
                     var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
 
-                    this[s_labelmanager].removeLabels();
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
                          imp.material.uniforms.diffuse.value.set(helper_points_color);
                          impostors.add(imp);
-
-                         // Create a label for each point
-                         //var label = new LABEL.CanvasLabel();
-                         //label.addText("test");
-                         //label.setPosition(points[i], this[s_camera]);
-
-                         this[s_labelmanager].addLabel(Math.round(100 * points[i].x) / 100, points[i]);
-
-
                     }
                     this[s_scene].points = impostors;
                     this[s_scene].lines = lines;
