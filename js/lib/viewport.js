@@ -144,7 +144,12 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
           clearScene() {
                this[s_scene].removeControlPoints();
-               this[s_addControls].enterAddMode();
+
+               // Fire event
+               var event = new CustomEvent('clrscene', {
+                    "detail": "Controlpoints removed"
+               });
+               this[s_renderer].domElement.dispatchEvent(event);
           }
 
           set gridState(state) {

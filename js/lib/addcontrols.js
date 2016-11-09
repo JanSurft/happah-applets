@@ -20,6 +20,7 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
           constructor(viewport, scene, camera, limit = 0) {
                this.onMouseDoubleclick = this.onMouseDoubleclick.bind(this);
                this.onMouseClick = this.onMouseClick.bind(this);
+               this.onClearScene = this.onClearScene.bind(this);
 
                this[s_scene] = scene;
                this[s_limit] = limit;
@@ -38,6 +39,12 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                } else {
                     console.warn("Control-point limit reached!");
                }
+          }
+
+          /** Called if the controlpoints have been removed */
+          onClearScene(event) {
+               console.log("called!");
+               this.enterAddMode();
           }
 
           /** Adds a control point to the scene */
@@ -75,10 +82,12 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
           listenTo(domElement) {
                domElement.addEventListener('dblclick', this.onMouseDoubleclick, false);
                domElement.addEventListener('click', this.onMouseClick, false);
+               domElement.addEventListener('clrscene', this.onClearScene, false);
           }
           stopListening(domElement) {
                domElement.removeEventListener('dblclick', this.onMouseDoubleclick, false);
                domElement.removeEventListener('click', this.onMouseClick, false);
+               domElement.removeEventListener('clrscene', this.onClearScene, false);
           }
           set limit(limit) {
                this[s_limit] = limit;
@@ -92,7 +101,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                vector.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
                vector.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
 
-               console.log(event);
                // Create new raycaster from mouse position
                var raycaster = new THREE.Raycaster();
                raycaster.setFromCamera(vector, this[s_camera]);
