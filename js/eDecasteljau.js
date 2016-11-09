@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', './eDecasteljau/algorithm', './lib/canvaslabel', './eDecasteljau/linedragcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, LABEL, CONTROLS, THREE, $) {
+require(['./lib/happah', './eDecasteljau/algorithm', './lib/addcontrols', './lib/canvaslabel', './eDecasteljau/linedragcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, ADDCONTROLS, LABEL, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -46,6 +46,9 @@ require(['./lib/happah', './eDecasteljau/algorithm', './lib/canvaslabel', './eDe
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
+
+     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 5);
+     addControls.listenTo(viewport.renderer.domElement);
 
      // Experimental label stuff
      //var label = new LABEL.CanvasLabel();
@@ -66,7 +69,7 @@ require(['./lib/happah', './eDecasteljau/algorithm', './lib/canvaslabel', './eDe
      scene.add(axis);
 
      // Initialize some points
-     viewport.addControls.addControlPoints([
+     addControls.addControlPoints([
           new THREE.Vector3(-80, 0, 50),
           new THREE.Vector3(-40, 0, -30),
           new THREE.Vector3(0, 0, -50),
