@@ -37,6 +37,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE,
 
           }
 
+          get labelManager() {
+               return this[s_labelmanager];
+          }
+
           /**
            * Returns a storyboard with frames that contain the different steps
            * of the algorithm
@@ -118,7 +122,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE,
 
                //frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
                storyboard.append(frame);
-
 
                return storyboard;
           }
