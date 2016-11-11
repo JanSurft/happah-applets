@@ -121,7 +121,7 @@ function insertDashedLine(points, color) {
      var lineGeometry = new THREE.Geometry();
      var lineMaterial = new THREE.LineDashedMaterial({
           color: color,
-          linewidth: 2
+          linewidth: 1
      });
 
      for (var i = 0; i < points.length; i++) {
