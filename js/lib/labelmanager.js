@@ -5,7 +5,7 @@
  //////////////////////////////////////////////////////////////////////////////
  define(['jquery', 'three'], function($, THREE) {
       const label_offset_y = 10;
-      const label_color = "gold";
+      const label_color = "black";
 
       var s_labelCount = Symbol('labelcount');
       var s_camera = Symbol('camera');
