@@ -89,7 +89,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE,
                     pointStack.push(pointMatrix[1][k]);
 
                     // Add a label
-                    this[s_labelmanager].addLabel(pointMatrix[1][k].x, pointMatrix[1][k]);
+                    this[s_labelmanager].addLabel(+(Math.round(pointMatrix[1][k].x + "e+2") + "e-2"), pointMatrix[1][k]);
 
                     // TODO: this needs to be parameterized
                     // Get relative point on the axis
