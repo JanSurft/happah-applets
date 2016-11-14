@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', './eDecasteljau/algorithm', './lib/addcontrols', './lib/labelmanager', './eDecasteljau/linedragcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, ADDCONTROLS, LABEL, CONTROLS, THREE, $) {
+require(['./lib/happah', './functionalDecasteljau/algorithm', './lib/addcontrols', './lib/labelmanager', './functionalDecasteljau/linedragcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, ADDCONTROLS, LABEL, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -43,7 +43,7 @@ require(['./lib/happah', './eDecasteljau/algorithm', './lib/addcontrols', './lib
      dragControls.listenTo(viewport.renderer.domElement);
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
-     viewport.camera.position.set(1, 1000, 0);
+     viewport.camera.position.set(0, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();

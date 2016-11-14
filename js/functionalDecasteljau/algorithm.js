@@ -6,11 +6,10 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE, HAPPAH, LABEL) {
+define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
-     var s_labelmanager = Symbol('labelmanager');
      var s_camera = Symbol('camera');
 
      class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
@@ -23,22 +22,11 @@ define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE,
                this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
                this[s_scrollbar] = scrollbar;
                this[s_camera] = camera;
-               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera]);
           }
 
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
                // super.scrollbar = scrollbar;
-          }
-
-          set camera(camera) {
-               this[s_camera] = camera;
-               this[s_labelmanager] = new LABEL.LabelManager(camera);
-
-          }
-
-          get labelManager() {
-               return this[s_labelmanager];
           }
 
           /**
@@ -82,7 +70,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE,
                var pointStack = new Array();
 
                // Remove all labels
-               this[s_labelmanager].removeLabels();
+               //this[s_labelmanager].removeLabels();
 
                // The previous iteration has one point more.
                for (var k in pointMatrix[1]) {
@@ -93,7 +81,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE,
                     pointStack.push(pointMatrix[1][k]);
 
                     // Add a label
-                    this[s_labelmanager].addLabel(+(Math.round(pointMatrix[1][k].x + "e+2") + "e-2"), pointMatrix[1][k]);
+                    frame.labels.push(+(Math.round(pointMatrix[1][k].x + "e+2") + "e-2"));
 
                     // TODO: this needs to be parameterized
                     // Get relative point on the axis
@@ -103,7 +91,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/labelmanager'], function($, THREE,
                     // Add dashed line between point and projection
                     var line = insertDashedLine([pointMatrix[1][k], projectPoint], 0x000000);
                     frame.lines.push(line);
-
                }
                // Add last point from previous iteration
                pointStack.push(pointMatrix[0][pointMatrix[0].length - 1]);
