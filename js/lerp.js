@@ -34,7 +34,7 @@ require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'i
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
      var scrollbar = new happah.Scrollbar(new THREE.Vector3(0, -30, 100), viewport);
      algorithm.scrollbar = scrollbar;
-     var drawControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
