@@ -75,10 +75,10 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                // The previous iteration has one point more.
                for (var k in pointMatrix[1]) {
                     // Push first one from last iteration
-                    pointStack.push(pointMatrix[0][k]);
+                    pointStack.push(pointMatrix[0][k].clone());
 
                     // Now add one point from current iteration
-                    pointStack.push(pointMatrix[1][k]);
+                    pointStack.push(pointMatrix[1][k].clone());
 
                     // Add a label
                     frame.labels.push(+(Math.round(pointMatrix[1][k].x + "e+2") + "e-2"));
@@ -89,7 +89,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     projectPoint.z = 60;
 
                     // Add dashed line between point and projection
-                    var line = insertDashedLine([pointMatrix[1][k], projectPoint], 0x000000);
+                    var line = insertDashedLine([pointMatrix[1][k].clone(), projectPoint], 0x000000);
                     frame.lines.push(line);
                }
                // Add last point from previous iteration
