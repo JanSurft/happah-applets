@@ -73,6 +73,7 @@ define(['jquery', './translator'], function($, Translator) {
 
                constructor() {
                     this.lines = [];
+                    this.labels = [];
                     this.mesh;
                     this.points = [];
                     this.title = "";

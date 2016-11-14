@@ -6,8 +6,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'TrackballControls', './dragcontrols',
-     './spherical-impostor', './defaults'
-], function($, THREE, THREE, dragcontrols, sphericalimpostor, defaults) {
+     './spherical-impostor', './defaults', './labelmanager'
+], function($, THREE, THREE, dragcontrols, sphericalimpostor, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -28,6 +28,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
      var s_sequence = Symbol('sequence');
      var s_storyboard = Symbol('storyboard');
      var s_zoom = Symbol('zoom');
+     var s_labelmanager = Symbol('labelmanager');
 
      class Viewport {
 
@@ -65,6 +66,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
                this[s_sequence] = false;
                this[s_storyboard] = algorithm.storyboard();
+               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera]);
 
                this[s_scene] = scene;
                this[s_scene].add(defaults.Defaults.basicLights());
@@ -205,12 +207,15 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     var impostors = new THREE.Object3D();
                     var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
 
+                    this[s_labelmanager].removeLabels();
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
                          imp.material.uniforms.diffuse.value.set(helper_points_color);
                          impostors.add(imp);
+                         this[s_labelmanager].addLabel(currentFrame.labels[i], points[i]);
                     }
+
                     this[s_scene].points = impostors;
                     this[s_scene].lines = lines;
                     this[s_scene].paint();
