@@ -140,6 +140,10 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_renderer].domElement.dispatchEvent(event);
           }
 
+          get labelManager() {
+               return this[s_labelmanager];
+          }
+
           set gridState(state) {
                if (state) {
                     this[s_scene].add(this[s_grid]);
@@ -207,13 +211,15 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     var impostors = new THREE.Object3D();
                     var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
 
-                    this[s_labelmanager].removeLabels();
+                    this[s_labelmanager].removeLabels("points");
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
                          imp.material.uniforms.diffuse.value.set(helper_points_color);
                          impostors.add(imp);
-                         this[s_labelmanager].addLabel(currentFrame.labels[i], points[i]);
+                    }
+                    for (var i in currentFrame.labels) {
+                         this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
                     }
 
                     this[s_scene].points = impostors;

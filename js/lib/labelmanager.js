@@ -53,15 +53,15 @@
                 console.log("labelmanager.update");
            }
 
-           addLabel(text, position) {
+           addLabel(text, position, tag = "") {
                 // Create a new container
-                $("#hph-canvas-wrapper").append("<div class=label" + this[s_labelCount] + "></div>");
+                $("#hph-canvas-wrapper").append("<div class=" + "label" + tag + this[s_labelCount] + "></div>");
 
                 // Keep reference in case position changes
                 this[s_positions].push(position);
 
                 // Get a "pointer" to our new label
-                var label = $(".label" + this[s_labelCount]);
+                var label = $(".label" + tag + this[s_labelCount]);
                 var canvas = $(".hph-canvas")[0];
 
                 // CSS settings
@@ -92,9 +92,17 @@
                 //return label;
            }
 
-           removeLabels() {
-                for (var i in this[s_labels]) {
-                     this[s_labels][i].remove();
+           removeLabels(tag) {
+                if (tag == null) {
+                     for (var i in this[s_labels]) {
+                          this[s_labels][i].remove();
+                     }
+                } else {
+                     for (var i in this[s_labels]) {
+                          if (this[s_labels][i].selector.includes(tag)) {
+                               this[s_labels][i].remove();
+                          }
+                     }
                 }
                 // Reset counter
                 this[s_labelCount] = 0;
