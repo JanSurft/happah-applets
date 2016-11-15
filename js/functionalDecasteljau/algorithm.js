@@ -80,8 +80,11 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     // Now add one point from current iteration
                     pointStack.push(pointMatrix[1][k].clone());
 
-                    // Add a label
-                    frame.labels.push(+(Math.round(pointMatrix[1][k].x + "e+2") + "e-2"));
+                    // Get the X-value and round by 2 places
+                    var xval = +(Math.round(pointMatrix[1][k].x + 80 + "e+2") + "e-2");
+
+                    // Push as a string
+                    frame.labels.push(xval);
 
                     // TODO: this needs to be parameterized
                     // Get relative point on the axis
