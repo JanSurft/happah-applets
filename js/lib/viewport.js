@@ -66,7 +66,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
                this[s_sequence] = false;
                this[s_storyboard] = algorithm.storyboard();
-               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera]);
+               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera], this[s_cameraOverlay]);
 
                this[s_scene] = scene;
                this[s_scene].add(defaults.Defaults.basicLights());
