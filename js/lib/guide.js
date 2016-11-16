@@ -6,7 +6,7 @@
  // @author Tarek Wilkening (tarek_wilkening@web.de)
  //
  /////////////////////////////////////////////////////////////////////////////
- define(['jquery'], function($) {
+ define(['jquery', './translator'], function($, Translator) {
       var s_tourStates = Symbol('tourstates');
       var s_helpStates = Symbol('helpstates');
 
@@ -15,28 +15,15 @@
 
       class Guide {
            constructor() {
-                this[s_helpStates] = [{
-                     title: 'Help',
-                     html: '<p>Adding Control-points: doubleclick on one end of the control-polygon.</p><p>Moving control-points: you can move control-points by drag and drop.</p><p> Change division ratio by moving the scrollbar-handle in the bottom.</p><p> Zoom in or out by scrolling your mousewheel.</p>',
-                     buttons: {
-                          Tour: 3,
-                          Ok: 2
-                     },
-                     focus: 1,
-                     position: {},
-                     submit: this.tourSubmit
-                }];
-
                 this[s_tourStates] = [{
-                     title: 'Help',
+                     title: Translator.t('HELP_TITLE'),
                      tex2jax: {
                           inlineMath: [
                                ['$', '$'],
                                ['\\(', '\\)']
                           ]
                      },
-                     //html: this[s_text],
-                     html: '<p>Adding Control-points: doubleclick on one end of the control-polygon.</p><p>Moving control-points: you can move control-points by drag and drop.</p><p> Change division ratio by moving the scrollbar-handle in the bottom.</p><p> Zoom in or out by scrolling your mousewheel.</p>',
+                     html: Translator.t("HELP_OVERVIEW"),
                      buttons: {
                           Tour: 1,
                           Ok: 2
@@ -45,8 +32,8 @@
                      position: {},
                      submit: this.tourSubmit
                 }, {
-                     title: 'Welcome',
-                     html: 'Ready to take a quick tour through editors functionality?',
+                     title: Translator.t("TOUR_TITLE"),
+                     html: Translator.t("TOUR_READY"),
                      buttons: {
                           Next: 1
                      },
@@ -60,8 +47,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: 'jump to previous Frame',
-                     html: 'Jump to the previous frame here.',
+                     title: Translator.t("TOUR_PREV_FRAME_TITLE"),
+                     html: Translator.t("TOUR_PREV_FRAME_TEXT"),
                      buttons: {
                           Prev: -1,
                           Next: 1
@@ -76,8 +63,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: "Play/Pause animation",
-                     html: 'Start/Stop animating over frames.',
+                     title: Translator.t("TOUR_PLAY_PAUSE_TITLE"),
+                     html: Translator.t("TOUR_PLAY_PAUSE_TEXT"),
                      buttons: {
                           Prev: -1,
                           Next: 1
@@ -92,8 +79,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: 'Jump to next Frame',
-                     html: 'Jumpt to the next frame.',
+                     title: Translator.t("TOUR_NEXT_FRAME_TITLE"),
+                     html: Translator.t("TOUR_NEXT_FRAME_TEXT"),
                      buttons: {
                           Prev: -1,
                           Next: 1
@@ -108,8 +95,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: 'Title of current frame',
-                     html: 'The title of the current frame can be seen here.',
+                     title: Translator.t("TOUR_CURR_FRAME_TITLE"),
+                     html: Translator.t("TOUR_CURR_FRAME_TEXT"),
                      buttons: {
                           Prev: -1,
                           Next: 1
@@ -124,8 +111,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: 'Toggle the grid',
-                     html: 'The grid can be turned on/off by pressing this button.',
+                     title: Translator.t("TOUR_GRID_TITLE"),
+                     html: Translator.t("TOUR_GRID_TEXT"),
                      buttons: {
                           Prev: -1,
                           Next: 1
@@ -140,8 +127,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: 'Toggle control-polygon',
-                     html: 'Show/hide the control-/points and -polygon.',
+                     title: Translator.t("TOUR_POLYGON_TITLE"),
+                     html: Translator.t("TOUR_POLYGON_TEXT"),
                      buttons: {
                           Prev: -1,
                           Next: 1
@@ -156,8 +143,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: 'Toggle curve',
-                     html: 'Show/hide limes-curve.',
+                     title: Translator.t("TOUR_CURVE_TITLE"),
+                     html: Translator.t("TOUR_CURVE_TEXT"),
                      buttons: {
                           Prev: -1,
                           Next: 1
@@ -172,8 +159,8 @@
                      },
                      submit: this.tourSubmit
                 }, {
-                     title: 'Clear scene',
-                     html: 'Removes everything from the scene and enters add-mode. Add new control-points by clicking into the scene!',
+                     title: Translator.t("TOUR_CLEAR_TITLE"),
+                     html: Translator.t("TOUR_CLEAR_TEXT"),
                      buttons: {
                           Done: 2
                      },
