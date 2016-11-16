@@ -2,7 +2,6 @@ define(['jquery', './translator'], function($, Translator) {
      var s_frames = Symbol('frames');
      var s_index = Symbol('index');
 
-     console.log(Translator.t('hello'));
      $(".hph-description").append(Translator.t('APPLET_DESCRIPTION'));
 
      class Storyboard {
