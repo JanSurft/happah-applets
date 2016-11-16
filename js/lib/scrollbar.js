@@ -122,8 +122,8 @@ define(['jquery', 'three'], function($, THREE) {
                          this[s_rightVec]);
 
                     // Labels
-                    this[s_viewport].labelManager.addLabel("0", this[s_leftVec], "scrlbr");
-                    this[s_viewport].labelManager.addLabel("1", this[s_rightVec], "scrlbr");
+                    this[s_viewport].labelManager.addLabel("0", this[s_leftVec], "scrlbr", true);
+                    this[s_viewport].labelManager.addLabel("1", this[s_rightVec], "scrlbr", true);
 
                }
                enable() {
