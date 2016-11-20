@@ -45,6 +45,7 @@
                 label.css("position", "absolute");
                 label.css("z-index", "100");
                 label.css("color", label_color);
+                label.css("font-size", "150%");
 
                 // Transform world-position vector to pixel coordinates
                 var pos = position.clone();
