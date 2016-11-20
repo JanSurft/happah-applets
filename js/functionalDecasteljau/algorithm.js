@@ -6,7 +6,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
@@ -44,7 +44,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.lines[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -92,7 +92,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     projectPoint.z = 60;
 
                     // Add dashed line between point and projection
-                    var line = insertDashedLine([pointMatrix[1][k].clone(), projectPoint], 0x000000);
+                    var line = UTIL.Util.insertDashedLine([pointMatrix[1][k].clone(), projectPoint], 0x000000);
                     frame.lines.push(line);
                }
                // Add last point from previous iteration
@@ -105,7 +105,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     segment.push(pointStack[k - 2]);
                     // Paint the strips in the interval's color
                     var strip = (k % 2 == 0) ?
-                         insertSegmentStrip(segment, 0x3D3D3D) : insertSegmentStrip(segment, 0xFF0000);
+                         UTIL.Util.insertSegmentStrip(segment, 0x3D3D3D) : UTIL.Util.insertSegmentStrip(segment, 0xFF0000);
                     frame.lines.push(strip);
 
                }

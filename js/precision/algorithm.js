@@ -20,7 +20,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
@@ -56,7 +56,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.lines[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -100,7 +100,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                               segment.push(start);
                               segment.push(end);
                               var segment = [start, end];
-                              var strip = insertSegmentStrip(segment, 0xFF0000);
+                              var strip = UTIL.Util.insertSegmentStrip(segment, 0xFF0000);
                               frame.lines.push(strip);
                               //}
                          }

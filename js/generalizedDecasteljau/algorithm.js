@@ -7,7 +7,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbars = Symbol('scrollbars');
@@ -38,7 +38,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.lines[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -51,7 +51,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                // second frame
                var frame1 = new HAPPAH.Storyboard.Frame();
                var points = this.subdivide(1, this[s_scrollbars][0].value);
-               frame1.lines[0] = insertSegmentStrip(points, 0x123432);
+               frame1.lines[0] = UTIL.Util.insertSegmentStrip(points, 0x123432);
                //frame1.points.concat(points);
                for (var i in points) {
                     frame1.points.push(points[i].clone());
@@ -62,7 +62,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                // third frame
                var frame2 = new HAPPAH.Storyboard.Frame();
                points = this.subdivide(2, this[s_scrollbars][1].value);
-               frame2.lines[0] = insertSegmentStrip(points, 0x543121);
+               frame2.lines[0] = UTIL.Util.insertSegmentStrip(points, 0x543121);
                //frame2.points.concat(points);
                for (var i in points) {
                     frame2.points.push(points[i].clone());
