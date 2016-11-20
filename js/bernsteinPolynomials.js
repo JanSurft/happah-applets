@@ -37,8 +37,8 @@ require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm'
      var algorithm = new ALGORITHM.Algorithm(new THREE.Vector3(-50, 0, +50));
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      //var scrollbar = new happah.Scrollbar(pos, viewport);
-     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
-     dragControls.listenTo(viewport.renderer.domElement);
+     //var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+     //dragControls.listenTo(viewport.renderer.domElement);
      //algorithm.scrollbar = scrollbar;
      //scrollbar.listenTo(viewport.renderer.domElement);
      //viewport.overlay.add(scrollbar);
@@ -52,22 +52,30 @@ require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm'
 
      // Create a frame
      // X-Axis
-     //var geometry = new THREE.CylinderGeometry(1, 1, 190, 32);
-     //var coneGeo = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
-     //coneGeo.rotateZ(-Math.PI / 2);
-     //coneGeo.translate(95, 0, 0);
-     //geometry.rotateZ(Math.PI / 2);
-     //geometry.merge(coneGeo);
+     var geometry = new THREE.CylinderGeometry(1, 1, 190, 16);
+     var coneGeo = new THREE.CylinderGeometry(0, 3, 8, 5, 16);
+     coneGeo.rotateZ(-Math.PI / 2);
+     coneGeo.translate(95, 0, 0);
+     geometry.rotateZ(Math.PI / 2);
+     geometry.merge(coneGeo);
 
-     //var secondGeometry = new THREE.CylinderGeometry(1, 1, 150, 32);
-     //secondGeometry.rotateZ(30);
-     //geometry.merge(secondGeometry);
-     //var material = new THREE.MeshBasicMaterial({
-     //color: 0x4d4d4d
-     //});
-     //var frame = new THREE.Mesh(geometry, material);
-     //frame.position.set(0, 0, 60);
-     //scene.add(frame);
+     var secondGeometry = new THREE.CylinderGeometry(1, 1, 110, 16);
+     secondGeometry.rotateZ(Math.PI / 2);
+     secondGeometry.rotateY(Math.PI / 2);
+     secondGeometry.translate(-50, 0, -55);
+     geometry.merge(secondGeometry);
+     secondGeometry.translate(100, 0, 0);
+     geometry.merge(secondGeometry);
+     var material = new THREE.MeshBasicMaterial({
+          color: 0x4d4d4d
+     });
+     var frame = new THREE.Mesh(geometry, material);
+     frame.position.set(0, 0, 50);
+     scene.add(frame);
+
+     // Add labels
+     viewport.labelManager.addLabel("0", new THREE.Vector3(-52, 0, 60), "axis", true);
+     viewport.labelManager.addLabel("1", new THREE.Vector3(62, 0, 60), "axis", true);
 
 
      // Initialize some points

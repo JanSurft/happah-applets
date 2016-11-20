@@ -66,35 +66,18 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
                frame0.title = "B0,0(t)";
                storyboard.append(frame0);
 
-               var frame1 = new STORYBOARD.Storyboard.Frame();
-               points = this.evaluate(0, 1);
-               frame1.lines[0] = UTIL.Util.insertSegmentStrip(points, 0xff0000);
-               frame1.title = "B0,1(t)";
-               storyboard.append(frame1);
+               for (var i = 1; i < 4; i++) {
+                    for (var k = 0; k <= i; k++) {
+                         var frame = new STORYBOARD.Storyboard.Frame();
+                         frame.lines[0] = UTIL.Util.insertSegmentStrip(this.evaluate(k, i),
+                              0xFF0000 + i << 4 + k << 2);
+                         frame.title = "B" + k + "," + i + "(t)";
 
-               var frame2 = new STORYBOARD.Storyboard.Frame();
-               points = this.evaluate(1, 1);
-               frame2.lines[0] = UTIL.Util.insertSegmentStrip(points, 0xff0000);
-               frame2.title = "B1,1(t)";
-               storyboard.append(frame2);
-
-               var frame3 = new STORYBOARD.Storyboard.Frame();
-               points = this.evaluate(0, 2);
-               frame3.lines[0] = UTIL.Util.insertSegmentStrip(points, 0xff0000);
-               frame3.title = "B0,2(t)";
-               storyboard.append(frame3);
-
-               var frame4 = new STORYBOARD.Storyboard.Frame();
-               points = this.evaluate(1, 2);
-               frame4.lines[0] = UTIL.Util.insertSegmentStrip(points, 0xff0000);
-               frame4.title = "B1,2(t)";
-               storyboard.append(frame4);
-
-               var frame5 = new STORYBOARD.Storyboard.Frame();
-               points = this.evaluate(2, 2);
-               frame5.lines[0] = UTIL.Util.insertSegmentStrip(points, 0xff0000);
-               frame5.title = "B2,2(t)";
-               storyboard.append(frame5);
+                         // Concat with previous iterations
+                         frame.lines = frame.lines.concat(storyboard.frame(storyboard.size() - 1).lines);
+                         storyboard.append(frame);
+                    }
+               }
 
                return storyboard;
           }
