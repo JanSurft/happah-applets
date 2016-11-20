@@ -4,7 +4,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, THREE, STORYBOARD, sphericalimpostor) {
+define(['jquery', 'three', './storyboard', './spherical-impostor', './util'], function($, THREE, STORYBOARD, sphericalimpostor, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
@@ -145,7 +145,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, 
                // Create the first frame by hand
                var storyboard = new STORYBOARD.Storyboard(this);
                var frame0 = new STORYBOARD.Storyboard.Frame();
-               frame0.lines[0] = insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -193,7 +193,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, 
                          segment.push(pointStack[k - 2]);
                          // Paint the strips in the interval's color
                          var strip = (k % 2 == 0) ?
-                              insertSegmentStrip(segment, 0x3D3D3D) : insertSegmentStrip(segment, 0xFF0000);
+                              UTIL.Util.insertSegmentStrip(segment, 0x3D3D3D) : UTIL.Util.insertSegmentStrip(segment, 0xFF0000);
                          frame.lines.push(strip);
 
                     }
@@ -207,7 +207,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, 
                          frame.lines.pop();
                     }
                     // Also add the newly generated polygon
-                    frame.lines.push(insertSegmentStrip(pointMatrix[i], 0xFF0000));
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], 0xFF0000));
                     frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
 
                     storyboard.append(frame);
@@ -216,7 +216,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor'], function($, 
                // Create the last frame also by hand
                var frameLast = new STORYBOARD.Storyboard.Frame();
                frameLast.title = "Limes curve";
-               frameLast.lines[0] = insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
+               frameLast.lines[0] = UTIL.Util.insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
 
                // Can't create a curve from two points.
                if (this[s_controlPoints].length > 2) {
