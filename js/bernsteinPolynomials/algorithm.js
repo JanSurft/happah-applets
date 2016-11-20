@@ -66,7 +66,7 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
                frame0.title = "B0,0(t)";
                storyboard.append(frame0);
 
-               for (var i = 1; i < 4; i++) {
+               for (var i = 1; i < 5; i++) {
                     for (var k = 0; k <= i; k++) {
                          var frame = new STORYBOARD.Storyboard.Frame();
                          frame.lines[0] = UTIL.Util.insertSegmentStrip(this.evaluate(k, i),
