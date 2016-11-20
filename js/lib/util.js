@@ -25,6 +25,23 @@ define(['three'], function(THREE) {
                lineGeometry.computeLineDistances();
                return new THREE.Line(lineGeometry, lineMaterial);
           }
+
+          static insertDashedLine(points, color) {
+               if (points == null || points.length == 0)
+                    return null;
+
+               var lineGeometry = new THREE.Geometry();
+               var lineMaterial = new THREE.LineDashedMaterial({
+                    color: color,
+                    linewidth: 1
+               });
+
+               for (var i = 0; i < points.length; i++) {
+                    lineGeometry.vertices.push(points[i]);
+               }
+               lineGeometry.computeLineDistances();
+               return new THREE.Line(lineGeometry, lineMaterial);
+          }
      } // class Util
 
      return {
