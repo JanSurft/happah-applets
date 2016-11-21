@@ -185,7 +185,9 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                }
                this[s_camera].zoom += delta;
                this[s_camera].updateProjectionMatrix();
-               this[s_scene].redraw();
+
+               // Label positions need to be adjusted
+               this[s_labelmanager].updatePositions();
           }
 
           update() {
@@ -211,13 +213,14 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     var impostors = new THREE.Object3D();
                     var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
 
-                    this[s_labelmanager].removeLabels("points");
                     for (var i in points) {
                          var imp = impostor_template.clone();
                          imp.position.copy(points[i]);
                          imp.material.uniforms.diffuse.value.set(helper_points_color);
                          impostors.add(imp);
                     }
+                    // Remove old labels before adding new ones
+                    this[s_labelmanager].removeLabels("points");
                     for (var i in currentFrame.labels) {
                          this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
                     }
