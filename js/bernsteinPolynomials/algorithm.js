@@ -45,7 +45,7 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
                var points = [];
                var binomial = this.binomial(n, i);
 
-               for (var t = 0; t <= 1; t += 0.1) {
+               for (var t = 0; t <= 1.05; t += 0.05) {
                     var y = binomial * Math.pow(t, i) * Math.pow(1 - t, n - i);
                     var point = new THREE.Vector3(t * 100, 0, -y * 100);
                     points.push(point.add(this[s_origin]));
@@ -70,7 +70,7 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
                     for (var k = 0; k <= i; k++) {
                          var frame = new STORYBOARD.Storyboard.Frame();
                          frame.lines[0] = UTIL.Util.insertSegmentStrip(this.evaluate(k, i),
-                              0xFF0000 + i << 4 + k << 2);
+                              0xFF0000 + ((i + k) * 100000));
                          frame.title = "B" + k + "," + i + "(t)";
 
                          // Concat with previous iterations
