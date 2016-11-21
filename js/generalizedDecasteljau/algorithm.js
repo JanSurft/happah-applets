@@ -48,27 +48,17 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     return storyboard;
                }
 
-               // second frame
-               var frame1 = new HAPPAH.Storyboard.Frame();
-               var points = this.subdivide(1, this[s_scrollbars][0].value);
-               frame1.lines[0] = UTIL.Util.insertSegmentStrip(points, 0x123432);
-               //frame1.points.concat(points);
-               for (var i in points) {
-                    frame1.points.push(points[i].clone());
+               // TODO: reimplement algorithm to use different ratios
+               //       dont use subdivide
+               // Iterate over scrollbars and add polygon each iteration
+               for (var i in this[s_scrollbars]) {
+                    var frame = new HAPPAH.Storyboard.Frame();
+                    frame.title = "Step: " + i;
+                    var points = this.subdivide(1, this[s_scrollbars][i].value);
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(points, 0x1288FF));
+                    frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
+                    storyboard.append(frame);
                }
-               frame1.title = "frame 1";
-               storyboard.append(frame1);
-
-               // third frame
-               var frame2 = new HAPPAH.Storyboard.Frame();
-               points = this.subdivide(2, this[s_scrollbars][1].value);
-               frame2.lines[0] = UTIL.Util.insertSegmentStrip(points, 0x543121);
-               //frame2.points.concat(points);
-               for (var i in points) {
-                    frame2.points.push(points[i].clone());
-               }
-               storyboard.append(frame2);
-
 
                return storyboard;
           }
