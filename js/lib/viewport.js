@@ -79,6 +79,11 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].noZoom = true;
 
+               // In case we need something to be updated when we move the
+               // camera
+               this.controlsUpdate = this.controlsUpdate.bind(this);
+               this[s_trackballControls].addEventListener('change', this.controlsUpdate, false);
+
                if (params['enableDragcontrols']) {
                     // to move objects
                     this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_trackballControls], this[s_camera]);
@@ -190,6 +195,11 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_labelmanager].updatePositions();
           }
 
+          /** Called when trackballControls fire 'change' event */
+          controlsUpdate(event) {
+               this[s_labelmanager].updatePositions();
+          }
+
           update() {
                requestAnimationFrame(this.update.bind(this));
                if (this[s_scene].altered) {
@@ -221,6 +231,11 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                     }
                     // Remove old labels before adding new ones
                     this[s_labelmanager].removeLabels("points");
+
+                    // Also update remaining labels
+                    //this[s_labelmanager].updatePositions();
+
+                    // Create new labels for intermediate points
                     for (var i in currentFrame.labels) {
                          this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
                     }
