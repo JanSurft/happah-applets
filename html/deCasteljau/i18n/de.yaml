@@ -1,4 +1,4 @@
-APPLET_DESCRIPTION: "Beschreibung des funktionalen de Casteljau Algorithmus."
+APPLET_DESCRIPTION: "<p>In the first step, the algorithm subdivides every edge with a ratio defined by the scrollbar. With the scrollbar's handle in the middle t = 0.5, every edge is cut in <br>Click on the right arrow to display the next frame!<br>The newly created points are made by linear-interpolating the corner points. If we connect the new points with lines, we get the new red edges.<br>We can use the new edges to repeat the process. In the end we only have one new point, which we can't connect any further.<br>This is the first point on a curve. If you move the scrollbar-handle, the point will move along that curve.</p>"
 HELP_TITLE: "Hilfe"
 HELP_OVERVIEW: "<p>Kontrollpunkte hinzufügen: doppelklick auf einen Kontrollpunkt am Ende.</p><p>Kontrollpunkte verschieben: via Drag-and-Drop.</p><p>Unterteilungsverhältnis ändern: bewegen des Schiebereglers am unteren Bildrand.</p><p>Zoom: benutze das Mausrad um heraus- oder heranzuzoomen.</p>"
 TOUR_TITLE: "Willkommen!"

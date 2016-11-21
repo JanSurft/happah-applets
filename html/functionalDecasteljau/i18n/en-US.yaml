@@ -1,1 +1,3 @@
 hello: 'Hello'
+APPLET_DESCRIPTION: "Description of functional de Casteljau algorithm."
+HELP_OVERVIEW: "<p>Adding Control-points: doubleclick on one end of the control-polygon.</p><p>Moving control-points: you       can move control-points by drag and drop.</p><p> Change division ratio by moving the scrollbar-handle in the bottom.</p><p> Zoom in or      out by scrolling your mousewheel.</p>"

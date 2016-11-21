@@ -1,4 +1,4 @@
-APPLET_DESCRIPTION: "Beschreibung des funktionalen de Casteljau Algorithmus."
+APPLET_DESCRIPTION: "description"
 HELP_TITLE: "Hilfe"
 HELP_OVERVIEW: "<p>Kontrollpunkte hinzufügen: doppelklick auf einen Kontrollpunkt am Ende.</p><p>Kontrollpunkte verschieben: via Drag-and-Drop.</p><p>Unterteilungsverhältnis ändern: bewegen des Schiebereglers am unteren Bildrand.</p><p>Zoom: benutze das Mausrad um heraus- oder heranzuzoomen.</p>"
 TOUR_TITLE: "Willkommen!"
