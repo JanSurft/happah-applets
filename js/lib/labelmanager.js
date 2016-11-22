@@ -89,6 +89,11 @@
                 var canvas = $(".hph-canvas")[0];
 
                 for (var i in this[s_labels]) {
+                     // Skip overlay labels
+                     if (this[s_labels][i].selector.includes("overlay")) {
+                          continue;
+                     }
+
                      // Project position to screen
                      var pos = this[s_positions][i].clone();
 
@@ -114,20 +119,26 @@
             */
            removeLabels(tag) {
                 if (tag == null) {
+                     // Remove containers from html
                      for (var i in this[s_labels]) {
                           this[s_labels][i].remove();
                      }
+                     // Reset everything
+                     this[s_positions] = new Array();
+                     this[s_labels] = new Array();
+                     this[s_labelCount] = 0;
                 } else {
                      for (var i in this[s_labels]) {
+                          // Only remove labels with matching tag
                           if (this[s_labels][i].selector.includes(tag)) {
                                this[s_labels][i].remove();
+                               this[s_labels].splice(i, 1);
+                               // Also remove the related position
+                               this[s_positions].splice(i, 1);
+                               this[s_labelCount]--;
                           }
                      }
                 }
-                // Reset counter
-                this[s_labelCount] = 0;
-                this[s_labels] = [];
-                this[s_positions] = [];
            }
 
 
