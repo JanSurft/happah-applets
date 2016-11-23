@@ -115,21 +115,14 @@
 
            /**
             * Remove all labels with matching tag
-            * FIXME: do not manipulate array size while iterating over it!!
-            * TBD: current solution creates too many labels...
             */
            removeLabels(tag = "") {
-                var labels = new Array();
-                var positions = new Array();
+                var labels = [];
+                var positions = [];
                 for (var i in this[s_labels]) {
                      // Only remove labels with matching tag
                      if (this[s_labels][i].selector.includes(tag)) {
-                          //this[s_labels][i].remove();
-                          //this[s_labels].splice(i, 1);
-
-                          //// Also remove the related position
-                          //this[s_positions].splice(i, 1);
-                          //this[s_labelCount]--;
+                          this[s_labels][i].remove();
                      } else {
                           labels.push(this[s_labels][i]);
                           positions.push(this[s_positions][i]);
