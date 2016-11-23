@@ -13,11 +13,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
      var s_scrollbars = Symbol('scrollbars');
      var s_camera = Symbol('camera');
 
-     class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
+     class Algorithm {
 
           /** Default constructor. */
           constructor(controlPoints, scrollbar, camera) {
-               super(controlPoints, scrollbar);
                this.storyboard = this.storyboard.bind(this);
                this[s_controlPoints] = controlPoints;
                this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
@@ -25,9 +24,28 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                this[s_camera] = camera;
           }
 
+          /**
+           * Set an arbitrary amount of scrollbars to use
+           */
           set scrollbars(scrollbars) {
                this[s_scrollbars] = scrollbars;
-               // super.scrollbar = scrollbar;
+          }
+
+          /**
+           * Simplified evaluate method that calculates a single step of
+           * de Casteljaus algorithm
+           */
+          evaluate(points, ratio) {
+               var newPoints = [];
+               for (var i = 0; i < points.length - 1; i++) {
+                    var newPoint = points[i].clone();
+                    newPoint.multiplyScalar(1 - ratio);
+                    var tmpPoint = points[i + 1].clone();
+                    tmpPoint.multiplyScalar(ratio);
+                    newPoint.add(tmpPoint);
+                    newPoints.push(newPoint);
+               }
+               return newPoints;
           }
 
           /**
@@ -39,6 +57,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
                frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.points = this[s_controlPoints];
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -48,15 +67,19 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     return storyboard;
                }
 
-               // TODO: reimplement algorithm to use different ratios
-               //       dont use subdivide
                // Iterate over scrollbars and add polygon each iteration
                for (var i in this[s_scrollbars]) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step: " + i;
-                    var points = this.subdivide(1, this[s_scrollbars][i].value);
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(points, 0x1288FF));
+
+                    // Evaluate with a different ratio for every step
+                    frame.points = this.evaluate(storyboard.lastFrame().points,
+                         this[s_scrollbars][i].value);
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(frame.points, 0x1288FF));
+
+                    // Include lines and points from previous iterations
                     frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
+                    //frame.points = frame.points.concat(storyboard.lastFrame().points);
                     storyboard.append(frame);
                }
 
