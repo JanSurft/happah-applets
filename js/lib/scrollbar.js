@@ -48,19 +48,12 @@ define(['jquery', 'three'], function($, THREE) {
                     var geo = new THREE.CylinderGeometry(1, 1, 150, 32);
                     var coneGeometry = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
                     var boxGeometry = new THREE.BoxGeometry(1.5, 4, 1.5);
-                    //var textGeo = new THREE.Geometry();
 
                     var characterSize = 1.4;
                     var offset = (characterSize * 3) / 2;
-                    //textGeo = geomify('0', characterSize);
-                    //textGeo.translate(-75 - offset, 5, 0);
                     coneGeometry.rotateZ(-(Math.PI / 2));
                     coneGeometry.translate(79, 0, 0);
                     geo.rotateZ(Math.PI / 2);
-                    //geo.merge(textGeo);
-                    //textGeo = geomify('1', characterSize);
-                    //textGeo.translate(75 - offset, 5, 0);
-                    //geo.merge(textGeo);
                     geo.merge(coneGeometry);
                     boxGeometry.translate(-75, 0, 3);
                     geo.merge(boxGeometry);
@@ -134,6 +127,9 @@ define(['jquery', 'three'], function($, THREE) {
                }
                get value() {
                     return this[s_value];
+               }
+               get handle() {
+                    return this[s_handle];
                }
                set value(value) {
                     this[s_value] = value;
