@@ -10,7 +10,7 @@
 define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
-     var s_scrollbars = Symbol('scrollbars');
+     var s_scrollbar = Symbol('scrollbar');
      var s_camera = Symbol('camera');
 
      class Algorithm {
@@ -20,15 +20,15 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                this.storyboard = this.storyboard.bind(this);
                this[s_controlPoints] = controlPoints;
                this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
-               this[s_scrollbars] = [scrollbar];
+               this[s_scrollbar] = scrollbar;
                this[s_camera] = camera;
           }
 
           /**
-           * Set an arbitrary amount of scrollbars to use
+           * Set scrollbar
            */
-          set scrollbars(scrollbars) {
-               this[s_scrollbars] = scrollbars;
+          set scrollbar(scrollbar) {
+               this[s_scrollbar] = scrollbar;
           }
 
           /**
@@ -67,14 +67,14 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     return storyboard;
                }
 
-               // Iterate over scrollbars and add polygon each iteration
-               for (var i in this[s_scrollbars]) {
+               // Iterate over scrollbar and add polygon each iteration
+               for (var i in this[s_scrollbar]) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step: " + i;
 
                     // Evaluate with a different ratio for every step
                     frame.points = this.evaluate(storyboard.lastFrame().points,
-                         this[s_scrollbars][i].value);
+                         this[s_scrollbar][i].value);
                     frame.lines.push(UTIL.Util.insertSegmentStrip(frame.points, 0x1288FF));
 
                     // Include lines and points from previous iterations
