@@ -74,11 +74,18 @@ define(['jquery', './translator'], function($, Translator) {
                constructor() {
                     this.lines = [];
                     this.labels = [];
-                    this.mesh;
                     this.points = [];
                     this.title = "";
                     this.description = "";
-                    this.show = false;
+               }
+
+               clone(orig) {
+                    var myCopy = new Storyboard.Frame();
+                    myCopy.lines = this.lines;
+                    myCopy.labels = this.labels;
+                    myCopy.points = this.points.slice(0);
+                    myCopy.title = "insert new points";
+                    return myCopy;
                }
 
           } //class Storyboard.Frame
