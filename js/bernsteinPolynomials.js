@@ -44,7 +44,7 @@ require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm'
      //viewport.overlay.add(scrollbar);
      viewport.camera.position.set(0, 1000, 0);
      viewport.camera.lookAt(scene.position);
-     viewport.camera.zoom = 2.5;
+     viewport.camera.zoom = 4;
      viewport.camera.updateProjectionMatrix();
 
      //var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
@@ -52,17 +52,17 @@ require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm'
 
      // Create a frame
      // X-Axis
-     var geometry = new THREE.CylinderGeometry(1, 1, 190, 16);
-     var coneGeo = new THREE.CylinderGeometry(0, 3, 8, 5, 16);
+     var geometry = new THREE.CylinderGeometry(0.5, 0.5, 130, 16);
+     var coneGeo = new THREE.CylinderGeometry(0, 2, 6, 5, 16);
      coneGeo.rotateZ(-Math.PI / 2);
-     coneGeo.translate(95, 0, 0);
+     coneGeo.translate(68, 0, 0);
      geometry.rotateZ(Math.PI / 2);
      geometry.merge(coneGeo);
 
-     var secondGeometry = new THREE.CylinderGeometry(1, 1, 110, 16);
+     var secondGeometry = new THREE.CylinderGeometry(0.5, 0.5, 101, 16);
      secondGeometry.rotateZ(Math.PI / 2);
      secondGeometry.rotateY(Math.PI / 2);
-     secondGeometry.translate(-50, 0, -55);
+     secondGeometry.translate(-50, 0, -50);
      geometry.merge(secondGeometry);
      secondGeometry.translate(100, 0, 0);
      geometry.merge(secondGeometry);
