@@ -74,8 +74,9 @@ require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm'
      scene.add(frame);
 
      // Add labels
-     viewport.labelManager.addLabel("0", new THREE.Vector3(-52, 0, 55), "axis", false);
-     viewport.labelManager.addLabel("1", new THREE.Vector3(60, 0, 55), "axis", false);
+     viewport.labelManager.addLabel("0", new THREE.Vector3(-52, 0, 50), "axis", false);
+     viewport.labelManager.addLabel("1", new THREE.Vector3(55, 0, 50), "axis", false);
+     viewport.labelManager.addLabel("1", new THREE.Vector3(-52, 0, -55), "axis", false);
 
 
      // Initialize some points
