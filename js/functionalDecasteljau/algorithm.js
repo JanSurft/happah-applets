@@ -69,9 +69,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                frame.points = pointMatrix[1];
                var pointStack = new Array();
 
-               // Remove all labels
-               //this[s_labelmanager].removeLabels();
-
                // The previous iteration has one point more.
                for (var k in pointMatrix[1]) {
                     // Push first one from last iteration
@@ -79,12 +76,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
 
                     // Now add one point from current iteration
                     pointStack.push(pointMatrix[1][k].clone());
-
-                    // Get the X-value and round by 2 places
-                    var xval = +(Math.round(pointMatrix[1][k].x + 80 + "e+2") + "e-2");
-
-                    // Push as a string
-                    frame.labels.push(xval);
 
                     // TODO: this needs to be parameterized
                     // Get relative point on the axis
