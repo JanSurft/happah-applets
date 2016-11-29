@@ -118,7 +118,6 @@ define(['jquery', 'three'], function($, THREE) {
                     // Labels
                     this[s_viewport].labelManager.addLabel("0", this[s_leftVec].setX(this[s_leftVec].x + 5), "overlay", true);
                     this[s_viewport].labelManager.addLabel("1", this[s_rightVec].setX(this[s_rightVec].x + 5), "overlay", true);
-
                }
                enable() {
                     this[s_enabled] = true;

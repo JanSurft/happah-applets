@@ -70,13 +70,14 @@ require(['./lib/happah', './functionalDecasteljau/algorithm', './lib/addcontrols
      scene.add(axis);
 
      // Initialize some points
-     addControls.addControlPoints([
+     var points = [
           new THREE.Vector3(-80, 0, 50),
           new THREE.Vector3(-40, 0, -30),
           new THREE.Vector3(0, 0, -50),
           new THREE.Vector3(40, 0, -100),
-          new THREE.Vector3(80, 0, -70),
-     ]);
+          new THREE.Vector3(80, 0, -70)
+     ];
+     addControls.addControlPoints(points);
 
      var menu = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");
