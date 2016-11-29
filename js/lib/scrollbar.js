@@ -45,19 +45,20 @@ define(['jquery', 'three'], function($, THREE) {
                     this[s_raycaster] = new THREE.Raycaster();
 
                     // Axis-arrow geometry
-                    var geo = new THREE.CylinderGeometry(1, 1, 150, 32);
+                    var geo = new THREE.CylinderGeometry(1, 1, 155, 32);
                     var coneGeometry = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
                     var boxGeometry = new THREE.BoxGeometry(1.5, 4, 1.5);
 
                     var characterSize = 1.4;
                     var offset = (characterSize * 3) / 2;
                     coneGeometry.rotateZ(-(Math.PI / 2));
-                    coneGeometry.translate(79, 0, 0);
+                    coneGeometry.translate(85, 0, 0);
                     geo.rotateZ(Math.PI / 2);
+                    geo.translate(5, 0, 0);
                     geo.merge(coneGeometry);
                     boxGeometry.translate(-75, 0, 3);
                     geo.merge(boxGeometry);
-                    boxGeometry.translate(75, 0, 3);
+                    boxGeometry.translate(150, 0, 3);
                     geo.merge(boxGeometry);
                     geo.rotateX(3 * Math.PI / 2);
                     var mat = new THREE.MeshBasicMaterial({
@@ -115,8 +116,8 @@ define(['jquery', 'three'], function($, THREE) {
                          this[s_rightVec]);
 
                     // Labels
-                    this[s_viewport].labelManager.addLabel("0", this[s_leftVec], "overlay", true);
-                    this[s_viewport].labelManager.addLabel("1", this[s_rightVec], "overlay", true);
+                    this[s_viewport].labelManager.addLabel("0", this[s_leftVec].setX(this[s_leftVec].x + 5), "overlay", true);
+                    this[s_viewport].labelManager.addLabel("1", this[s_rightVec].setX(this[s_rightVec].x + 5), "overlay", true);
 
                }
                enable() {
