@@ -73,8 +73,11 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
                               0xFF0000 + ((i + k) * 100000));
                          frame.title = "B" + k + "," + i + "(t)";
 
-                         // Concat with previous iterations
-                         frame.lines = frame.lines.concat(storyboard.frame(storyboard.size() - 1).lines);
+                         // Concat with previous iterations -> of same degree
+                         if (k != 0) {
+                              frame.lines = frame.lines.concat(storyboard.frame(storyboard.size() - 1).lines);
+                         }
+
                          storyboard.append(frame);
                     }
                }
