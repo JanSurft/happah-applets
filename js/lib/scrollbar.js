@@ -13,8 +13,7 @@ define(['jquery', 'three'], function($, THREE) {
      var s_selectionLine = Symbol('line');
      var s_selectedObject = Symbol('selectedobject');
      var s_enabled = Symbol('enabled');
-     var s_handle = Symbol('handle');
-     var s_value = Symbol('value');
+     //var s_handle = Symbol('handle');
      var s_viewport = Symbol('viewport');
      var s_rightVec = Symbol('rightvec');
      var s_leftVec = Symbol('leftvec');
@@ -37,7 +36,6 @@ define(['jquery', 'three'], function($, THREE) {
                     // direction is always straight down
                     this[s_camera] = viewport.overlayCam;
                     this[s_enabled] = true;
-                    this[s_value] = 0.5;
 
                     // TODO: remove reference to viewport
                     this[s_viewport] = viewport;
@@ -72,8 +70,8 @@ define(['jquery', 'three'], function($, THREE) {
                     var boxMaterial = new THREE.MeshBasicMaterial({
                          color: 0x5d5d5d
                     });
-                    this[s_handle] = new THREE.Mesh(boxGeometry, boxMaterial);
-                    this[s_handle].position.set(0, 6, 0);
+                    this.handle = new THREE.Mesh(boxGeometry, boxMaterial);
+                    this.handle.position.set(0, 6, 0);
 
                     // Sections to devide interval into separate colors
                     this[s_leftVec] = new THREE.Vector3(-75, 2, 0);
@@ -86,12 +84,12 @@ define(['jquery', 'three'], function($, THREE) {
 
 
                     lineGeo.vertices.push(this[s_rightVec]);
-                    lineGeo.vertices.push(this[s_handle].position);
+                    lineGeo.vertices.push(this.handle.position);
 
                     this[s_lineRight] = new THREE.Line(lineGeo, lineMat);
 
                     var lineGeo2 = new THREE.Geometry();
-                    lineGeo2.vertices.push(this[s_handle].position);
+                    lineGeo2.vertices.push(this.handle.position);
                     lineGeo2.vertices.push(this[s_leftVec]);
                     lineMat = new THREE.LineBasicMaterial({
                          color: 0x000000,
@@ -106,7 +104,7 @@ define(['jquery', 'three'], function($, THREE) {
                     // Add meshes to container
                     this.add(this[s_lineRight]);
                     this.add(this[s_lineLeft]);
-                    this.add(this[s_handle]);
+                    this.add(this.handle);
                     //this.add(this[s_selectionLine]);
                     this.add(bar);
                     this.position.copy((position != null) ? position : new THREE.Vector3());
@@ -126,14 +124,10 @@ define(['jquery', 'three'], function($, THREE) {
                     this[s_enabled] = false;
                }
                get value() {
-                    return this[s_value];
-               }
-               get handle() {
-                    return this[s_handle];
+                    return (this.handle.position.x / 150) + 0.5;
                }
                set value(value) {
-                    this[s_value] = value;
-                    this[s_handle].position.setX(-75 + (150 * value));
+                    this.handle.position.setX(-75 + (150 * value));
                }
                listenTo(domElement) {
                     domElement.addEventListener('mousedown', this.mouseDown, false);
@@ -179,7 +173,7 @@ define(['jquery', 'three'], function($, THREE) {
                     this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
                     // Find all intersected objects
-                    var intersects = this[s_raycaster].intersectObject(this[s_handle]);
+                    var intersects = this[s_raycaster].intersectObject(this.handle);
 
                     if (intersects.length > 0) {
                          // Enable drag-mode
@@ -213,20 +207,17 @@ define(['jquery', 'three'], function($, THREE) {
                          // Reposition the object based on the intersection point with the plane
                          var newPos = this[s_selectionLine].closestPointToPoint(this[s_raycaster].ray.intersectPlane(this[s_selectionPlane]));
                          newPos.sub(this.position);
-                         this[s_handle].position.copy(newPos);
-
-                         // Update scrollbar value
-                         this[s_value] = (newPos.x / 150) + 0.5;
+                         this.handle.position.copy(newPos);
 
                          // In case we are beyond the leftVec
-                         if (this[s_handle].position.x < this[s_leftVec].x) {
+                         if (this.handle.position.x < this[s_leftVec].x) {
                               // hide the black line
                               this[s_lineLeft].visible = false;
                          } else {
                               this[s_lineLeft].visible = true;
                          }
                          // Same goes for the right line
-                         if (this[s_handle].position.x > this[s_rightVec].x) {
+                         if (this.handle.position.x > this[s_rightVec].x) {
                               this[s_lineRight].visible = false;
                          } else {
                               this[s_lineRight].visible = true;
