@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', './lib/addcontrols', './generalizedDecasteljau/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, ALGORITHM, THREE, $) {
+require(['./lib/happah', './generalizedDecasteljau/multihandlescrollbar', './lib/addcontrols', './generalizedDecasteljau/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, SCROLLBAR, ADDCONTROLS, ALGORITHM, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -37,26 +37,19 @@ require(['./lib/happah', './lib/addcontrols', './generalizedDecasteljau/algorith
      var viewport = new happah.Viewport(canvas, scene, algorithm);
 
      // Scrollbars
-     var scrollbar = new happah.Scrollbar(new THREE.Vector3(0, -30, 100), viewport);
-     console.log(scrollbar.handle);
-     viewport.labelManager.addLabel("u", scrollbar.handle.position, "overlay", true);
-     //var scrollbar2 = new happah.Scrollbar(new THREE.Vector3(170, -30, -100), viewport);
-     //var scrollbar3 = new happah.Scrollbar(new THREE.Vector3(170, -30, -80), viewport);
+     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(new THREE.Vector3(0, -30, 100), viewport);
 
      var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
-     //scrollbar2.listenTo(viewport.renderer.domElement);
-     //scrollbar3.listenTo(viewport.renderer.domElement);
+     //scrollbar.addHandle();
 
      var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
      addControls.listenTo(viewport.renderer.domElement);
 
      viewport.overlay.add(scrollbar);
-     //viewport.overlay.add(scrollbar2);
-     //viewport.overlay.add(scrollbar3);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
