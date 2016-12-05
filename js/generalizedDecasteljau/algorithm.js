@@ -12,6 +12,8 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
      var s_camera = Symbol('camera');
+     var s_colors = Symbol('colors');
+     var s_color = Symbol('color');
 
      class Algorithm {
 
@@ -22,6 +24,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
                this[s_scrollbar] = scrollbar;
                this[s_camera] = camera;
+               this[s_color] = 0xE50A00;
+
+               // Initial color
+               this[s_colors] = [0xFF0000];
           }
 
           /**
@@ -31,21 +37,30 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                this[s_scrollbar] = scrollbar;
           }
 
-          /**
-           * Simplified evaluate method that calculates a single step of
-           * de Casteljaus algorithm
-           */
-          evaluate(points, ratio) {
-               var newPoints = [];
-               for (var i = 0; i < points.length - 1; i++) {
-                    var newPoint = points[i].clone();
-                    newPoint.multiplyScalar(1 - ratio);
-                    var tmpPoint = points[i + 1].clone();
-                    tmpPoint.multiplyScalar(ratio);
-                    newPoint.add(tmpPoint);
-                    newPoints.push(newPoint);
+          evaluate(callback = null) {
+               var segmentLength = this[s_controlPoints].length;
+               var points = new Array(segmentLength);
+               points[0] = new Array(segmentLength);
+               for (var i in this[s_controlPoints]) {
+                    points[0][i] = this[s_controlPoints][i];
                }
-               return newPoints;
+               // Until only 1 point remains
+               for (var i = 0; i < segmentLength - 1; i++) {
+                    points[i + 1] = new Array(segmentLength - i - 1);
+                    // Calc next level points
+                    for (var j = 0; j < points[i].length - 1; j++) {
+                         var newPoint = points[i][j].clone();
+                         // Not sure if value(i) or (i-1)
+                         newPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(i));
+                         var tmpPoint = points[i][j + 1].clone();
+                         tmpPoint.multiplyScalar(this[s_scrollbar].valueOf(i));
+                         newPoint.add(tmpPoint);
+                         points[i + 1][j] = newPoint;
+                    }
+                    callback(points[i + 1]);
+               }
+               return points[points.length - 1][0];
+
           }
 
           /**
@@ -67,15 +82,26 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     return storyboard;
                }
 
+               this[s_scrollbar].removeHandles();
+               for (var i in this[s_controlPoints]) {
+                    this[s_color] += 0x0E5034;
+                    this[s_scrollbar].addHandle(0.5, this[s_color]);
+                    this[s_colors].push(this[s_color]);
+               }
+               var pointMatrix = [];
+               pointMatrix.push(this[s_controlPoints]);
+               this.evaluate(function add(points) {
+                    pointMatrix.push(points);
+               });
+
                // Iterate over scrollbar and add polygon each iteration
-               for (var i in this[s_scrollbar]) {
+               for (var i = 1; i < pointMatrix.length - 1; i++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step: " + i;
 
-                    // Evaluate with a different ratio for every step
-                    frame.points = this.evaluate(storyboard.lastFrame().points,
-                         this[s_scrollbar][i].value);
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(frame.points, 0x1288FF));
+                    frame.points = pointMatrix[i];
+
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(frame.points, this[s_colors][i]));
 
                     // Include lines and points from previous iterations
                     frame.lines = frame.lines.concat(storyboard.lastFrame().lines);

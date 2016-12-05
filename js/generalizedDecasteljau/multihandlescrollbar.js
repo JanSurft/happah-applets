@@ -7,38 +7,47 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
      var s_handles = Symbol('handles');
-     var s_color = Symbol('color');
-
+     //var s_color = Symbol('color');
+     //const default_handle_color = 0xE50A00;
      class MultiHandleScrollbar extends HAPPAH.Scrollbar {
 
                constructor(position, viewport) {
                     super(position, viewport);
 
-                    this[s_color] = 0xE50A00;
+                    //this[s_color] = default_handle_color;
                     this[s_handles] = [this.handle];
                }
 
-               addHandle() {
+               addHandle(value = 0.5, color) {
                     var geo = new THREE.BoxGeometry(4, 8, 8);
 
-                    // Increase color value to be visually different
-                    this[s_color] += 0x0E4534;
                     var mat = new THREE.MeshBasicMaterial({
-                         color: this[s_color]
+                         color: color
                     });
-                    // Increase color value
 
-                    var handle = new THREE.Mesh(geo, mat);
+                    var handle = new THREE.Mesh(geo, mat)
+
+                    // Set to correct position
+                    handle.position.setX((value / 150) + 0.5);
                     this[s_handles].push(handle);
 
                     // Add to scene
                     this.add(handle);
-
-                    // Return the color of the new handle
-                    return this[s_color];
                }
 
-               value(index) {
+               //get handles() {
+               //return this[s_handles];
+               //}
+
+               removeHandles() {
+                    // Remove them from the scene first
+                    for (var i = 0; i < this[s_handles].length - 1; i++) {
+                         this.remove(this[s_handles][i]);
+                    }
+                    this[s_handles] = [];
+               }
+
+               valueOf(index) {
                     if (index >= this[s_handles].length)
                          return -1;
 

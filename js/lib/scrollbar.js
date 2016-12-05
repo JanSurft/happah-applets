@@ -8,11 +8,11 @@
 define(['jquery', 'three'], function($, THREE) {
      var s_camera = Symbol('camera');
      var s_controls = Symbol('controls');
-     var s_raycaster = Symbol('raycaster');
+     //var s_raycaster = Symbol('raycaster');
      var s_selectionPlane = Symbol('plane');
      var s_selectionLine = Symbol('line');
      var s_selectedObject = Symbol('selectedobject');
-     var s_enabled = Symbol('enabled');
+     //var s_enabled = Symbol('enabled');
      //var s_handle = Symbol('handle');
      var s_viewport = Symbol('viewport');
      var s_rightVec = Symbol('rightvec');
@@ -29,18 +29,19 @@ define(['jquery', 'three'], function($, THREE) {
                     this.mouseMove = this.mouseMove.bind(this);
                     this.mouseUp = this.mouseUp.bind(this);
 
-                    this[s_controls] = viewport.controls;
+                    this.controls = viewport.controls;
 
                     // TODO: remove reference to camera
                     // we assume this is only used in an overlay so the
                     // direction is always straight down
-                    this[s_camera] = viewport.overlayCam;
-                    this[s_enabled] = true;
+                    this.camera = viewport.overlayCam;
+                    //this[s_enabled] = true;
+                    this.enabled = true;
 
                     // TODO: remove reference to viewport
-                    this[s_viewport] = viewport;
+                    this.viewport = viewport;
 
-                    this[s_raycaster] = new THREE.Raycaster();
+                    this.raycaster = new THREE.Raycaster();
 
                     // Axis-arrow geometry
                     var geo = new THREE.CylinderGeometry(1, 1, 155, 32);
@@ -74,8 +75,8 @@ define(['jquery', 'three'], function($, THREE) {
                     this.handle.position.set(0, 6, 0);
 
                     // Sections to devide interval into separate colors
-                    this[s_leftVec] = new THREE.Vector3(-75, 2, 0);
-                    this[s_rightVec] = new THREE.Vector3(75, 2, 0);
+                    this.leftVec = new THREE.Vector3(-75, 2, 0);
+                    this.rightVec = new THREE.Vector3(75, 2, 0);
                     var lineGeo = new THREE.Geometry();
                     var lineMat = new THREE.LineBasicMaterial({
                          color: 0xFF0000,
@@ -83,45 +84,47 @@ define(['jquery', 'three'], function($, THREE) {
                     });
 
 
-                    lineGeo.vertices.push(this[s_rightVec]);
+                    lineGeo.vertices.push(this.rightVec);
                     lineGeo.vertices.push(this.handle.position);
 
-                    this[s_lineRight] = new THREE.Line(lineGeo, lineMat);
+                    this.lineRight = new THREE.Line(lineGeo, lineMat);
 
                     var lineGeo2 = new THREE.Geometry();
                     lineGeo2.vertices.push(this.handle.position);
-                    lineGeo2.vertices.push(this[s_leftVec]);
+                    lineGeo2.vertices.push(this.leftVec);
                     lineMat = new THREE.LineBasicMaterial({
                          color: 0x000000,
                          linewidth: 5
                     });
-                    this[s_lineLeft] = new THREE.Line(lineGeo2, lineMat);
-                    this[s_lineRight].geometry.verticesNeedUpdate = true;
+                    this.lineLeft = new THREE.Line(lineGeo2, lineMat);
+                    this.lineRight.geometry.verticesNeedUpdate = true;
 
-                    this[s_selectionPlane] = new THREE.Plane(new THREE.Vector3(0, 10, 0), 0);
+                    this.selectionPlane = new THREE.Plane(new THREE.Vector3(0, 10, 0), 0);
 
 
                     // Add meshes to container
-                    this.add(this[s_lineRight]);
-                    this.add(this[s_lineLeft]);
+                    this.add(this.lineRight);
+                    this.add(this.lineLeft);
                     this.add(this.handle);
-                    //this.add(this[s_selectionLine]);
+                    //this.add(this.selectionLine);
                     this.add(bar);
                     this.position.copy((position != null) ? position : new THREE.Vector3());
-                    this[s_leftVec] = this.position.clone().add(this[s_leftVec]);
-                    this[s_rightVec] = this.position.clone().add(this[s_rightVec]);
-                    this[s_selectionLine] = new THREE.Line3(this[s_leftVec],
-                         this[s_rightVec]);
+                    this.leftVec = this.position.clone().add(this.leftVec);
+                    this.rightVec = this.position.clone().add(this.rightVec);
+                    this.selectionLine = new THREE.Line3(this.leftVec,
+                         this.rightVec);
 
                     // Labels
-                    this[s_viewport].labelManager.addLabel("0", this[s_leftVec].setX(this[s_leftVec].x + 5), "overlay", true);
-                    this[s_viewport].labelManager.addLabel("1", this[s_rightVec].setX(this[s_rightVec].x + 5), "overlay", true);
+                    this.viewport.labelManager.addLabel("0", this.leftVec.setX(this.leftVec.x + 5), "overlay", true);
+                    this.viewport.labelManager.addLabel("1", this.rightVec.setX(this.rightVec.x + 5), "overlay", true);
                }
                enable() {
-                    this[s_enabled] = true;
+                    //this[s_enabled] = true;
+                    this.enabled = true;
                }
                disable() {
-                    this[s_enabled] = false;
+                    //this[s_enabled] = false;
+                    this.enabled = false;
                }
                get value() {
                     return (this.handle.position.x / 150) + 0.5;
@@ -156,7 +159,7 @@ define(['jquery', 'three'], function($, THREE) {
                mouseDown(event) {
                     event.preventDefault();
 
-                    if (this[s_enabled] == false) {
+                    if (this.enabled == false) {
                          return;
                     }
                     // TODO: don't calculate the position every time.
@@ -170,19 +173,19 @@ define(['jquery', 'three'], function($, THREE) {
                     var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
 
                     // Set up ray from mouse position
-                    this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
+                    this.raycaster.setFromCamera(mouseVector, this.camera);
 
                     // Find all intersected objects
-                    var intersects = this[s_raycaster].intersectObject(this.handle);
+                    var intersects = this.raycaster.intersectObject(this.handle);
 
                     if (intersects.length > 0) {
                          // Enable drag-mode
-                         this[s_selectedObject] = true;
+                         this.selectedObject = true;
 
                          // Disable the controls
-                         this[s_controls].enabled = false;
+                         this.controls.enabled = false;
                     } else {
-                         this[s_selectedObject] = false;
+                         this.selectedObject = false;
                     }
                }
 
@@ -190,7 +193,7 @@ define(['jquery', 'three'], function($, THREE) {
                mouseMove(event) {
                     event.preventDefault();
 
-                    if (this[s_enabled] == false) {
+                    if (this.enabled == false) {
                          return;
                     }
                     var elementPosition = this.getElementPosition(event.currentTarget);
@@ -201,42 +204,42 @@ define(['jquery', 'three'], function($, THREE) {
                     var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
 
                     // Set up ray from mouse position
-                    this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
+                    this.raycaster.setFromCamera(mouseVector, this.camera);
 
-                    if (this[s_selectedObject]) {
+                    if (this.selectedObject) {
                          // Reposition the object based on the intersection point with the plane
-                         var newPos = this[s_selectionLine].closestPointToPoint(this[s_raycaster].ray.intersectPlane(this[s_selectionPlane]));
+                         var newPos = this.selectionLine.closestPointToPoint(this.raycaster.ray.intersectPlane(this.selectionPlane));
                          newPos.sub(this.position);
                          this.handle.position.copy(newPos);
 
                          // In case we are beyond the leftVec
-                         if (this.handle.position.x < this[s_leftVec].x) {
+                         if (this.handle.position.x < this.leftVec.x) {
                               // hide the black line
-                              this[s_lineLeft].visible = false;
+                              this.lineLeft.visible = false;
                          } else {
-                              this[s_lineLeft].visible = true;
+                              this.lineLeft.visible = true;
                          }
                          // Same goes for the right line
-                         if (this.handle.position.x > this[s_rightVec].x) {
-                              this[s_lineRight].visible = false;
+                         if (this.handle.position.x > this.rightVec.x) {
+                              this.lineRight.visible = false;
                          } else {
-                              this[s_lineRight].visible = true;
+                              this.lineRight.visible = true;
                          }
 
                          // Update our line sections
-                         this[s_lineRight].geometry.verticesNeedUpdate = true;
-                         this[s_lineLeft].geometry.verticesNeedUpdate = true;
+                         this.lineRight.geometry.verticesNeedUpdate = true;
+                         this.lineLeft.geometry.verticesNeedUpdate = true;
 
                          // New value means new storyboard
-                         this[s_viewport].rebuildStoryboard();
+                         this.viewport.rebuildStoryboard();
                     }
                }
 
                /** Called whenever a mouse button is released */
                mouseUp() {
                     // Enable the controls
-                    this[s_controls].enabled = true;
-                    this[s_selectedObject] = false;
+                    this.controls.enabled = true;
+                    this.selectedObject = false;
                }
 
           } //class Scrollbar
