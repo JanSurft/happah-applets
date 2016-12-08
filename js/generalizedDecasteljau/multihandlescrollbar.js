@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', 'generalizedDecasteljau/handle', 'lib/happah'], function($, THREE, HANDLE, HAPPAH) {
      var s_handles = Symbol('handles');
      //var s_color = Symbol('color');
      //const default_handle_color = 0xE50A00;
@@ -33,6 +33,8 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
 
                     // Add to scene
                     this.add(handle);
+
+                    return handle;
                }
 
                //get handles() {

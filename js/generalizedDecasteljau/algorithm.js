@@ -14,6 +14,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
      var s_camera = Symbol('camera');
      var s_colors = Symbol('colors');
      var s_color = Symbol('color');
+     var s_handles = Symbol('handles');
 
      class Algorithm {
 
@@ -25,6 +26,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                this[s_scrollbar] = scrollbar;
                this[s_camera] = camera;
                this[s_color] = 0xE50A00;
+               this[s_handles] = [];
 
                // Initial color
                this[s_colors] = [0xFF0000];
@@ -82,12 +84,23 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     return storyboard;
                }
 
-               this[s_scrollbar].removeHandles();
-               for (var i in this[s_controlPoints]) {
-                    this[s_color] += 0x0E5034;
-                    this[s_scrollbar].addHandle(0.5, this[s_color]);
-                    this[s_colors].push(this[s_color]);
+               // Update handles
+               for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
+                    if (this[s_handles][i] != null) {
+                         //this[s_handles][i].position.x = (0.5 / 150) + 0.5;
+                    } else {
+                         this[s_handles].push(this[s_scrollbar].addHandle(0.5, this[s_color]));
+                         //this[s_colors].push(this[s_color]);
+                         this[s_color] += 0x0E5034;
+                    }
                }
+
+               //this[s_scrollbar].removeHandles();
+               //for (var i in this[s_controlPoints]) {
+               //this[s_color] += 0x0E5034;
+               //this[s_scrollbar].addHandle(0.5, this[s_color]);
+               //this[s_colors].push(this[s_color]);
+               //}
                var pointMatrix = [];
                pointMatrix.push(this[s_controlPoints]);
                this.evaluate(function add(points) {
@@ -101,7 +114,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
 
                     frame.points = pointMatrix[i];
 
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(frame.points, this[s_colors][i]));
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(frame.points, this[s_handles][i - 1].material.color));
 
                     // Include lines and points from previous iterations
                     frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
