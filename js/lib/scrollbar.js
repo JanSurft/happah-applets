@@ -67,12 +67,13 @@ define(['jquery', 'three'], function($, THREE) {
                     bar.position.set(0, 0, 0);
 
                     // Handle to move along the scrollbar
-                    var boxGeometry = new THREE.BoxGeometry(4, 8, 8);
-                    var boxMaterial = new THREE.MeshBasicMaterial({
-                         color: 0x5d5d5d
-                    });
-                    this.handle = new THREE.Mesh(boxGeometry, boxMaterial);
-                    this.handle.position.set(0, 6, 0);
+                    //var boxGeometry = new THREE.BoxGeometry(4, 8, 8);
+                    //var boxMaterial = new THREE.MeshBasicMaterial({
+                    //color: 0x5d5d5d
+                    //});
+                    //this.handle = new THREE.Mesh(boxGeometry, boxMaterial);
+                    //this.handle.position.set(0, 6, 0);
+                    this.handle = new Handle(0.5, 0x5D5D5D);
 
                     // Sections to devide interval into separate colors
                     this.leftVec = new THREE.Vector3(-75, 2, 0);
@@ -127,7 +128,7 @@ define(['jquery', 'three'], function($, THREE) {
                     this.enabled = false;
                }
                get value() {
-                    return (this.handle.position.x / 150) + 0.5;
+                    return this.handle.value();
                }
                set value(value) {
                     this.handle.position.setX(-75 + (150 * value));
@@ -242,7 +243,38 @@ define(['jquery', 'three'], function($, THREE) {
                     this.selectedObject = false;
                }
 
+               createHandle(position, color) {
+                    return new Handle(position, color);
+               }
+
           } //class Scrollbar
+
+     class Handle extends THREE.Mesh {
+               constructor(position, color) {
+                    var geo = new THREE.BoxGeometry(4, 8, 8);
+                    var mat = new THREE.MeshBasicMaterial({
+                         color: color
+                    });
+                    super(geo, mat);
+
+                    // Apply the position
+                    this.position.setX((position / 150) + 0.5);
+                    this.position.setY(6);
+               }
+
+               get color() {
+                    return this.material.color;
+               }
+
+               get value() {
+                    return (this.position.x / 150) + 0.5;
+               }
+
+               set value(value) {
+                    this.position.setX(-75 + (150 * value));
+               }
+
+          } // Class Handle
 
      return {
           Scrollbar: Scrollbar

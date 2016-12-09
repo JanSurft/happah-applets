@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'generalizedDecasteljau/handle', 'lib/happah'], function($, THREE, HANDLE, HAPPAH) {
+define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
      var s_handles = Symbol('handles');
      //var s_color = Symbol('color');
      //const default_handle_color = 0xE50A00;
@@ -19,16 +19,9 @@ define(['jquery', 'three', 'generalizedDecasteljau/handle', 'lib/happah'], funct
                }
 
                addHandle(value = 0.5, color) {
-                    var geo = new THREE.BoxGeometry(4, 8, 8);
+                    var handle = this.createHandle(value, color);
 
-                    var mat = new THREE.MeshBasicMaterial({
-                         color: color
-                    });
-
-                    var handle = new THREE.Mesh(geo, mat)
-
-                    // Set to correct position
-                    handle.position.setX((value / 150) + 0.5);
+                    handle.value = value;
                     this[s_handles].push(handle);
 
                     // Add to scene
@@ -53,8 +46,7 @@ define(['jquery', 'three', 'generalizedDecasteljau/handle', 'lib/happah'], funct
                     if (index >= this[s_handles].length)
                          return -1;
 
-                    var handle = this[s_handles][index];
-                    return (handle.position.x / 150) + 0.5;
+                    return this[s_handles][index].value;
                }
 
                /** Called when a mouse button is pressed */

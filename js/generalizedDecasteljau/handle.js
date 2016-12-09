@@ -26,6 +26,10 @@ define(['three'], function(THREE) {
                     return (this.position.x / 150) + 0.5;
                }
 
+               set value(value) {
+                    this.position.setX(-75 + (150 * value));
+               }
+
           } // Class Handle
 
      return {
