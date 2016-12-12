@@ -12,7 +12,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
 
      // Drag control variables
      var s_raycaster = Symbol('raycaster');
-     //var s_selectedObject = Symbol('selected');
      var s_selectionPlane = Symbol('plane');
      var s_offset = Symbol('offset');
      var s_enabled = Symbol('enabled');
@@ -97,7 +96,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     this[s_controls].enabled = false;
 
                     // Set the selection - first intersected object
-                    //this[s_selectedObject] = intersects[0];
                     this.selectObject(intersects[0]);
 
                     // Calculate the offset
@@ -108,7 +106,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
           }
 
           selectObject(object) {
-               //this[s_selectedObject] = object;
                this.selectedObject = object;
           }
 
@@ -133,13 +130,8 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                // Get 3D vector from 3D mouse position using
                // 'unproject' function
                var vector = new THREE.Vector2(mouseX, mouseY);
-               // vector.unproject(this[s_camera]);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
-               // Multiply the origin vector of the ray so it's far behind the camera
-               // this[s_raycaster].ray.origin.sub(this[s_raycaster].ray.direction);
-               // this[s_camera].position, vector.sub(this[s_camera].position).normalize());
-               // ^Only in 3D.
 
                if (this.selectedObject) {
                     // Scene has changed so we need to redraw.
@@ -157,9 +149,7 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     }
 
                     // Reposition the object based on the intersection point with the plane
-                    //this[s_selectedObject].position.copy(intersects[0].point.sub(this[s_offset]));
                     this.updatePosition(this.selectedObject, intersects[0].point.sub(this[s_offset]));
-
 
                     this[s_selectionPlane].position.copy(this.selectedObject.position);
                } else {
@@ -180,7 +170,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
           mouseUp() {
                // Enable the controls
                this[s_controls].enabled = true;
-               //this[s_selectedObject] = null;
                this.selectedObject = null;
           }
 
