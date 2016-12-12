@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_handles = Symbol('handles');
      //var s_color = Symbol('color');
      //const default_handle_color = 0xE50A00;
@@ -30,10 +30,6 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     return handle;
                }
 
-               //get handles() {
-               //return this[s_handles];
-               //}
-
                removeHandles() {
                     // Remove them from the scene first
                     for (var i = 0; i < this[s_handles].length - 1; i++) {
@@ -49,6 +45,14 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     return this[s_handles][index].value;
                }
 
+               show(handle) {
+                    this.add(handle);
+               }
+
+               hide(handle) {
+                    this.remove(handle);
+               }
+
                /** Called when a mouse button is pressed */
                mouseDown(event) {
                     event.preventDefault();
@@ -58,7 +62,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     }
                     // TODO: don't calculate the position every time.
                     //       -> only on window resize...
-                    var elementPosition = this.getElementPosition(event.currentTarget);
+                    var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
 
                     // Get mouse position
                     var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
@@ -90,7 +94,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     if (this.enabled == false) {
                          return;
                     }
-                    var elementPosition = this.getElementPosition(event.currentTarget);
+                    var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
 
                     // Get mouse position
                     var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
