@@ -8,17 +8,10 @@
 define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
      var s_camera = Symbol('camera');
      var s_controls = Symbol('controls');
-     //var s_raycaster = Symbol('raycaster');
      var s_selectionPlane = Symbol('plane');
      var s_selectionLine = Symbol('line');
      var s_selectedObject = Symbol('selectedobject');
-     //var s_enabled = Symbol('enabled');
-     //var s_handle = Symbol('handle');
      var s_viewport = Symbol('viewport');
-     var s_rightVec = Symbol('rightvec');
-     var s_leftVec = Symbol('leftvec');
-     var s_lineRight = Symbol('lineright');
-     var s_lineLeft = Symbol('lineleft');
 
      class Scrollbar extends THREE.Object3D {
 
@@ -66,18 +59,11 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                     var bar = new THREE.Mesh(geo, mat);
                     bar.position.set(0, 0, 0);
 
-                    // Handle to move along the scrollbar
-                    //var boxGeometry = new THREE.BoxGeometry(4, 8, 8);
-                    //var boxMaterial = new THREE.MeshBasicMaterial({
-                    //color: 0x5d5d5d
-                    //});
-                    //this.handle = new THREE.Mesh(boxGeometry, boxMaterial);
-                    //this.handle.position.set(0, 6, 0);
                     this.handle = new Handle(0.5, 0x5D5D5D);
 
                     // Sections to devide interval into separate colors
-                    this.leftVec = new THREE.Vector3(-75, 2, 0);
-                    this.rightVec = new THREE.Vector3(75, 2, 0);
+                    var leftVec = new THREE.Vector3(-75, 2, 0);
+                    var rightVec = new THREE.Vector3(75, 2, 0);
                     var lineGeo = new THREE.Geometry();
                     var lineMat = new THREE.LineBasicMaterial({
                          color: 0xFF0000,
@@ -85,14 +71,14 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                     });
 
 
-                    lineGeo.vertices.push(this.rightVec);
+                    lineGeo.vertices.push(rightVec);
                     lineGeo.vertices.push(this.handle.position);
 
                     this.lineRight = new THREE.Line(lineGeo, lineMat);
 
                     var lineGeo2 = new THREE.Geometry();
                     lineGeo2.vertices.push(this.handle.position);
-                    lineGeo2.vertices.push(this.leftVec);
+                    lineGeo2.vertices.push(leftVec);
                     lineMat = new THREE.LineBasicMaterial({
                          color: 0x000000,
                          linewidth: 5
@@ -110,14 +96,14 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                     //this.add(this.selectionLine);
                     this.add(bar);
                     this.position.copy((position != null) ? position : new THREE.Vector3());
-                    this.leftVec = this.position.clone().add(this.leftVec);
-                    this.rightVec = this.position.clone().add(this.rightVec);
-                    this.selectionLine = new THREE.Line3(this.leftVec,
-                         this.rightVec);
+                    leftVec = this.position.clone().add(leftVec);
+                    rightVec = this.position.clone().add(rightVec);
+                    this.selectionLine = new THREE.Line3(leftVec,
+                         rightVec);
 
                     // Labels
-                    this.viewport.labelManager.addLabel("0", this.leftVec.setX(this.leftVec.x + 5), "overlay", true);
-                    this.viewport.labelManager.addLabel("1", this.rightVec.setX(this.rightVec.x + 5), "overlay", true);
+                    this.viewport.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
+                    this.viewport.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
                }
                enable() {
                     //this[s_enabled] = true;
@@ -202,14 +188,14 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                          this.handle.position.copy(newPos);
 
                          // In case we are beyond the leftVec
-                         if (this.handle.position.x < this.leftVec.x) {
+                         if (this.handle.position.x < -75) {
                               // hide the black line
                               this.lineLeft.visible = false;
                          } else {
                               this.lineLeft.visible = true;
                          }
                          // Same goes for the right line
-                         if (this.handle.position.x > this.rightVec.x) {
+                         if (this.handle.position.x > 75) {
                               this.lineRight.visible = false;
                          } else {
                               this.lineRight.visible = true;
