@@ -53,6 +53,35 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     this.remove(handle);
                }
 
+               updateLines(handle) {
+                    // Update color of line segments
+                    this.remove(this.lineRight);
+                    this.remove(this.lineLeft);
+
+                    var geo = new THREE.Geometry();
+                    geo.vertices.push(new THREE.Vector3(-75, 2, 0));
+                    geo.vertices.push(handle.position);
+
+                    var mat = new THREE.LineBasicMaterial({
+                         color: handle.material.color,
+                         linewidth: 5
+                    });
+                    this.lineLeft = new THREE.Line(geo, mat);
+                    this.add(this.lineLeft);
+
+                    geo = new THREE.Geometry();
+                    geo.vertices.push(handle.position);
+                    geo.vertices.push(new THREE.Vector3(75, 2, 0));
+
+                    // TODO: color of previous handle/segment
+                    mat = new THREE.LineBasicMaterial({
+                         color: handle.material.color,
+                         linewidth: 5
+                    });
+                    this.lineRight = new THREE.Line(geo, mat);
+                    this.add(this.lineRight);
+               }
+
                /** Called when a mouse button is pressed */
                mouseDown(event) {
                     event.preventDefault();
@@ -77,6 +106,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     var intersects = this.raycaster.intersectObjects(this[s_handles]);
 
                     if (intersects.length > 0) {
+                         // Update line colors if different handle
+                         if (this.selectedObject != intersects[0].object) {
+                              this.updateLines(intersects[0].object);
+                         }
                          // Enable drag-mode
                          this.selectedObject = intersects[0].object;
 
@@ -111,15 +144,15 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                          //TODO: selectedobject.object???
                          this.selectedObject.position.copy(newPos);
 
-                         // In case we are beyond the leftVec
-                         if (this.handle.position.x < this.leftVec.x) {
+                         // In case we are beyond the left border
+                         if (this.handle.position.x < -75) {
                               // hide the black line
                               this.lineLeft.visible = false;
                          } else {
                               this.lineLeft.visible = true;
                          }
                          // Same goes for the right line
-                         if (this.handle.position.x > this.rightVec.x) {
+                         if (this.handle.position.x > 75) {
                               this.lineRight.visible = false;
                          } else {
                               this.lineRight.visible = true;
