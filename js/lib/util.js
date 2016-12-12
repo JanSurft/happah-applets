@@ -9,6 +9,17 @@ define(['three'], function(THREE) {
      class Util {
           constructor() {}
 
+          static getElementPosition(element) {
+               var position = new THREE.Vector2(0, 0);
+
+               while (element) {
+                    position.x += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+                    position.y += (element.offsetTop - element.scrollTop + element.clientTop);
+                    element = element.offsetParent;
+               }
+               return position;
+          }
+
           static insertSegmentStrip(points, color) {
                if (points == null || points.length == 0)
                     return null;

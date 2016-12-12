@@ -5,45 +5,52 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_handles = Symbol('handles');
-     var s_color = Symbol('color');
-
+     //var s_color = Symbol('color');
+     //const default_handle_color = 0xE50A00;
      class MultiHandleScrollbar extends HAPPAH.Scrollbar {
 
                constructor(position, viewport) {
                     super(position, viewport);
 
-                    this[s_color] = 0xE50A00;
+                    //this[s_color] = default_handle_color;
                     this[s_handles] = [this.handle];
                }
 
-               addHandle() {
-                    var geo = new THREE.BoxGeometry(4, 8, 8);
+               addHandle(value = 0.5, color) {
+                    var handle = this.createHandle(value, color);
 
-                    // Increase color value to be visually different
-                    this[s_color] += 0x0E4534;
-                    var mat = new THREE.MeshBasicMaterial({
-                         color: this[s_color]
-                    });
-                    // Increase color value
-
-                    var handle = new THREE.Mesh(geo, mat);
+                    handle.value = value;
                     this[s_handles].push(handle);
 
                     // Add to scene
                     this.add(handle);
 
-                    // Return the color of the new handle
-                    return this[s_color];
+                    return handle;
                }
 
-               value(index) {
+               removeHandles() {
+                    // Remove them from the scene first
+                    for (var i = 0; i < this[s_handles].length - 1; i++) {
+                         this.remove(this[s_handles][i]);
+                    }
+                    this[s_handles] = [];
+               }
+
+               valueOf(index) {
                     if (index >= this[s_handles].length)
                          return -1;
 
-                    var handle = this[s_handles][index];
-                    return (handle.position.x / 150) + 0.5;
+                    return this[s_handles][index].value;
+               }
+
+               show(handle) {
+                    this.add(handle);
+               }
+
+               hide(handle) {
+                    this.remove(handle);
                }
 
                /** Called when a mouse button is pressed */
@@ -55,7 +62,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     }
                     // TODO: don't calculate the position every time.
                     //       -> only on window resize...
-                    var elementPosition = this.getElementPosition(event.currentTarget);
+                    var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
 
                     // Get mouse position
                     var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
@@ -87,7 +94,7 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
                     if (this.enabled == false) {
                          return;
                     }
-                    var elementPosition = this.getElementPosition(event.currentTarget);
+                    var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
 
                     // Get mouse position
                     var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
