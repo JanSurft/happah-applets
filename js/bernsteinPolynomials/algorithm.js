@@ -45,7 +45,7 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
                var points = [];
                var binomial = this.binomial(n, i);
 
-               for (var t = 0; t <= 1.05; t += 0.05) {
+               for (var t = 0; t <= 1.02; t += 0.02) {
                     var y = binomial * Math.pow(t, i) * Math.pow(1 - t, n - i);
                     var point = new THREE.Vector3(t * 100, 0, -y * 100);
                     points.push(point.add(this[s_origin]));
