@@ -61,7 +61,8 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     }
                     callback(points[i + 1]);
                }
-               return points[points.length - 1][0];
+               //return points[points.length - 1][0];
+               return points;
 
           }
 
@@ -94,11 +95,13 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     }
                }
 
-               var pointMatrix = [];
-               pointMatrix.push(this[s_controlPoints]);
-               this.evaluate(function add(points) {
-                    pointMatrix.push(points);
-               });
+               var pointMatrix = this.evaluate(function() {});
+
+               //pointMatrix.push(this[s_controlPoints]);
+
+               //this.evaluate(function add(points) {
+               //pointMatrix.push(points);
+               //});
 
                // Iterate over scrollbar and add polygon each iteration
                for (var i = 1; i < pointMatrix.length; i++) {
