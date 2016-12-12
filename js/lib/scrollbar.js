@@ -128,7 +128,7 @@ define(['jquery', 'three'], function($, THREE) {
                     this.enabled = false;
                }
                get value() {
-                    return this.handle.value();
+                    return this.handle.value;
                }
                set value(value) {
                     this.handle.position.setX(-75 + (150 * value));
