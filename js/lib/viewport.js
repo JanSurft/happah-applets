@@ -81,8 +81,11 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
                // In case we need something to be updated when we move the
                // camera
+               // TODO trackballcontrols does not fire events. Modify it?
                this.controlsUpdate = this.controlsUpdate.bind(this);
-               this[s_trackballControls].addEventListener('change', this.controlsUpdate, false);
+               this[s_trackballControls].addEventListener('start', this.controlsUpdate, false);
+               console.log(this[s_trackballControls]);
+               //this[s_renderer].domElement.addEventListener('change', this.controlsUpdate, false);
 
                if (params['enableDragcontrols']) {
                     // to move objects
@@ -93,7 +96,12 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
                this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
+               this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
+               this[s_renderer].domElement.addEventListener('rebuildStoryboard', this.rebuildStoryboard, false);
                this.update();
+          }
+          controlsUpdate(event) {
+               console.log("update!!");
           }
 
           // Call if the storyboard is out of date
@@ -101,7 +109,9 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                var storyboard_index = this[s_storyboard].index;
                this[s_storyboard] = this[s_algorithm].storyboard();
                this[s_storyboard].index = storyboard_index;
-               this[s_scene].redraw();
+               // This is too slow
+               //this[s_scene].redraw();
+               this.update();
           }
 
           get overlay() {
@@ -204,7 +214,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                requestAnimationFrame(this.update.bind(this));
                if (this[s_scene].altered) {
                     // TODO replace with storyboard.update()
-                    this.rebuildStoryboard();
+                    //this.rebuildStoryboard();
                     var currentFrame = this[s_storyboard].currentFrame();
                     // Set the label text in the bottom left corner
                     $('#hph-label').text("Frame: " + currentFrame.title);

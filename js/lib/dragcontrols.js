@@ -17,6 +17,9 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
      var s_enabled = Symbol('enabled');
      var s_arrow = Symbol('arrow');
 
+     // MAN THIS IS TEST ONLY!!
+     var s_dom = Symbol('dom');
+
      class DragControls {
 
           constructor(scene, controls, camera) {
@@ -61,6 +64,9 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                domElement.addEventListener('mousemove', this.mouseMove, false);
                domElement.addEventListener('mouseup', this.mouseUp, false);
                domElement.addEventListener('mousedown', this.mouseDown, false);
+
+               // DELETEME
+               this[s_dom] = domElement;
           }
 
           stopListeningTo(domElement) {
@@ -137,7 +143,10 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     // Scene has changed so we need to redraw.
                     // TODO: this is causing bad behaviour with quickly
                     // drag+drop we need the viewport to update immediately.
-                    this[s_scene].redraw();
+                    var dragEvent = new CustomEvent('rebuildStoryboard', {
+                         "detail": "control points moved"
+                    });
+                    this[s_dom].dispatchEvent(dragEvent);
 
                     // Check the position where the plane is intersected
                     var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
