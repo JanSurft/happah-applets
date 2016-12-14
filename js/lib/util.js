@@ -10,7 +10,6 @@ define(['three'], function(THREE) {
      class Util {
           constructor() {}
 
-          // TODO: add offset if user scrolls down
           static getElementPosition(element) {
                var position = new THREE.Vector2(0, 0);
 
