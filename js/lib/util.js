@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
+// @author: Stephan Engelmann (stephan-engelmann@gmx.de)
 // @author: Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,11 @@ define(['three'], function(THREE) {
                return position;
           }
 
+          /**
+           * Generate a THREE.js line
+           *
+           * A line is generated along the given points with a cutom color
+           */
           static insertSegmentStrip(points, color) {
                if (points == null || points.length == 0)
                     return null;
@@ -38,6 +44,12 @@ define(['three'], function(THREE) {
                return new THREE.Line(lineGeometry, lineMaterial);
           }
 
+          /**
+           * Generate a THREE.js dashed line
+           *
+           * A dashed line is generated along the given points with a cutom
+           * color
+           */
           static insertDashedLine(points, color) {
                if (points == null || points.length == 0)
                     return null;
