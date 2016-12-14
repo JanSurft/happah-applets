@@ -101,7 +101,8 @@ define(['jquery', 'three'], function($, THREE) {
                          THREE.ShaderChunk["linear_to_gamma_fragment"],
                          THREE.ShaderChunk["fog_fragment"],
                          "	gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
-                         "    gl_FragColor = mix(vec4(0., 0., 0., 0.), gl_FragColor, (1. - smoothstep(0.985 * uRadius, uRadius, distanceFromCenter)));",
+                         "	vec4 transparentColor = vec4( outgoingLight, 0. );",
+                         "    gl_FragColor = mix(transparentColor, gl_FragColor, (1. - smoothstep(0.985 * uRadius, uRadius, distanceFromCenter)));",
                          "}"
                     ].join("\n");
                }
