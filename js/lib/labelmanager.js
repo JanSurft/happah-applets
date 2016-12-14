@@ -6,7 +6,7 @@
  define(['jquery', 'three'], function($, THREE) {
       //const label_offset_y = 10;
       const label_color = "black";
-      const label_font_size = "150%";
+      const label_font_size = "14pt";
 
       var s_labelCount = Symbol('labelcount');
       var s_sceneCamera = Symbol('scenecamera');
