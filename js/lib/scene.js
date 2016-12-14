@@ -85,6 +85,12 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                paint() {
                     this[s_altered] = false;
 
+                    // The very first mesh is the control-polygon
+                    if (this[s_showPoly]) {
+                         this.add(this._controlPointImpostors);
+                         //this.add(this[s_lines]);
+                    }
+
                     // Update controlpoints positions,
                     // in case they have been altered by drag-and-drop
                     for (var i in this.controlPoints) {
