@@ -1,3 +1,10 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// @author Tarek Wilkening (tarek_wilkening@web.de)
+// @author Stephan Engelmann (stephan-enelmann@gmx.de)
+//
+//////////////////////////////////////////////////////////////////////////////
+
 define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
      /** Flags for drawing preferences */
 
@@ -23,7 +30,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     this[s_points] = new THREE.Object3D();
                     this[s_lines] = [new THREE.Object3D()];
                     this._controlPointImpostors = new THREE.Object3D();
-
                     this[s_altered] = true;
                     this[s_showPoly] = true;
                     this[s_showCurve] = true;
@@ -32,10 +38,10 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                get controlPointImpostors() {
                     return this._controlPointImpostors;
                }
+
                set controlPolygonState(state) {
                     this[s_showPoly] = state;
                     this.redraw();
-
                     if (this[s_showPoly]) {
                          this.add(this._controlPointImpostors);
                     } else {
@@ -43,10 +49,12 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                          this.remove(this._controlPointImpostors);
                     }
                }
+
                set curveState(state) {
                     this[s_showCurve] = state;
                     this.redraw();
                }
+
                set lines(lines) {
                     this.remove(this[s_lines])
                     this[s_lines] = new THREE.Object3D()
@@ -75,23 +83,13 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                }
 
                paint() {
-                    console.log("redraw impostors/lines");
                     this[s_altered] = false;
 
-                    // The very first mesh is the control-polygon
-                    if (this[s_showPoly]) {
-                         this.add(this._controlPointImpostors);
-                         //this.add(this[s_lines]);
-                    }
                     // Update controlpoints positions,
                     // in case they have been altered by drag-and-drop
                     for (var i in this.controlPoints) {
                          this.controlPoints[i].copy(this._controlPointImpostors.children[i].position);
                     }
-                    // Add all lines
-                    //for (var i in this[s_lines]) {
-                         //this.add(this[s_lines][i]);
-                    //}
                }
 
                removeControlPoints() {
