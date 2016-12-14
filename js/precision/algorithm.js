@@ -1,5 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //
+// @author: Stephan Engelmann (stephan-engelmann@gmx.de)
+//
 // Algorithm for app 'linear precision'
 //
 // Let n points be equally distributed on a straight line. After applying the
@@ -13,10 +15,8 @@
 //                      :           :
 //              *-------.---*-------.---*
 //              :           :           :
-//      *-------.---*-------.---*-------.---* Step 0
+//      *-------.---*-------.---*-------.---*
 //     (s)                                 (e)
-//
-// @author: Stephan Engelmann (stephan-engelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -24,8 +24,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
-     const EMPH_COLOR = 0xFF0000;
+     const IMPOSTOR_COLOR = 0x888888;
+     const IMPOSTOR_COLOR_EMPH = 0xFFFFFF;
      const LINE_COLOR = 0x888888;
+     const LINE_COLOR_EMPH = 0xFF0000;
 
      class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
@@ -83,7 +85,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                               var end = pointMatrix[row][pointMatrix[row].length - 1].clone();
                               end.y += offset;
                               var segment = [start, end];
-                              var strip = UTIL.Util.insertSegmentStrip(segment, EMPH_COLOR);
+                              var strip = UTIL.Util.insertSegmentStrip(segment, LINE_COLOR_EMPH);
                               frame.lines.push(strip);
                          // draw lines from previous steps with another color
                          } else if (row < currentFrame) {
