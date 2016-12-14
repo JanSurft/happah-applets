@@ -108,6 +108,9 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
 
                     }
                     //frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
+                    if (i > 1) {
+                         frame.lines = frame.lines.concat(storyboard.frame(storyboard.size() - 1).lines);
+                    }
                     storyboard.append(frame);
                }
 
