@@ -79,13 +79,12 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].noZoom = true;
 
-               // In case we need something to be updated when we move the
-               // camera
-               // TODO trackballcontrols does not fire events. Modify it?
-               this.controlsUpdate = this.controlsUpdate.bind(this);
-               this[s_trackballControls].addEventListener('start', this.controlsUpdate, false);
-               console.log(this[s_trackballControls]);
-               //this[s_renderer].domElement.addEventListener('change', this.controlsUpdate, false);
+               /**
+                * Change event can be fired anywhere via jQuery.
+                * Still TODO: hack trackballcontrols to fire events!
+                */
+               this.updateListener = this.updateListener.bind(this);
+               $(document).on("change", this.updateListener);
 
                if (params['enableDragcontrols']) {
                     // to move objects
@@ -99,9 +98,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
                this[s_renderer].domElement.addEventListener('rebuildStoryboard', this.rebuildStoryboard, false);
                this.update();
-          }
-          controlsUpdate(event) {
-               console.log("update!!");
           }
 
           // Call if the storyboard is out of date
@@ -205,9 +201,43 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_labelmanager].updatePositions();
           }
 
-          /** Called when trackballControls fire 'change' event */
-          controlsUpdate(event) {
-               this[s_labelmanager].updatePositions();
+          /**
+           * Called when ever the
+           */
+          updateListener(event) {
+               console.log("update event triggered!");
+               console.log(event.message);
+               var currentFrame = this[s_storyboard].currentFrame();
+               $('#hph-label').text("Frame: " + currentFrame.title);
+               var lines = currentFrame.lines;
+               var points = currentFrame.points;
+               var impostors = new THREE.Object3D();
+               var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
+
+               for (var i in points) {
+                    var imp = impostor_template.clone();
+                    imp.position.copy(points[i]);
+                    imp.material.uniforms.diffuse.value.set(helper_points_color);
+                    impostors.add(imp);
+               }
+               // Remove old labels before adding new ones
+               this[s_labelmanager].removeLabels("points");
+
+               // Also update remaining labels
+               //this[s_labelmanager].updatePositions();
+
+               // Create new labels for intermediate points
+               for (var i in currentFrame.labels) {
+                    this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
+               }
+
+               this[s_scene].points = impostors;
+               this[s_scene].lines = lines;
+               this[s_scene].paint();
+
+               // ...
+               this[s_renderer].render(this[s_scene], this[s_camera]);
+               this[s_renderer].render(this[s_overlay], this[s_cameraOverlay]);
           }
 
           update() {
