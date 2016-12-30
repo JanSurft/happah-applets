@@ -37,8 +37,8 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     //this.redraw();
                     $.event.trigger({
                          type: "change",
+                         // For easy debugging
                          message: "control-polygon was toggled!",
-                         time: new Date()
                     });
 
                     if (this[s_showPoly]) {
@@ -54,7 +54,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     $.event.trigger({
                          type: "change",
                          message: "curve state has changed!",
-                         time: new Date()
                     });
                }
                set lines(lines) {
@@ -68,7 +67,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                          //$.event.trigger({
                          //type: "change",
                          //message: "lines have been set!",
-                         //time: new Date()
                          //});
                }
 
@@ -80,7 +78,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     //$.event.trigger({
                     //type: "change",
                     //message: "points have been set!",
-                    //time: new Date()
                     //});
                }
 
@@ -125,7 +122,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     $.event.trigger({
                          type: "change",
                          message: "control have been removed!",
-                         time: new Date()
                     });
                }
 

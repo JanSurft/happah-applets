@@ -82,6 +82,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                /**
                 * Change event can be fired anywhere via jQuery.
                 * Still TODO: hack trackballcontrols to fire events!
+                *             + change name to update
                 */
                this.updateListener = this.updateListener.bind(this);
                $(document).on("change", this.updateListener);
@@ -133,12 +134,20 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
           nextFrame() {
                this[s_storyboard].nextFrame();
-               this[s_scene].redraw();
+               //this[s_scene].redraw();
+               $.event.trigger({
+                    type: "change",
+                    message: "switched to next frame!"
+               });
           }
 
           previousFrame() {
                this[s_storyboard].previousFrame();
-               this[s_scene].redraw();
+               //this[s_scene].redraw();
+               $.event.trigger({
+                    type: "change",
+                    message: "switched to previous frame!"
+               });
           }
 
           clearScene() {
