@@ -41,7 +41,12 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
 
                set controlPolygonState(state) {
                     this[s_showPoly] = state;
-                    this.redraw();
+                    //this.redraw();
+                    $.event.trigger({
+                         type: "change",
+                         // For easy debugging
+                         message: "control-polygon was toggled!",
+                    });
                     if (this[s_showPoly]) {
                          this.add(this._controlPointImpostors);
                     } else {
@@ -52,7 +57,11 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
 
                set curveState(state) {
                     this[s_showCurve] = state;
-                    this.redraw();
+                    //this.redraw();
+                    $.event.trigger({
+                         type: "change",
+                         message: "curve state has changed!",
+                    });
                }
 
                set lines(lines) {
@@ -62,14 +71,22 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                          this[s_lines].add(lines[i])
                     }
                     this.add(this[s_lines])
-                    this.redraw();
+                         //this.redraw();
+                         //$.event.trigger({
+                         //type: "change",
+                         //message: "lines have been set!",
+                         //});
                }
 
                set points(points) {
                     this.remove(this[s_points]);
                     this[s_points] = points;
                     this.add(points);
-                    this.redraw();
+                    //this.redraw();
+                    //$.event.trigger({
+                    //type: "change",
+                    //message: "points have been set!",
+                    //});
                }
 
                // remove this later
@@ -104,7 +121,11 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     //TODO: why set length to 0?
                     this.controlPoints.length = 0;
                     this._controlPointImpostors.children = [];
-                    this.redraw();
+                    // FIRE CUSTOM JQUERY EVENT
+                    $.event.trigger({
+                         type: "rebuildStoryboard",
+                         message: "control have been removed!",
+                    });
                }
 
           } //class Scene

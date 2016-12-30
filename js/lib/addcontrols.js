@@ -58,7 +58,11 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     }
                }
 
-               this[s_viewport].rebuildStoryboard();
+               //this[s_viewport].rebuildStoryboard();
+               $.event.trigger({
+                    type: "rebuildStoryboard",
+                    message: "controlpoints added!"
+               });
           }
 
           /** Returns the position of an HTML element */

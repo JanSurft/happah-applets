@@ -206,7 +206,11 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                          this.lineLeft.geometry.verticesNeedUpdate = true;
 
                          // New value means new storyboard
-                         this.viewport.rebuildStoryboard();
+                         //this.viewport.rebuildStoryboard();
+                         $.event.trigger({
+                              type: "rebuildStoryboard",
+                              message: "scrollbar dragging started!"
+                         });
                     }
                }
 
