@@ -87,6 +87,9 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this.updateListener = this.updateListener.bind(this);
                $(document).on("change", this.updateListener);
 
+               this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
+               $(document).on("rebuildStoryboard", this.rebuildStoryboard);
+
                if (params['enableDragcontrols']) {
                     // to move objects
                     this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_trackballControls], this[s_camera]);
@@ -96,19 +99,25 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
                this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
-               this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
-               this[s_renderer].domElement.addEventListener('rebuildStoryboard', this.rebuildStoryboard, false);
+               // This is only for trackballcontrols
+               // TODO: remove
                this.update();
+               $.event.trigger({
+                    type: "rebuildStoryboard"
+               });
           }
 
           // Call if the storyboard is out of date
-          rebuildStoryboard() {
+          rebuildStoryboard(event) {
+               console.log(event.message);
                var storyboard_index = this[s_storyboard].index;
                this[s_storyboard] = this[s_algorithm].storyboard();
                this[s_storyboard].index = storyboard_index;
-               // This is too slow
-               //this[s_scene].redraw();
-               this.update();
+               //this.update();
+               $.event.trigger({
+                    type: "change",
+                    message: "storyboard updated!"
+               });
           }
 
           get overlay() {
@@ -214,7 +223,6 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
            * Called when ever the
            */
           updateListener(event) {
-               console.log("update event triggered!");
                console.log(event.message);
                var currentFrame = this[s_storyboard].currentFrame();
                $('#hph-label').text("Frame: " + currentFrame.title);
@@ -249,57 +257,21 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
                this[s_renderer].render(this[s_overlay], this[s_cameraOverlay]);
           }
 
+          /**
+           * Old update method
+           * Keep it until we have event based trackball controls
+           */
           update() {
                requestAnimationFrame(this.update.bind(this));
-               if (this[s_scene].altered) {
-                    // TODO replace with storyboard.update()
-                    //this.rebuildStoryboard();
-                    var currentFrame = this[s_storyboard].currentFrame();
-                    // Set the label text in the bottom left corner
-                    $('#hph-label').text("Frame: " + currentFrame.title);
-                    // copy old scene objects
-                    var lines = currentFrame.lines;
-                    var points = currentFrame.points;
-                    // control-polygon is the first rendered frame
-                    //if (this[s_drawPoly] && this[s_currentFrame] != 0) {
-                    //     lines = lines.concat(this[s_storyboard].frame[0].lines);
-                    //}
-                    //if (this[s_drawPoly] && this[s_currentFrame] == this[s_storyboard].size() - 1) {
-                    //lines = lines.concat(this[s_storyboard].firstFrame().lines);
-                    //}
-                    // If curve is enabled, add curve
-                    // generate impostors for helper points
-                    var impostors = new THREE.Object3D();
-                    var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
 
-                    for (var i in points) {
-                         var imp = impostor_template.clone();
-                         imp.position.copy(points[i]);
-                         imp.material.uniforms.diffuse.value.set(helper_points_color);
-                         impostors.add(imp);
-                    }
-                    // Remove old labels before adding new ones
-                    this[s_labelmanager].removeLabels("points");
-
-                    // Also update remaining labels
-                    //this[s_labelmanager].updatePositions();
-
-                    // Create new labels for intermediate points
-                    for (var i in currentFrame.labels) {
-                         this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
-                    }
-
-                    this[s_scene].points = impostors;
-                    this[s_scene].lines = lines;
-                    this[s_scene].paint();
-               }
-               // FIXME: does this belong inside the if-block?
                // Render scene + scene overlay
                //this[s_renderer].clear();
                //this[s_renderer].clearDepth();
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_renderer].render(this[s_overlay], this[s_cameraOverlay]);
 
+               // TODO: trackballControls should fire an event when
+               // it has changed the scene
                this[s_trackballControls].update();
 
                // FIXME: use time for animation speed

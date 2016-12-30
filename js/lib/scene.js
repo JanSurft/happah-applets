@@ -117,10 +117,9 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                     //TODO: why set length to 0?
                     this.controlPoints.length = 0;
                     this._controlPointImpostors.children = [];
-                    //this.redraw();
                     // FIRE CUSTOM JQUERY EVENT
                     $.event.trigger({
-                         type: "change",
+                         type: "rebuildStoryboard",
                          message: "control have been removed!",
                     });
                }
