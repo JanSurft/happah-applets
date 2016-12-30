@@ -163,7 +163,11 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                          this.lineLeft.geometry.verticesNeedUpdate = true;
 
                          // New value means new storyboard
-                         this.viewport.rebuildStoryboard();
+                         //this.viewport.rebuildStoryboard();
+                         $.event.trigger({
+                              type: "rebuildStoryboard",
+                              message: "scrollbar dragging started!"
+                         });
                     }
                }
 
