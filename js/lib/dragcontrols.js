@@ -134,13 +134,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
                if (this.selectedObject) {
-                    // Scene has changed so we need to redraw.
-                    // TODO: this is causing bad behaviour with quickly
-                    // drag+drop we need the viewport to update immediately.
-                    $.event.trigger({
-                         type: "rebuildStoryboard",
-                         message: "dragging controlpoint!"
-                    });
                     // Check the position where the plane is intersected
                     var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
 
@@ -154,6 +147,10 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     this.updatePosition(this.selectedObject, intersects[0].point.sub(this[s_offset]));
 
                     this[s_selectionPlane].position.copy(this.selectedObject.position);
+                    $.event.trigger({
+                         type: "rebuildStoryboard",
+                         message: "dragging controlpoint!"
+                    });
                } else {
                     // Update position of the plane if need
                     var intersects =
