@@ -21,7 +21,7 @@ require.config({
           impromptu: "https://cdn.rawgit.com/trentrichardson/jQuery-Impromptu/master/dist/jquery-impromptu.min",
           mathjax: "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML",
           jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
-          three: "http://threejs.org/build/three",
+          three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three",
           TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
           TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
           bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap",
