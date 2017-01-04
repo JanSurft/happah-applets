@@ -12,15 +12,14 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
 
      // Drag control variables
      var s_raycaster = Symbol('raycaster');
-     var s_selectionPlane = Symbol('plane');
-     var s_offset = Symbol('offset');
      var s_enabled = Symbol('enabled');
      var s_arrow = Symbol('arrow');
+     var s_selectionPlane = Symbol('selectionplane');
+     var s_previousPoint = Symbol('previouspoint');
 
      class DragControls {
 
           constructor(scene, controls, camera) {
-               // TODO: still necessary?
                this.mouseUp = this.mouseUp.bind(this);
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
@@ -34,19 +33,8 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                // Initialize drag control variables
                this[s_raycaster] = new THREE.Raycaster();
 
-               // Helper plane in which the objects will move
-               // Attention: at any time, the plane must be bigger than the
-               // dragged object or it won't work!
-               // TODO: make the size a multiple of the impostor's radius!
-               // TODO: don't make the plane a geometry
-               this[s_selectionPlane] = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500), new THREE.MeshBasicMaterial({
-                    color: 0x00EE22,
-                    alphaTest: 0,
-                    visible: false
-               }));
-               this[s_offset] = new THREE.Vector3();
-               this[s_scene].add(this[s_selectionPlane]);
-               this[s_selectionPlane].lookAt(this[s_camera].getWorldDirection());
+               this[s_selectionPlane] = new THREE.Plane();
+               this[s_previousPoint] = new THREE.Vector3();
           }
 
           enable() {
@@ -80,7 +68,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                // Get the mouse position relative to canvas
                var vector2 = UTIL.Util.getPositionOnCanvas(event);
                var mouseVector = new THREE.Vector3(vector2.x, vector2.y, 0);
-               //var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
@@ -95,9 +82,9 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     this.selectObject(intersects[0]);
 
                     // Calculate the offset
-                    var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
+                    var intersectionPoint = this[s_raycaster].ray.intersectPlane(this[s_selectionPlane]);
 
-                    this[s_offset].copy(intersects[0].point).sub(this[s_selectionPlane].position);
+                    this[s_previousPoint].copy(intersectionPoint.sub(intersects[0].position));
                }
           }
 
@@ -126,18 +113,15 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
 
                if (this.selectedObject) {
                     // Check the position where the plane is intersected
-                    var intersects = this[s_raycaster].intersectObject(this[s_selectionPlane]);
+                    var intersectionPoint = this[s_raycaster].ray.intersectPlane(this[s_selectionPlane]);
 
-                    if (intersects[0] == null) {
-                         console.log("Warning: lost selection plane!");
-                         this.mouseUp();
-                         return;
-                    }
 
                     // Reposition the object based on the intersection point with the plane
-                    this.updatePosition(this.selectedObject, intersects[0].point.sub(this[s_offset]));
+                    this.updatePosition(this.selectedObject, intersectionPoint.sub(this[s_previousPoint]));
 
-                    this[s_selectionPlane].position.copy(this.selectedObject.position);
+                    // Update normal-vector of plane
+                    this[s_selectionPlane].setFromNormalAndCoplanarPoint(this[s_camera].getWorldDirection(), this.selectedObject.position);
+
                     $.event.trigger({
                          type: "rebuildStoryboard",
                          message: "dragging controlpoint!"
@@ -147,11 +131,10 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     var intersects =
                          this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children, true);
                     if (intersects.length > 0) {
-                         // TODO: is this really necessary?
-                         this[s_selectionPlane].position.copy(intersects[0].position);
 
                          // Update normal-vector
-                         this[s_selectionPlane].lookAt(this[s_camera].position.clone().add(intersects[0].position));
+                         this[s_selectionPlane].setFromNormalAndCoplanarPoint(this[s_camera].getWorldDirection(), intersects[0].position);
+
                     }
                }
           }
