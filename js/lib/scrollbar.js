@@ -137,15 +137,10 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                     if (this.enabled == false) {
                          return;
                     }
-                    // TODO: don't calculate the position every time.
-                    //       -> only on window resize...
-                    var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
 
-                    // Get mouse position
-                    var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-                    var mouseY = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
-
-                    var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
+                    // Get the mouse position relative to canvas
+                    var vector2 = UTIL.Util.getPositionOnCanvas(event);
+                    var mouseVector = new THREE.Vector3(vector2.x, vector2.y, -1);
 
                     // Set up ray from mouse position
                     this.raycaster.setFromCamera(mouseVector, this.camera);
@@ -171,12 +166,10 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                     if (this.enabled == false) {
                          return;
                     }
-                    var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
 
-                    // Get mouse position
-                    var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-                    var mouseY = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
-                    var mouseVector = new THREE.Vector3(mouseX, mouseY, -1);
+                    // Get the mouse position relative to canvas
+                    var vector2 = UTIL.Util.getPositionOnCanvas(event);
+                    var mouseVector = new THREE.Vector3(vector2.x, vector2.y, -1);
 
                     // Set up ray from mouse position
                     this.raycaster.setFromCamera(mouseVector, this.camera);

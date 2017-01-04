@@ -28,7 +28,6 @@ define(['three'], function(THREE) {
                // Get mouse position
                vector.x = ((event.clientX - elementPosition.x + window.pageXOffset) / event.target.width) * 2 - 1;
                vector.y = -((event.clientY - elementPosition.y + window.pageYOffset) / event.target.height) * 2 + 1;
-               console.log(window);
 
                return vector;
           }

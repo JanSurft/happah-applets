@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
+define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE, happah, UTIL) {
      var s_camera = Symbol('camera');
      var s_scene = Symbol('scene');
      var s_viewport = Symbol('viewport');
@@ -65,18 +65,6 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
                });
           }
 
-          /** Returns the position of an HTML element */
-          getElementPosition(element) {
-               var position = new THREE.Vector2(0, 0);
-
-               while (element) {
-                    position.x += (element.offsetLeft - element.scrollLeft + element.clientLeft);
-                    position.y += (element.offsetTop - element.scrollTop + element.clientTop);
-                    element = element.offsetParent;
-               }
-               return position
-          }
-
           listenTo(domElement) {
                domElement.addEventListener('dblclick', this.onMouseDoubleclick, false);
                domElement.addEventListener('click', this.onMouseClick, false);
@@ -93,11 +81,7 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
 
           onMouseDoubleclick(event) {
                // Get current mouse position on screen
-               var elementPosition = this.getElementPosition(event.currentTarget);
-
-               var vector = new THREE.Vector2();
-               vector.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-               vector.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
+               var vector = UTIL.Util.getPositionOnCanvas(event);
 
                // Create new raycaster from mouse position
                var raycaster = new THREE.Raycaster();
@@ -124,11 +108,7 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
           onMouseClick(event) {
                if (this[s_addMode]) {
                     // Get current mouse position on screen
-                    var elementPosition = this.getElementPosition(event.currentTarget);
-
-                    var vector = new THREE.Vector2();
-                    vector.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-                    vector.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
+                    var vector = UTIL.Util.getPositionOnCanvas(event);
 
                     // Create new raycaster
                     var raycaster = new THREE.Raycaster();

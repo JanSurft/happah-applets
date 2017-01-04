@@ -76,15 +76,11 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                if (this[s_enabled] == false) {
                     return;
                }
-               // TODO: don't calculate the position every time.
-               //       -> only on window resize...
-               var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
 
-               // Get mouse position
-               var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-               var mouseY = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
-
-               var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
+               // Get the mouse position relative to canvas
+               var vector2 = UTIL.Util.getPositionOnCanvas(event);
+               var mouseVector = new THREE.Vector3(vector2.x, vector2.y, 0);
+               //var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
 
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
@@ -120,17 +116,12 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                if (this[s_enabled] == false) {
                     return;
                }
-               var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
-
                // Get mouse position
-               var mouseX = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-               var mouseY = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
-               var mouseVector = new THREE.Vector3(mouseX, mouseY, 0);
+               var vector2 = UTIL.Util.getPositionOnCanvas(event);
+               var mouseVector = new THREE.Vector3(vector2.x, vector2.y, 0);
 
                // Get 3D vector from 3D mouse position using
                // 'unproject' function
-               var vector = new THREE.Vector2(mouseX, mouseY);
-
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
 
                if (this.selectedObject) {
