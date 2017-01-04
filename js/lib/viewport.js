@@ -5,9 +5,9 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'TrackballControls', './dragcontrols',
+define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragcontrols',
      './spherical-impostor', './defaults', './labelmanager'
-], function($, THREE, THREE, dragcontrols, sphericalimpostor, defaults, LABEL) {
+], function($, THREE, THREE, CONTROLS, dragcontrols, sphericalimpostor, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -29,6 +29,8 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
      var s_storyboard = Symbol('storyboard');
      var s_zoom = Symbol('zoom');
      var s_labelmanager = Symbol('labelmanager');
+     var s_storyboardNeedsUpdate = Symbol('storyboardneedsupdate');
+     var s_sceneNeedsUpdate = Symbol('sceneneedsupdate');
 
      class Viewport {
 
@@ -78,6 +80,7 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
                this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].noZoom = true;
+               //this[s_trackballControls] = new CONTROLS.TrackballControls(this[s_camera], this[s_scene]);
 
                /**
                 * Change event can be fired anywhere via jQuery.
@@ -109,15 +112,16 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
 
           // Call if the storyboard is out of date
           rebuildStoryboard(event) {
-               console.log(event.message);
-               var storyboard_index = this[s_storyboard].index;
-               this[s_storyboard] = this[s_algorithm].storyboard();
-               this[s_storyboard].index = storyboard_index;
-               //this.update();
-               $.event.trigger({
-                    type: "change",
-                    message: "storyboard updated!"
-               });
+               this[s_storyboardNeedsUpdate] = true;
+
+               //var storyboard_index = this[s_storyboard].index;
+               //this[s_storyboard] = this[s_algorithm].storyboard();
+               //this[s_storyboard].index = storyboard_index;
+               ////this.update();
+               //$.event.trigger({
+               //type: "change",
+               //message: "storyboard updated!"
+               //});
           }
 
           get overlay() {
@@ -223,46 +227,55 @@ define(['jquery', 'three', 'TrackballControls', './dragcontrols',
            * Called when ever the
            */
           updateListener(event) {
-               console.log(event.message);
-               var currentFrame = this[s_storyboard].currentFrame();
-               $('#hph-label').text("Frame: " + currentFrame.title);
-               var lines = currentFrame.lines;
-               var points = currentFrame.points;
-               var impostors = new THREE.Object3D();
-               var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
-
-               for (var i in points) {
-                    var imp = impostor_template.clone();
-                    imp.position.copy(points[i]);
-                    imp.material.uniforms.diffuse.value.set(helper_points_color);
-                    impostors.add(imp);
-               }
-               // Remove old labels before adding new ones
-               this[s_labelmanager].removeLabels("points");
-
-               // Also update remaining labels
-               //this[s_labelmanager].updatePositions();
-
-               // Create new labels for intermediate points
-               for (var i in currentFrame.labels) {
-                    this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
-               }
-
-               this[s_scene].points = impostors;
-               this[s_scene].lines = lines;
-               this[s_scene].paint();
-
-               // ...
-               this[s_renderer].render(this[s_scene], this[s_camera]);
-               this[s_renderer].render(this[s_overlay], this[s_cameraOverlay]);
+               this[s_sceneNeedsUpdate] = true;
           }
 
           /**
-           * Old update method
-           * Keep it until we have event based trackball controls
+           *
            */
           update() {
                requestAnimationFrame(this.update.bind(this));
+
+               // Rebuild the storyboard if necessary
+               if (this[s_storyboardNeedsUpdate]) {
+                    var storyboard_index = this[s_storyboard].index;
+                    this[s_storyboard] = this[s_algorithm].storyboard();
+                    this[s_storyboard].index = storyboard_index;
+                    this[s_storyboardNeedsUpdate] = false;
+                    this[s_sceneNeedsUpdate] = true;
+               }
+
+               // Paint the scene if necessary
+               if (this[s_sceneNeedsUpdate]) {
+                    var currentFrame = this[s_storyboard].currentFrame();
+                    $('#hph-label').text("Frame: " + currentFrame.title);
+                    var lines = currentFrame.lines;
+                    var points = currentFrame.points;
+                    var impostors = new THREE.Object3D();
+                    var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
+
+                    for (var i in points) {
+                         var imp = impostor_template.clone();
+                         imp.position.copy(points[i]);
+                         imp.material.uniforms.diffuse.value.set(helper_points_color);
+                         impostors.add(imp);
+                    }
+                    // Remove old labels before adding new ones
+                    this[s_labelmanager].removeLabels("points");
+
+                    // Also update remaining labels
+                    //this[s_labelmanager].updatePositions();
+
+                    // Create new labels for intermediate points
+                    for (var i in currentFrame.labels) {
+                         this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
+                    }
+
+                    this[s_scene].points = impostors;
+                    this[s_scene].lines = lines;
+                    this[s_scene].paint();
+                    this[s_sceneNeedsUpdate] = false;
+               }
 
                // Render scene + scene overlay
                //this[s_renderer].clear();
