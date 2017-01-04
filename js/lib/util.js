@@ -21,6 +21,18 @@ define(['three'], function(THREE) {
                return position;
           }
 
+          static getPositionOnCanvas(event) {
+               var elementPosition = this.getElementPosition(event.target);
+               var vector = new THREE.Vector2();
+
+               // Get mouse position
+               vector.x = ((event.clientX - elementPosition.x + window.pageXOffset) / event.target.width) * 2 - 1;
+               vector.y = -((event.clientY - elementPosition.y + window.pageYOffset) / event.target.height) * 2 + 1;
+               console.log(window);
+
+               return vector;
+          }
+
           /**
            * Generate a THREE.js line
            *
