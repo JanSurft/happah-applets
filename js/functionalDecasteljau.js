@@ -32,8 +32,9 @@ require(['./lib/happah', './functionalDecasteljau/algorithm', './lib/addcontrols
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
-     // TODO: Get position relative to window size
-     var pos = new THREE.Vector3(0, -30, 100);
+
+     // Canvas coordinates relative to middle of canvas element
+     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
      var algorithm = new ALGORITHM.Algorithm(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
