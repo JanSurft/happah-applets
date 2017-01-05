@@ -32,12 +32,14 @@ require(['./lib/happah', './generalizedDecasteljau/multihandlescrollbar', './lib
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
-     // TODO: Get position relative to window size
      var algorithm = new ALGORITHM.Algorithm(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
 
+     // Canvas coordinates relative to middle of canvas element
+     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+
      // Scrollbars
-     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(new THREE.Vector3(0, -30, 100), viewport);
+     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport);
 
      var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);

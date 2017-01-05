@@ -32,7 +32,11 @@ require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'i
      var scene = new happah.Scene();
      var algorithm = new happah.DeCasteljauAlgorithm(scene.controlPoints);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
-     var scrollbar = new happah.Scrollbar(new THREE.Vector3(0, -30, 100), viewport);
+
+     // Canvas coordinates relative to middle of canvas element
+     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+     var scrollbar = new happah.Scrollbar(pos, viewport);
+
      algorithm.scrollbar = scrollbar;
      var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
