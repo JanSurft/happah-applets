@@ -147,6 +147,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor', './util'], fu
                var frame0 = new STORYBOARD.Storyboard.Frame();
                frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.title = "Controlpolygon";
+               frame0.points = new THREE.Object3D();
                storyboard.append(frame0);
 
                if (this[s_controlPoints].length == 0) {
@@ -166,12 +167,26 @@ define(['jquery', 'three', './storyboard', './spherical-impostor', './util'], fu
                     pointMatrix.push(points);
                });
 
+               // Helper points radius
+               var radius = 3;
+               var color = 0x65432D;
+
                // Skip the control polygon
                for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new STORYBOARD.Storyboard.Frame();
                     frame.title = "Step " + i;
 
-                    frame.points = pointMatrix[i];
+                    // Impostor template
+                    var template = new sphericalimpostor.SphericalImpostor(radius);
+                    frame.points = new THREE.Object3D();
+
+                    //frame.points = pointMatrix[i];
+                    for (var k in pointMatrix[i]) {
+                         var imp = template.clone();
+                         imp.position.copy(pointMatrix[i][k]);
+                         imp.material.uniforms.diffuse.value.set(color);
+                         frame.points.add(imp);
+                    }
 
                     var pointStack = new Array();
 
@@ -208,7 +223,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor', './util'], fu
                     }
                     // Also add the newly generated polygon
                     frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], 0xFF0000));
-                    frame.points = frame.points.concat(storyboard.frame(storyboard.size() - 1).points);
+                    frame.points.children = frame.points.children.concat(storyboard.frame(storyboard.size() - 1).points);
 
                     storyboard.append(frame);
                }
