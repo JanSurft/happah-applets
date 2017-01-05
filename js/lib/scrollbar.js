@@ -28,8 +28,10 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                     // we assume this is only used in an overlay so the
                     // direction is always straight down
                     this.camera = viewport.overlayCam;
-                    //this[s_enabled] = true;
                     this.enabled = true;
+
+                    // Get world coordinates
+                    position.unproject(this.camera);
 
                     // TODO: remove reference to viewport
                     this.viewport = viewport;
