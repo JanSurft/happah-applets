@@ -251,15 +251,15 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
                     $('#hph-label').text("Frame: " + currentFrame.title);
                     var lines = currentFrame.lines;
                     var points = currentFrame.points;
-                    var impostors = new THREE.Object3D();
-                    var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
+                    //var impostors = new THREE.Object3D();
+                    //var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
 
-                    for (var i in points) {
-                         var imp = impostor_template.clone();
-                         imp.position.copy(points[i]);
-                         imp.material.uniforms.diffuse.value.set(helper_points_color);
-                         impostors.add(imp);
-                    }
+                    //for (var i in points) {
+                    //var imp = impostor_template.clone();
+                    //imp.position.copy(points[i]);
+                    //imp.material.uniforms.diffuse.value.set(helper_points_color);
+                    //impostors.add(imp);
+                    //}
                     // Remove old labels before adding new ones
                     this[s_labelmanager].removeLabels("points");
 
@@ -271,7 +271,8 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
                          this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
                     }
 
-                    this[s_scene].points = impostors;
+                    //this[s_scene].points = impostors;
+                    this[s_scene].points = points;
                     this[s_scene].lines = lines;
                     this[s_scene].paint();
                     this[s_sceneNeedsUpdate] = false;
