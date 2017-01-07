@@ -7,7 +7,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
+define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
@@ -75,7 +75,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
                frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
-               frame0.points = this[s_controlPoints];
+               frame0.points = new THREE.Object3D();
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -97,21 +97,26 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
 
                var pointMatrix = this.evaluate(function() {});
 
-               //pointMatrix.push(this[s_controlPoints]);
-
-               //this.evaluate(function add(points) {
-               //pointMatrix.push(points);
-               //});
+               // Helper points settings here
+               var color = 0x54334f;
+               var radius = 3;
+               var template = new IMPOSTOR.SphericalImpostor(radius);
 
                // Iterate over scrollbar and add polygon each iteration
                for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step: " + i;
+                    frame.points = new THREE.Object3D();
 
-                    frame.points = pointMatrix[i];
+                    for (var k in pointMatrix[i]) {
+                         var imp = template.clone();
+                         imp.position.copy(pointMatrix[i][k]);
+                         imp.material.uniforms.diffuse.value.set(color);
+                         frame.points.add(imp);
+                    }
 
-                    if (frame.points.length > 1) {
-                         frame.lines.push(UTIL.Util.insertSegmentStrip(frame.points, this[s_handles][i - 1].material.color));
+                    if (pointMatrix[i].length > 1) {
+                         frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], this[s_handles][i - 1].material.color));
                     }
 
                     // Include lines and points from previous iterations

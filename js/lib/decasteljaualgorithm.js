@@ -169,7 +169,7 @@ define(['jquery', 'three', './storyboard', './spherical-impostor', './util'], fu
 
                // Helper points radius
                var radius = 3;
-               var color = 0x65432D;
+               var color = 0x3d3d3d;
 
                // Skip the control polygon
                for (var i = 1; i < pointMatrix.length; i++) {

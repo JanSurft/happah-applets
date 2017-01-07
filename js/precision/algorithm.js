@@ -20,7 +20,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
+define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
@@ -68,6 +68,11 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     pointMatrix.push(points);
                });
 
+               // Point settings
+               var radius = 3;
+               var color = 0x3d3d3d;
+               var template = new IMPOSTOR.SphericalImpostor(radius);
+
                for (var currentFrame = 0; currentFrame < pointMatrix.length; currentFrame++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     var offset = 0;
@@ -75,7 +80,13 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                          for (var i in pointMatrix[row]) {
                               var point = pointMatrix[row][i].clone();
                               point.y += offset;
-                              frame.points.push(point);
+
+                              // Impostors from here
+                              frame.points = new THREE.Object3D();
+                              var imp = template.clone();
+                              imp.position.copy(point);
+                              imp.material.uniforms.diffuse.value.set(color);
+                              frame.points.add(imp);
                          }
                          // draw each newly generated line with an emphasized
                          // color, for example red
@@ -87,7 +98,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                               var segment = [start, end];
                               var strip = UTIL.Util.insertSegmentStrip(segment, LINE_COLOR_EMPH);
                               frame.lines.push(strip);
-                         // draw lines from previous steps with another color
+                              // draw lines from previous steps with another color
                          } else if (row < currentFrame) {
                               var start = pointMatrix[row][0].clone();
                               start.y += offset;
@@ -109,7 +120,13 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                          for (var i in pointMatrix[currentFrame + 1]) {
                               var pointCopy = pointMatrix[currentFrame + 1][i].clone();
                               pointCopy.y += offset;
-                              midFrame.points.push(pointCopy);
+
+                              // Make point to impostor
+                              midFrame.points = new THREE.Object3D();
+                              var imp = template.clone();
+                              imp.position.copy(pointCopy);
+                              imp.material.uniforms.diffuse.value.set(color);
+                              midFrame.points.add(imp);
                          }
                          storyboard.append(midFrame);
                     }

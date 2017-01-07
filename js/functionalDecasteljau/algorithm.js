@@ -6,7 +6,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
+define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
@@ -43,9 +43,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                }
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
-               //var frame0 = new HAPPAH.Storyboard.Frame();
-               //frame0.title = "Controlpolygon";
-               //storyboard.append(frame0);
 
                if (this[s_controlPoints].length == 0) {
                     var frame0 = new HAPPAH.Storyboard.Frame();
@@ -54,10 +51,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     storyboard.append(frame0);
                     return storyboard;
                }
-               // Also add dashed line for controlpoints
-               //for (var i in this[s_controlPoints]) {
-               //frame0.lines.push(UTIL.Util.insertDashedLine([this[s_controlPoints][i], this[s_controlPoints][i].clone().setZ(60)], 0x000000));
-               //}
 
                // each iteration step gets stored in a matrix row
                var pointMatrix = new Array();
@@ -70,9 +63,21 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     pointMatrix.push(points);
                });
 
+               // Helper points settings
+               var radius = 3;
+               var color = 0x3d3d3d;
+
                for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new HAPPAH.Storyboard.Frame();
-                    frame.points = pointMatrix[i];
+                    frame.points = new THREE.Object3D();
+                    var template = new IMPOSTOR.SphericalImpostor(radius);
+
+                    for (var k in pointMatrix[i]) {
+                         var imp = template.clone();
+                         imp.position.copy(pointMatrix[i][k]);
+                         imp.material.uniforms.diffuse.value.set(color);
+                         frame.points.add(imp);
+                    }
                     var pointStack = new Array();
 
                     // The previous iteration has one point more.
