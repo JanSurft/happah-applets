@@ -74,7 +74,6 @@ define(['jquery', './translator'], function($, Translator) {
                constructor() {
                     this.lines = [];
                     this.labels = [];
-                    this.points = [];
                     this.title = "";
                     this.description = "";
                }
@@ -83,7 +82,7 @@ define(['jquery', './translator'], function($, Translator) {
                     var myCopy = new Storyboard.Frame();
                     myCopy.lines = this.lines;
                     myCopy.labels = this.labels;
-                    myCopy.points = this.points.slice(0);
+                    myCopy.points = this.points.clone();
                     myCopy.title = "insert new points";
                     return myCopy;
                }
