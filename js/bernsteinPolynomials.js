@@ -57,6 +57,11 @@ require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm'
      geometry.merge(secondGeometry);
      secondGeometry.translate(100, 0, 0);
      geometry.merge(secondGeometry);
+
+     var thirdGeometry = new THREE.CylinderGeometry(0.5, 0.5, 101, 16);
+     thirdGeometry.rotateZ(-Math.PI / 2);
+     thirdGeometry.translate(0, 0, -100);
+     geometry.merge(thirdGeometry);
      var material = new THREE.MeshBasicMaterial({
           color: 0x4d4d4d
      });

@@ -64,7 +64,7 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
                // Create the first frame by hand
                var storyboard = new STORYBOARD.Storyboard(this);
 
-               for (var i = 0; i < 5; i++) {
+               for (var i = 1; i < 5; i++) {
                     for (var k = 0; k <= i; k++) {
                          var frame = new STORYBOARD.Storyboard.Frame();
                          // Get a new color from gradient
