@@ -24,7 +24,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
-     //const IMPOSTOR_COLOR = 0x3d3d3d;
      const IMPOSTOR_COLOR = 0x666666;
      const IMPOSTOR_COLOR_EMPH = 0x44eeee;
      const LINE_COLOR = 0x888888;

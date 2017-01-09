@@ -199,6 +199,7 @@ define(['jquery', 'three'], function($, THREE) {
                     result.geometry.attributes.inputImpostorSpaceCoordinates.copy(this.geometry.attributes.inputImpostorSpaceCoordinates);
                     result.geometry.attributes.center.copy(this.geometry.attributes.center);
                     result.material.uniforms.uRadius.value = this.material.uniforms.uRadius.value;
+                    result.material.uniforms.diffuse.value = this.material.uniforms.diffuse.value;
                     return result;
                }
 
