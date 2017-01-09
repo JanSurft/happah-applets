@@ -17,10 +17,10 @@
            }
            static basicLights() {
                 var lights = new THREE.Object3D();
-                var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, 1);
+                var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x00ee00, .55);
                 lights.add(hemisphereLight);
                 var dirLight = new THREE.DirectionalLight(0xffffff);
-                dirLight.position.set(200, 200, 1000).normalize();
+                dirLight.position.set(0, 200, 100).normalize();
                 lights.add(dirLight);
                 return lights;
            }

@@ -24,8 +24,8 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
-     const IMPOSTOR_COLOR = 0x888888;
-     const IMPOSTOR_COLOR_EMPH = 0xFFFFFF;
+     const IMPOSTOR_COLOR = 0x666666;
+     const IMPOSTOR_COLOR_EMPH = 0x44eeee;
      const LINE_COLOR = 0x888888;
      const LINE_COLOR_EMPH = 0xFF0000;
 
@@ -70,22 +70,23 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
 
                // Point settings
                var radius = 3;
-               var color = 0x3d3d3d;
-               var template = new IMPOSTOR.SphericalImpostor(radius);
+               var imp_template = new IMPOSTOR.SphericalImpostor(radius);
+               imp_template.material.uniforms.diffuse.value.set(IMPOSTOR_COLOR);
+               var imp_template_emph = new IMPOSTOR.SphericalImpostor(radius);
+               imp_template_emph.material.uniforms.diffuse.value.set(IMPOSTOR_COLOR_EMPH);
 
                for (var currentFrame = 0; currentFrame < pointMatrix.length; currentFrame++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     var offset = 0;
+                    frame.points = new THREE.Object3D();
                     for (var row = 0; row <= currentFrame; row++) {
                          for (var i in pointMatrix[row]) {
                               var point = pointMatrix[row][i].clone();
                               point.y += offset;
 
                               // Impostors from here
-                              frame.points = new THREE.Object3D();
-                              var imp = template.clone();
+                              var imp = imp_template.clone();
                               imp.position.copy(point);
-                              imp.material.uniforms.diffuse.value.set(color);
                               frame.points.add(imp);
                          }
                          // draw each newly generated line with an emphasized
@@ -120,12 +121,9 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                          for (var i in pointMatrix[currentFrame + 1]) {
                               var pointCopy = pointMatrix[currentFrame + 1][i].clone();
                               pointCopy.y += offset;
-
                               // Make point to impostor
-                              midFrame.points = new THREE.Object3D();
-                              var imp = template.clone();
+                              var imp = imp_template_emph.clone();
                               imp.position.copy(pointCopy);
-                              imp.material.uniforms.diffuse.value.set(color);
                               midFrame.points.add(imp);
                          }
                          storyboard.append(midFrame);
