@@ -75,7 +75,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
                frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
-               frame0.points = new THREE.Object3D();
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -106,7 +105,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step: " + i;
-                    frame.points = new THREE.Object3D();
 
                     for (var k in pointMatrix[i]) {
                          var imp = template.clone();
