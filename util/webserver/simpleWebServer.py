@@ -7,7 +7,7 @@ class MySimpleHTTPHandler( http.server.SimpleHTTPRequestHandler ):
           self.send_header("Access-Control-Allow-Origin", "*")
           super.send_head(self)
 
-PORT = 80
+PORT = 8000
 Handler = http.server.SimpleHTTPRequestHandler
 httpd = socketserver.TCPServer(("", PORT), Handler)
 print("serving at port", PORT)
