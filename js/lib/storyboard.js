@@ -1,4 +1,4 @@
-define(['jquery', './translator'], function($, Translator) {
+define(['jquery', 'three', './translator'], function($, THREE, Translator) {
      var s_frames = Symbol('frames');
      var s_index = Symbol('index');
 
@@ -74,6 +74,7 @@ define(['jquery', './translator'], function($, Translator) {
                constructor() {
                     this.lines = [];
                     this.labels = [];
+                    this.points = new THREE.Object3D();
                     this.title = "";
                     this.description = "";
                }
