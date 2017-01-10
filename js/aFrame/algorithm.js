@@ -36,20 +36,36 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
           }
 
           evaluate() {
-               var newPoints = [];
 
-               // Iterate over controlpoints
-               // TODO
-               for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
-                    var newPoint = new THREE.Vector3();
-                    var startPoint = this[s_controlPoints][i].clone();
-                    var endPoint = this[s_controlPoints][i + 1].clone();
-                    endPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(i));
-                    newPoint.addVectors(startPoint, endPoint);
+               var pointMatrix = [];
+               for (var k in this[s_controlPoints]) {
+                    var newPoints = [];
+                    // Iterate over controlpoints
+                    for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
+                         var newPoint = new THREE.Vector3();
+                         var startPoint = this[s_controlPoints][i].clone();
+                         var endPoint = this[s_controlPoints][i + 1].clone();
+                         startPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(k));
+                         endPoint.multiplyScalar(this[s_scrollbar].valueOf(k));
+                         newPoint.addVectors(startPoint, endPoint);
 
-                    newPoints.push(newPoint);
+                         newPoints.push(newPoint);
+                    }
+                    pointMatrix.push(newPoints);
+
+                    // Create intersection points
+                    //var ray1 = new THREE.Ray(pointMatrix[k - 1][0], pointMatrix[k - 1][1]);
+                    //var ray2 = new THREE.Ray(pointMatrix[k][0], pointMatrix[k][1]);
+                    var startPoint = pointMatrix[k][0].clone();
+                    var endPoint = pointMatrix[k][1].clone();
+                    startPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(k));
+                    endPoint.multiplyScalar(this[s_scrollbar].valueOf(k));
+
+                    pointMatrix.push([new THREE.Vector3().addVectors(startPoint, endPoint)]);
+
+
                }
-               return newPoints;
+               return pointMatrix;
           }
 
           /**
@@ -72,7 +88,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                }
 
                // Update handles
-               for (var i = 0; i < this[s_controlPoints].length - 2; i++) {
+               for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
                     if (this[s_handles][i] != null) {
                          //this[s_handles][i].position.x = (0.5 / 150) + 0.5;
                     } else {
@@ -82,7 +98,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                }
 
                //var pointMatrix = this.evaluate(function() {});
-               var pointArray = this.evaluate();
+               var pointMatrix = this.evaluate();
 
                // Helper points settings here
                var color = 0x54334f;
@@ -90,22 +106,24 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                var template = new IMPOSTOR.SphericalImpostor(radius);
 
                // Iterate over scrollbar and add polygon each iteration
-               for (var i = 1; i < pointArray.length; i++) {
+               for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step: " + i;
 
-                    var imp = template.clone();
-                    imp.position.copy(pointArray[i]);
-                    imp.material.uniforms.diffuse.value.set(color);
-                    frame.points.add(imp);
+                    for (var k in pointMatrix[i]) {
+                         var imp = template.clone();
+                         imp.position.copy(pointMatrix[i][k]);
+                         imp.material.uniforms.diffuse.value.set(color);
+                         frame.points.add(imp);
+                    }
 
-                    if (pointArray.length > 1) {
-                         frame.lines.push(UTIL.Util.insertSegmentStrip(pointArray, this[s_handles][i - 1].material.color));
+                    if (pointMatrix[i].length > 1 && this[s_handles][i - 1] != null) {
+                         frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], this[s_handles][i - 1].material.color));
                     }
 
                     // Include lines and points from previous iterations
                     frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
-                    //frame.points = frame.points.concat(storyboard.lastFrame().points);
+                    storyboard.lastFrame().points.children.concat(frame.points.children);
                     storyboard.append(frame);
                }
 
