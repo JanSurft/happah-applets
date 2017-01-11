@@ -53,6 +53,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
                     this.remove(handle);
                }
 
+               get handles() {
+                    return this[s_handles];
+               }
+
                updateLines(handle) {
                     // Update color of line segments
                     this.remove(this.lineRight);
