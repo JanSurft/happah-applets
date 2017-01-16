@@ -89,14 +89,8 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                     frame0.lines[0] = new THREE.Object3D();
                     return storyboard;
                }
-
-               // Update handles
-               //for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
-               //if (this[s_handles][i] == null) {
-               //this[s_color] += 0x0E5034;
-               //this[s_handles].push(this[s_scrollbar].addHandle(0.5, this[s_color]));
-               //}
-               //}
+               // TODO: display warning if amount of controlpoints exceeds a
+               //       certain level
 
                var pointMatrix = this.evaluate();
 
