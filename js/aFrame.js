@@ -37,7 +37,7 @@ require(['./lib/happah', './aFrame/algorithm', './lib/multihandlescrollbar', './
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
      var algorithm = new ALGORITHM.Algorithm(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
-     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport);
+     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.2);
      var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
      algorithm.scrollbar = scrollbar;

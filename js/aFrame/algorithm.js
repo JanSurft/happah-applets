@@ -5,7 +5,6 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
-     var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
      var s_camera = Symbol('camera');
      var s_colors = Symbol('colors');
@@ -18,14 +17,9 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
           constructor(controlPoints, scrollbar, camera) {
                this.storyboard = this.storyboard.bind(this);
                this[s_controlPoints] = controlPoints;
-               this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
                this[s_scrollbar] = scrollbar;
                this[s_camera] = camera;
-               this[s_color] = 0xE50A00;
                this[s_handles] = [];
-
-               // Initial color
-               this[s_colors] = [0xFF0000];
           }
 
           /**
@@ -34,40 +28,46 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
                this[s_handles] = scrollbar.handles;
+
+               // We need an extra handle (TODO: this does not belong here)
+               this[s_handles].push(this[s_scrollbar].addHandle(0.8, 0x33dd55));
+          }
+
+          /**
+           * Returns the intermediate point (vector) between two points a, b
+           * with distance from a set to |b-a|*ratio
+           */
+          interPointByRatio(a, b, ratio) {
+               // The direction is b - a
+               var direction = new THREE.Vector3().subVectors(b, a);
+
+               // Start point were we want to add the direction
+               var startPoint = a.clone();
+
+               // Add the scaled direction (scale factor defined by ratio)
+               return startPoint.add(direction.multiplyScalar(ratio));
           }
 
           evaluate() {
                var pointMatrix = [];
-               var interPoints = [];
                for (var k = 0; k < this[s_controlPoints].length - 1; k++) {
                     var newPoints = [];
                     // Iterate over controlpoints
                     for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
-                         var newPoint = new THREE.Vector3();
-                         var startPoint = this[s_controlPoints][i].clone();
-                         var endPoint = this[s_controlPoints][i + 1].clone();
-                         startPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(k));
-                         endPoint.multiplyScalar(this[s_scrollbar].valueOf(k));
-                         newPoint.addVectors(startPoint, endPoint);
-
-                         // A new point with ratio of scrollbar k.
-                         newPoints.push(newPoint);
+                         // Get the new point between point i and i+1
+                         newPoints.push(this.interPointByRatio(this[s_controlPoints][i], this[s_controlPoints][i + 1], this[s_scrollbar].valueOf(k)));
                     }
                     pointMatrix.push(newPoints);
+                    var interPoints = [];
 
+                    // Iterate over the new points and repeat
                     for (var i = 0; i < newPoints.length - 1; i++) {
-                         var newPoint = new THREE.Vector3();
-                         var startPoint = newPoints[i].clone();
-                         var endPoint = newPoints[i + 1].clone();
-                         startPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(k + 1));
-                         endPoint.multiplyScalar(this[s_scrollbar].valueOf(k + 1));
-                         newPoint.addVectors(startPoint, endPoint);
-
-                         interPoints.push(newPoint);
+                         var tmppoint = this.interPointByRatio(newPoints[i], newPoints[i + 1], this[s_scrollbar].valueOf(k + 1));
+                         interPoints.push(tmppoint);
                     }
-                    //pointMatrix.push(interPoints);
+                    pointMatrix.push(interPoints);
                }
-               pointMatrix.push(interPoints);
+               //pointMatrix.push(interPoints);
                return pointMatrix;
           }
 
@@ -91,12 +91,12 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                }
 
                // Update handles
-               for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
-                    if (this[s_handles][i] == null) {
-                         this[s_color] += 0x0E5034;
-                         this[s_handles].push(this[s_scrollbar].addHandle(0.5, this[s_color]));
-                    }
-               }
+               //for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
+               //if (this[s_handles][i] == null) {
+               //this[s_color] += 0x0E5034;
+               //this[s_handles].push(this[s_scrollbar].addHandle(0.5, this[s_color]));
+               //}
+               //}
 
                var pointMatrix = this.evaluate();
 
@@ -119,8 +119,6 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
 
                     if (this[s_handles][i] != null) {
                          frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], this[s_handles][i].material.color));
-                    } else {
-                         console.log("handle undefined" + i);
                     }
 
                     // Include lines and points from previous iterations
