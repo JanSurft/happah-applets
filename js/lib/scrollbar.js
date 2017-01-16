@@ -15,7 +15,7 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
 
      class Scrollbar extends THREE.Object3D {
 
-               constructor(position, viewport, initialValue) {
+               constructor(position, viewport, initialValue = 0.5) {
                     super();
 
                     this.mouseDown = this.mouseDown.bind(this);
