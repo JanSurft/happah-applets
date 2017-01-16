@@ -15,7 +15,7 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
 
      class Scrollbar extends THREE.Object3D {
 
-               constructor(position, viewport) {
+               constructor(position, viewport, initialValue) {
                     super();
 
                     this.mouseDown = this.mouseDown.bind(this);
@@ -61,7 +61,7 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                     var bar = new THREE.Mesh(geo, mat);
                     bar.position.set(0, 0, 0);
 
-                    this.handle = new Handle(0.5, 0x5D5D5D);
+                    this.handle = new Handle(initialValue, 0x5D5D5D);
 
                     // Sections to devide interval into separate colors
                     var leftVec = new THREE.Vector3(-75, 2, 0);

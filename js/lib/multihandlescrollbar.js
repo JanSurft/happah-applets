@@ -11,8 +11,8 @@ define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH,
      //const default_handle_color = 0xE50A00;
      class MultiHandleScrollbar extends HAPPAH.Scrollbar {
 
-               constructor(position, viewport) {
-                    super(position, viewport);
+               constructor(position, viewport, initialValue) {
+                    super(position, viewport, initialValue);
 
                     //this[s_color] = default_handle_color;
                     this[s_handles] = [this.handle];
