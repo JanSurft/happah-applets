@@ -170,6 +170,7 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
                var event = new CustomEvent('clrscene', {
                     "detail": "Controlpoints removed"
                });
+               this[s_storyboard].index = 0;
                this[s_renderer].domElement.dispatchEvent(event);
           }
 
@@ -251,15 +252,7 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
                     $('#hph-label').text("Frame: " + currentFrame.title);
                     var lines = currentFrame.lines;
                     var points = currentFrame.points;
-                    //var impostors = new THREE.Object3D();
-                    //var impostor_template = new sphericalimpostor.SphericalImpostor(helper_points_radius);
 
-                    //for (var i in points) {
-                    //var imp = impostor_template.clone();
-                    //imp.position.copy(points[i]);
-                    //imp.material.uniforms.diffuse.value.set(helper_points_color);
-                    //impostors.add(imp);
-                    //}
                     // Remove old labels before adding new ones
                     this[s_labelmanager].removeLabels("points");
 
@@ -279,8 +272,6 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
                }
 
                // Render scene + scene overlay
-               //this[s_renderer].clear();
-               //this[s_renderer].clearDepth();
                this[s_renderer].render(this[s_scene], this[s_camera]);
                this[s_renderer].render(this[s_overlay], this[s_cameraOverlay]);
 
