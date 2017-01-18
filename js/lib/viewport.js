@@ -147,7 +147,6 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
           nextFrame() {
                this[s_storyboard].nextFrame();
-               //this[s_scene].redraw();
                $.event.trigger({
                     type: "change",
                     message: "switched to next frame!"
@@ -156,7 +155,6 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
           previousFrame() {
                this[s_storyboard].previousFrame();
-               //this[s_scene].redraw();
                $.event.trigger({
                     type: "change",
                     message: "switched to previous frame!"
@@ -232,7 +230,7 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
           }
 
           /**
-           *
+           * Animation frame
            */
           update() {
                requestAnimationFrame(this.update.bind(this));

@@ -50,10 +50,10 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
 
                     // Add the point to head/tail of the array
                     if (head) {
-                         this[s_scene]._controlPointImpostors.children.unshift(sphere);
+                         this[s_scene].controlPointImpostors.unshift(sphere);
                          this[s_scene].controlPoints.unshift(points[i]);
                     } else {
-                         this[s_scene]._controlPointImpostors.add(sphere);
+                         this[s_scene].controlPointImpostors.push(sphere);
                          this[s_scene].controlPoints.push(points[i]);
                     }
                }
@@ -89,7 +89,7 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
 
                // Check if we hit a sphericalImpostor. If so, save the position
                // NOTE: only check for first and last impostor (head/tail)
-               var impostors = this[s_scene]._controlPointImpostors.children;
+               var impostors = this[s_scene].controlPoints;
                var headTail = [impostors[0], impostors[impostors.length - 1]];
                var intersects = raycaster.intersectObjects(headTail, true);
                if (intersects[0] == headTail[0]) {
@@ -115,7 +115,7 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
                     raycaster.setFromCamera(vector, this[s_camera]);
 
                     // Intersect with impostors
-                    var impostors = this[s_scene]._controlPointImpostors.children;
+                    var impostors = this[s_scene].controlPointImpostors;
                     var intersects = raycaster.intersectObjects(impostors, true);
 
                     // Exit add mode.
