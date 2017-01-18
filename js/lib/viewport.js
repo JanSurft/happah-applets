@@ -95,7 +95,7 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
                if (params['enableDragcontrols']) {
                     // to move objects
-                    this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_trackballControls], this[s_camera]);
+                    this[s_dragControls] = new dragcontrols.DragControls(this[s_scene].controlPointImpostors, this[s_trackballControls], this[s_camera]);
                     this[s_dragControls].listenTo(this[s_renderer].domElement);
                }
 
