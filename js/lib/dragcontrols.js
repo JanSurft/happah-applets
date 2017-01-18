@@ -137,8 +137,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     // Update position of the plane if need
                     var intersects = this[s_raycaster].intersectObjects(this[s_objects]);
                     if (intersects.length > 0) {
-                         console.log("intersect");
-                         console.log(intersects);
 
                          // Update normal-vector
                          this[s_selectionPlane].setFromNormalAndCoplanarPoint(this[s_camera].getWorldDirection(), intersects[0].position);
