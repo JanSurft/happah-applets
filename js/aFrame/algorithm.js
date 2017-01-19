@@ -49,7 +49,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
           }
 
           evaluate() {
-               var pointMatrix = [];
+               var pointMatrix = [this[s_controlPoints].slice()];
                for (var k = 0; k < this[s_controlPoints].length - 1; k++) {
                     var newPoints = [];
                     // Iterate over controlpoints
@@ -98,30 +98,54 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                var color = 0x54334f;
                var radius = 3;
                var template = new IMPOSTOR.SphericalImpostor(radius);
+               var colors = [0x54334f, 0x00ff00, 0x0000ff];
+
+               var frame1 = new HAPPAH.Storyboard.Frame();
+
+               var frame1Points = [
+                    [1, 0],
+                    [1, 1],
+                    [2, 0]
+               ];
+               var frame2Points = frame1Points.slice();
+               frame2Points.push([3, 0]);
+               frame2Points.push([3, 1]);
+
+               for (let k of frame1Points) {
+                    var imp = template.clone();
+                    imp.position.copy(pointMatrix[k[0]][k[1]]);
+                    imp.material.uniforms.diffuse.value.set(color);
+                    frame1.points.add(imp);
+               }
+               storyboard.append(frame1);
+
+               //for (var k = 0; k < pointMatrix[0].length; k++) {
+               // Push points that represent a segment
+               //if (k < pointMatrix[i].length - 1) {
+               //var segment = [pointMatrix[i][k], pointMatrix[i + 1][k]];
+               //frame.lines.push(UTIL.Util.insertSegmentStrip(segment, colors[k]));
+               //}
+
+               //var imp = template.clone();
+               //imp.position.copy(pointMatrix[0][k]);
+               //imp.material.uniforms.diffuse.value.set(color);
+               //frame1.points.add(imp);
+               //}
+
 
                // Iterate over scrollbar and add polygon each iteration
-               for (var i = 0; i < pointMatrix.length - 1; i++) {
-                    var frame = new HAPPAH.Storyboard.Frame();
-                    frame.title = "Step: " + i;
+               //for (var i = 0; i < pointMatrix.length - 1; i++) {
+               //var frame = new HAPPAH.Storyboard.Frame();
+               //frame.title = "Step: " + i;
 
-                    for (var k in pointMatrix[i]) {
-                         var imp = template.clone();
-                         imp.position.copy(pointMatrix[i][k]);
-                         imp.material.uniforms.diffuse.value.set(color);
-                         frame.points.add(imp);
-                    }
 
-                    if (this[s_handles][i] != null) {
-                         frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], this[s_handles][i].material.color));
-                    }
 
-                    // Include lines and points from previous iterations
-                    frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
-                    //storyboard.lastFrame().points.children.concat(frame.points.children);
-                    frame.points.children = frame.points.children.concat(storyboard.lastFrame().points.children);
-                    storyboard.append(frame);
-               }
-
+               //// Include lines and points from previous iterations
+               ////frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
+               ////storyboard.lastFrame().points.children.concat(frame.points.children);
+               //frame.points.children = frame.points.children.concat(storyboard.lastFrame().points.children);
+               //storyboard.append(frame);
+               //}
                return storyboard;
           }
      }
