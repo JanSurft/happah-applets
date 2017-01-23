@@ -81,7 +81,9 @@ define(['jquery', 'three', './translator'], function($, THREE, Translator) {
 
                clone(orig) {
                     var myCopy = new Storyboard.Frame();
-                    myCopy.lines = this.lines;
+                    for (var segment of this.lines) {
+                         myCopy.lines.push(segment.clone());
+                    }
                     myCopy.labels = this.labels;
                     myCopy.points = this.points.clone();
                     myCopy.title = "insert new points";
