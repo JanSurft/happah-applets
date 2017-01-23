@@ -48,26 +48,31 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                return startPoint.add(direction.multiplyScalar(ratio));
           }
 
-          evaluate() {
-               var pointMatrix = [this[s_controlPoints].slice()];
-               for (var k = 0; k < this[s_controlPoints].length - 1; k++) {
-                    var newPoints = [];
-                    // Iterate over controlpoints
-                    for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
-                         // Get the new point between point i and i+1
-                         newPoints.push(this.interPointByRatio(this[s_controlPoints][i], this[s_controlPoints][i + 1], this[s_scrollbar].valueOf(k)));
-                    }
-                    pointMatrix.push(newPoints);
-                    var interPoints = [];
-
-                    // Iterate over the new points and repeat
-                    for (var i = 0; i < newPoints.length - 1; i++) {
-                         var tmppoint = this.interPointByRatio(newPoints[i], newPoints[i + 1], this[s_scrollbar].valueOf(k + 1));
-                         interPoints.push(tmppoint);
-                    }
-                    pointMatrix.push(interPoints);
+          subdivide(points, ratio) {
+               var newPoints = [];
+               // Iterate over points
+               for (var i = 0; i < points.length - 1; i++) {
+                    // Get the new point between point i and i+1
+                    newPoints.push(this.interPointByRatio(points[i], points[i + 1], ratio));
                }
+               return newPoints;
+          }
+
+          evaluate(scrollbar) {
+               // TODO remove control points from pointMatrix.
+               var pointMatrix = [this[s_controlPoints].slice()];
+
+               // Get the first iteration
+               var newPoints = this.subdivide(this[s_controlPoints], this[s_scrollbar].valueOf(scrollbar));
+
+               pointMatrix.push(newPoints);
+
+               // Iterate over the new points and repeat
+               //var interPoints = this.subdivide(this[s_controlPoints], this[s_scrollbar].valueOf(1));
+
                //pointMatrix.push(interPoints);
+
+
                return pointMatrix;
           }
 
@@ -92,7 +97,8 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                // TODO: display warning if amount of controlpoints exceeds a
                //       certain level
 
-               var pointMatrix = this.evaluate();
+               var pointMatrixLeft = this.evaluate(0);
+               var pointMatrixRight = this.evaluate(1);
 
                // Helper points settings here
                var color = 0x54334f;
@@ -100,52 +106,43 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                var template = new IMPOSTOR.SphericalImpostor(radius);
                var colors = [0x54334f, 0x00ff00, 0x0000ff];
 
-               var frame1 = new HAPPAH.Storyboard.Frame();
+               var frame = frame0.clone();
+               frame.lines = [];
+               for (var k = 0; k < pointMatrixLeft[1].length; k++) {
+                    // From start to inter-point 1
+                    var segment1 = [pointMatrixLeft[0][k].clone(), pointMatrixLeft[1][k].clone()];
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment1, colors[0]));
 
-               var frame1Points = [
-                    [1, 0],
-                    [1, 1],
-                    [2, 0]
-               ];
-               var frame2Points = frame1Points.slice();
-               frame2Points.push([3, 0]);
-               frame2Points.push([3, 1]);
+                    // From inter-point 1 to inter-point 2
+                    var segment2 = [pointMatrixLeft[1][k].clone(), pointMatrixRight[1][k].clone()];
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment2, colors[1]));
 
-               for (let k of frame1Points) {
+                    // From inter-point 2 to end
+                    var segment3 = [pointMatrixRight[1][k].clone(), pointMatrixLeft[0][k + 1].clone()];
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment3, colors[2]));
+
+                    // Impostors
                     var imp = template.clone();
-                    imp.position.copy(pointMatrix[k[0]][k[1]]);
+                    imp.position.copy(pointMatrixLeft[1][k]);
                     imp.material.uniforms.diffuse.value.set(color);
-                    frame1.points.add(imp);
+                    frame.points.add(imp);
+
+                    var imp2 = template.clone();
+                    imp2.position.copy(pointMatrixRight[1][k]);
+                    imp2.material.uniforms.diffuse.value.set(color);
+                    frame.points.add(imp2);
                }
-               storyboard.append(frame1);
+               storyboard.append(frame);
 
-               //for (var k = 0; k < pointMatrix[0].length; k++) {
-               // Push points that represent a segment
-               //if (k < pointMatrix[i].length - 1) {
-               //var segment = [pointMatrix[i][k], pointMatrix[i + 1][k]];
-               //frame.lines.push(UTIL.Util.insertSegmentStrip(segment, colors[k]));
-               //}
+               // Frame for second iteration segment strips
+               var frame2 = frame.clone();
 
-               //var imp = template.clone();
-               //imp.position.copy(pointMatrix[0][k]);
-               //imp.material.uniforms.diffuse.value.set(color);
-               //frame1.points.add(imp);
-               //}
+               for (var k = 0; k < pointMatrixLeft[1].length - 1; k++) {
+                    var segment1 = [pointMatrixLeft[1][k], pointMatrixLeft[1][k + 1]];
+                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, colors[0]));
+               }
+               storyboard.append(frame2);
 
-
-               // Iterate over scrollbar and add polygon each iteration
-               //for (var i = 0; i < pointMatrix.length - 1; i++) {
-               //var frame = new HAPPAH.Storyboard.Frame();
-               //frame.title = "Step: " + i;
-
-
-
-               //// Include lines and points from previous iterations
-               ////frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
-               ////storyboard.lastFrame().points.children.concat(frame.points.children);
-               //frame.points.children = frame.points.children.concat(storyboard.lastFrame().points.children);
-               //storyboard.append(frame);
-               //}
                return storyboard;
           }
      }
