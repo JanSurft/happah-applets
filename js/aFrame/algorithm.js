@@ -138,8 +138,22 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                var frame2 = frame.clone();
 
                for (var k = 0; k < pointMatrixLeft[1].length - 1; k++) {
+                    // Left
                     var segment1 = [pointMatrixLeft[1][k], pointMatrixLeft[1][k + 1]];
                     frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, colors[0]));
+
+                    // Right
+                    var segment2 = [pointMatrixRight[1][k], pointMatrixRight[1][k + 1]];
+                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, colors[0]));
+
+                    // Also add intersection point to the frame
+                    // FIXME: this is restricted to two scrollbar handles
+                    var point = this.interPointByRatio(pointMatrixLeft[1][k], pointMatrixLeft[1][k + 1], this[s_scrollbar].valueOf(1));
+
+                    var imp = template.clone();
+                    imp.position.copy(point);
+                    imp.material.uniforms.diffuse.value.set(colors[0]);
+                    frame2.points.add(imp);
                }
                storyboard.append(frame2);
 
