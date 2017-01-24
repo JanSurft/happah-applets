@@ -11,6 +11,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
      var s_color = Symbol('color');
      var s_handles = Symbol('handles');
 
+     const left_segment_color = 0x54334f;
+     const middle_segment_color = 0x00dd00;
+     const right_segment_color = 0x0000dd;
+
      class Algorithm {
 
           /** Default constructor. */
@@ -30,7 +34,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                this[s_handles] = scrollbar.handles;
 
                // We need an extra handle (TODO: this does not belong here)
-               this[s_handles].push(this[s_scrollbar].addHandle(0.8, 0x33dd55));
+               //this[s_handles].push(this[s_scrollbar].addHandle(0.8, 0x33dd55));
           }
 
           /**
@@ -104,22 +108,21 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                var color = 0x54334f;
                var radius = 3;
                var template = new IMPOSTOR.SphericalImpostor(radius);
-               var colors = [0x54334f, 0x00ff00, 0x0000ff];
 
                var frame = frame0.clone();
                frame.lines = [];
                for (var k = 0; k < pointMatrixLeft[1].length; k++) {
                     // From start to inter-point 1
                     var segment1 = [pointMatrixLeft[0][k].clone(), pointMatrixLeft[1][k].clone()];
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment1, colors[0]));
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment1, left_segment_color));
 
                     // From inter-point 1 to inter-point 2
                     var segment2 = [pointMatrixLeft[1][k].clone(), pointMatrixRight[1][k].clone()];
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment2, colors[1]));
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment2, middle_segment_color));
 
                     // From inter-point 2 to end
                     var segment3 = [pointMatrixRight[1][k].clone(), pointMatrixLeft[0][k + 1].clone()];
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment3, colors[2]));
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(segment3, right_segment_color));
 
                     // Impostors
                     var imp = template.clone();
@@ -138,21 +141,32 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                var frame2 = frame.clone();
 
                for (var k = 0; k < pointMatrixLeft[1].length - 1; k++) {
-                    // Left
-                    var segment1 = [pointMatrixLeft[1][k], pointMatrixLeft[1][k + 1]];
-                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, colors[0]));
-
-                    // Right
-                    var segment2 = [pointMatrixRight[1][k], pointMatrixRight[1][k + 1]];
-                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, colors[0]));
-
                     // Also add intersection point to the frame
                     // FIXME: this is restricted to two scrollbar handles
                     var point = this.interPointByRatio(pointMatrixLeft[1][k], pointMatrixLeft[1][k + 1], this[s_scrollbar].valueOf(1));
 
+                    // *** LEFT ***
+                    // Left to middle
+                    var segment1 = [pointMatrixLeft[1][k], point];
+                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, middle_segment_color));
+
+                    // Middle to right
+                    var segment2 = [point, pointMatrixLeft[1][k + 1]];
+                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, right_segment_color));
+
+                    // *** RIGHT ***
+                    // Left to middle
+                    var segment3 = [pointMatrixRight[1][k], point];
+                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment3, left_segment_color));
+
+                    // Middle to right
+                    var segment4 = [point, pointMatrixRight[1][k + 1]];
+                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment4, middle_segment_color));
+
+
                     var imp = template.clone();
                     imp.position.copy(point);
-                    imp.material.uniforms.diffuse.value.set(colors[0]);
+                    imp.material.uniforms.diffuse.value.set(0x333333);
                     frame2.points.add(imp);
                }
                storyboard.append(frame2);
