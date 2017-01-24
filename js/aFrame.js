@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', './aFrame/algorithm', './lib/multihandlescrollbar', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, SCROLLBAR, ADDCONTROLS, THREE, $) {
+require(['./lib/happah', './aFrame/algorithm', './lib/twohandlescrollbar', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, SCROLLBAR, ADDCONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -37,7 +37,7 @@ require(['./lib/happah', './aFrame/algorithm', './lib/multihandlescrollbar', './
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
      var algorithm = new ALGORITHM.Algorithm(scene.controlPoints);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
-     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.2);
+     var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
      var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
      algorithm.scrollbar = scrollbar;
