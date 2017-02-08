@@ -34,9 +34,7 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
      class Viewport {
 
-          constructor(canvas, scene, algorithm, params = {
-               enableDragcontrols: true,
-          }) {
+          constructor(canvas, scene, algorithm) {
                var _this = this;
                var context = canvas.getContext('webgl');
                context.getExtension('EXT_frag_depth');
@@ -92,12 +90,6 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
                this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
                $(document).on("rebuildStoryboard", this.rebuildStoryboard);
-
-               if (params['enableDragcontrols']) {
-                    // to move objects
-                    this[s_dragControls] = new dragcontrols.DragControls(this[s_scene].controlPointImpostors, this[s_trackballControls], this[s_camera]);
-                    this[s_dragControls].listenTo(this[s_renderer].domElement);
-               }
 
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
