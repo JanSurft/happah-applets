@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, UTIL) {
+define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
      var s_camera = Symbol('camera');
      var s_objects = Symbol('objects');
      var s_controls = Symbol('controls');
