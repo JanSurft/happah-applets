@@ -72,12 +72,6 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     return;
                }
 
-               // Get the mouse position relative to canvas
-               var vector2 = UTIL.Util.getPositionOnCanvas(event);
-               var mouseVector = new THREE.Vector3(vector2.x, vector2.y, 0);
-
-               this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
-
                // Find all intersected objects
                var intersects = this[s_raycaster].intersectObjects(this[s_objects]);
 
