@@ -11,11 +11,11 @@
 //                          p=te+(1-t)s
 //      *-----------------------*-----------*
 //     (s)                      :          (e)
-//                      *-------.---*
+//                      *-------.===*
 //                      :           :
-//              *-------.---*-------.---*
+//              *-------.===*-------.===*
 //              :           :           :
-//      *-------.---*-------.---*-------.---*
+//      *-------.===*-------.===*-------.===*
 //     (s)                                 (e)
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -24,10 +24,14 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
+
      const IMPOSTOR_COLOR = 0x666666;
-     const IMPOSTOR_COLOR_EMPH = 0x44eeee;
+     const IMPOSTOR_COLOR_EMPH = 0xFFA500;
      const LINE_COLOR = 0x888888;
-     const LINE_COLOR_EMPH = 0xFF0000;
+     const COLOR1 = 0x000000;
+     const COLOR2 = 0xFF0000;
+     const COLOR3 = 0x666666;
+     const COLOR4 = 0xFF6666;
 
      class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
@@ -68,66 +72,97 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                     pointMatrix.push(points);
                });
 
-               // Point settings
+               // impostor templates only need to created once
                var radius = 3;
                var imp_template = new IMPOSTOR.SphericalImpostor(radius);
                imp_template.material.uniforms.diffuse.value.set(IMPOSTOR_COLOR);
                var imp_template_emph = new IMPOSTOR.SphericalImpostor(radius);
-               imp_template_emph.material.uniforms.diffuse.value.set(IMPOSTOR_COLOR_EMPH);
+               imp_template_emph.material.uniforms.diffuse.value.set(
+                    IMPOSTOR_COLOR_EMPH);
 
-               for (var currentFrame = 0; currentFrame < pointMatrix.length; currentFrame++) {
-                    var frame = new HAPPAH.Storyboard.Frame();
-                    var offset = 0;
-                    frame.points = new THREE.Object3D();
-                    for (var row = 0; row <= currentFrame; row++) {
-                         for (var i in pointMatrix[row]) {
-                              var point = pointMatrix[row][i].clone();
-                              point.y += offset;
-
-                              // Impostors from here
-                              var imp = imp_template.clone();
-                              imp.position.copy(point);
-                              frame.points.add(imp);
-                         }
-                         // draw each newly generated line with an emphasized
-                         // color, for example red
-                         if (row == currentFrame && currentFrame != pointMatrix.length - 1) {
-                              var start = pointMatrix[row][0].clone();
-                              start.y += offset;
-                              var end = pointMatrix[row][pointMatrix[row].length - 1].clone();
-                              end.y += offset;
-                              var segment = [start, end];
-                              var strip = UTIL.Util.insertSegmentStrip(segment, LINE_COLOR_EMPH);
-                              frame.lines.push(strip);
-                              // draw lines from previous steps with another color
-                         } else if (row < currentFrame) {
-                              var start = pointMatrix[row][0].clone();
-                              start.y += offset;
-                              var end = pointMatrix[row][pointMatrix[row].length - 1].clone();
-                              end.y += offset;
-                              var segment = [start, end];
-                              var strip = UTIL.Util.insertSegmentStrip(segment, LINE_COLOR);
-                              frame.lines.push(strip);
-                         }
-                         offset += 10;
+               var frame0 = new HAPPAH.Storyboard.Frame();
+               for (var i in pointMatrix[0]) {
+                    frame0.points = new THREE.Object3D();
+                    var point = pointMatrix[0][i].clone();
+                    var imp = imp_template.clone();
+                    imp.position.copy(point);
+                    frame0.points.add(imp);
+                    if (i < pointMatrix[0].length - 1) {
+                         var nextPoint = pointMatrix[0][++i].clone();
+                         var segment = [point, nextPoint];
+                         var strip = UTIL.Util.insertSegmentStrip(
+                              segment, LINE_COLOR);
+                         frame0.lines.push(strip);
                     }
-                    offset -= 10;
+               }
+
+               // The baseFrame contains all frame parts also present in future
+               // frames. Cloning and extending them is more efficient than
+               // generating each frame completely separately.
+               var baseFrame = frame0.clone();
+               storyboard.append(frame0);
+               baseFrame.lines = [];
+               var offset = 0;
+
+               for (var frameIndex = 0; frameIndex < pointMatrix.length - 1; frameIndex++) {
+                    var frame = baseFrame.clone();
+                    for (var i = 0; i < pointMatrix[frameIndex + 1].length; i++) {
+
+                         var point = pointMatrix[frameIndex + 1][i].clone();
+                         point.y += offset;
+
+                         var imp_emph = imp_template_emph.clone();
+                         imp_emph.position.copy(point);
+                         frame.points.add(imp_emph);
+
+                         var imp = imp_template.clone();
+                         imp.position.copy(point);
+                         baseFrame.points.add(imp);
+
+                         var prev = pointMatrix[frameIndex][i].clone();
+                         prev.y += offset;
+                         var segment = [prev, point];
+                         frame.lines.push(UTIL.Util.insertSegmentStrip(
+                              segment, COLOR1));
+                         baseFrame.lines.push(UTIL.Util.insertSegmentStrip(
+                              segment, COLOR3));
+
+                         var next = pointMatrix[frameIndex][i + 1].clone();
+                         next.y += offset;
+                         var segment2 = [point, next];
+                         frame.lines.push(UTIL.Util.insertSegmentStrip(
+                              segment2, COLOR2));
+                         baseFrame.lines.push(UTIL.Util.insertSegmentStrip(
+                              segment2, COLOR4));
+                    }
                     storyboard.append(frame);
+                    offset += 10;
 
-                    // add an additional frame where the new points are on the
-                    // previous lines
-                    if (currentFrame != pointMatrix.length - 1) {
-                         var midFrame = frame.clone();
-                         for (var i in pointMatrix[currentFrame + 1]) {
-                              var pointCopy = pointMatrix[currentFrame + 1][i].clone();
-                              pointCopy.y += offset;
-                              // Make point to impostor
-                              var imp = imp_template_emph.clone();
-                              imp.position.copy(pointCopy);
-                              midFrame.points.add(imp);
+                    var upshiftFrame = baseFrame.clone();
+                    for (var i = 0; i < pointMatrix[frameIndex + 1].length; i++) {
+                         var point = pointMatrix[frameIndex + 1][i].clone();
+                         point.y += offset;
+
+                         var imp_emph = imp_template_emph.clone();
+                         imp_emph.position.copy(point);
+                         upshiftFrame.points.add(imp_emph);
+
+                         var imp = imp_template.clone();
+                         imp.position.copy(point);
+                         baseFrame.points.add(imp);
+
+                         var imp
+
+                         if (i < pointMatrix[frameIndex + 1].length - 1) {
+                              var nextPoint = pointMatrix[
+                                   frameIndex + 1][i + 1].clone();
+                              nextPoint.y += offset;
+                              var segment = [point, nextPoint];
+                              upshiftFrame.lines.push(
+                                   UTIL.Util.insertSegmentStrip(segment, LINE_COLOR));
                          }
-                         storyboard.append(midFrame);
                     }
+                    storyboard.append(upshiftFrame);
                }
                return storyboard;
           }
