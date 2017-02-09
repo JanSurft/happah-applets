@@ -28,9 +28,14 @@ require.config({
      }
 });
 
-require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, THREE, $) {
+require(['./lib/happah', './lib/pointcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, CONTROLS, THREE, $) {
      var scene = new happah.Scene();
-     var algorithm = new happah.DeCasteljauAlgorithm(scene.controlPoints);
+
+     var points = [];
+     var impostors = new THREE.Object3D();
+     scene.add(impostors);
+
+     var algorithm = new happah.DeCasteljauAlgorithm(points);
      var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
 
      // Canvas coordinates relative to middle of canvas element
@@ -38,7 +43,7 @@ require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'i
      var scrollbar = new happah.Scrollbar(pos, viewport);
 
      algorithm.scrollbar = scrollbar;
-     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
@@ -47,7 +52,7 @@ require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'i
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 2);
+     var addControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 2);
      addControls.listenTo(viewport.renderer.domElement);
 
      // Initialize some points
