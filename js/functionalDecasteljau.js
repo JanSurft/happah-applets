@@ -41,12 +41,15 @@ require(['./lib/happah', './functionalDecasteljau/algorithm', './lib/pointcontro
 
      // Canvas coordinates relative to middle of canvas element
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+
      var algorithm = new ALGORITHM.Algorithm(points);
+
      var viewport = new happah.Viewport(canvas, scene, algorithm);
+
      var scrollbar = new happah.Scrollbar(pos, viewport);
      algorithm.scrollbar = scrollbar;
      algorithm.camera = viewport.camera;
-     var dragControls = new CONTROLS.LineDragControls(scene, viewport.controls, viewport.camera);
+     var dragControls = new CONTROLS.LineDragControls(impostors.children, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
