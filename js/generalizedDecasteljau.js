@@ -28,11 +28,16 @@ require.config({
      }
 });
 
-require(['./lib/happah', './lib/multihandlescrollbar', './lib/addcontrols', './generalizedDecasteljau/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, SCROLLBAR, ADDCONTROLS, ALGORITHM, THREE, $) {
+require(['./lib/happah', './lib/multihandlescrollbar', './lib/pointcontrols', './generalizedDecasteljau/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, SCROLLBAR, CONTROLS, ALGORITHM, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
-     var algorithm = new ALGORITHM.Algorithm(scene.controlPoints);
+
+     var points = [];
+     var impostors = new THREE.Group();
+     scene.add(impostors);
+
+     var algorithm = new ALGORITHM.Algorithm(points);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
 
      // Canvas coordinates relative to middle of canvas element
@@ -41,14 +46,14 @@ require(['./lib/happah', './lib/multihandlescrollbar', './lib/addcontrols', './g
      // Scrollbars
      var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport);
 
-     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      //scrollbar.addHandle();
 
-     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
+     var addControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
      addControls.listenTo(viewport.renderer.domElement);
 
      viewport.overlay.add(scrollbar);
