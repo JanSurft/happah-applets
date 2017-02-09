@@ -9,8 +9,8 @@ define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
      //var s_selectedObject = Symbol('selectedobject');
 
      class LineDragControls extends HAPPAH.DragControls {
-               constructor(scene, controls, camera) {
-                    super(scene, controls, camera);
+               constructor(objects, controls, camera) {
+                    super(objects, controls, camera);
 
                     this[s_axis] = new THREE.Line3();
                }

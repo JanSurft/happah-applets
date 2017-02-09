@@ -28,18 +28,28 @@ require.config({
      }
 });
 
-require(['./lib/happah', './aFrame/algorithm', './lib/multihandlescrollbar', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, SCROLLBAR, ADDCONTROLS, THREE, $) {
+require(['./lib/happah', './aFrame/algorithm', './lib/twohandlescrollbar', './lib/pointcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
 
+     // Points & impostors
+     var points = [];
+     var impostors = new THREE.Object3D();
+
+     scene.add(impostors);
+
      // Canvas coordinates relative to middle of canvas element
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var algorithm = new ALGORITHM.Algorithm(scene.controlPoints);
+     var algorithm = new ALGORITHM.Algorithm(points);
+
      var viewport = new happah.Viewport(canvas, scene, algorithm);
-     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.2);
-     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
+
+     var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
+
+     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
+
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
@@ -48,11 +58,11 @@ require(['./lib/happah', './aFrame/algorithm', './lib/multihandlescrollbar', './
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
-     addControls.listenTo(viewport.renderer.domElement);
+     var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
+     pointControls.listenTo(viewport.renderer.domElement);
 
      // Initialize some points
-     addControls.addControlPoints([
+     pointControls.addControlPoints([
           new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, 0),
           new THREE.Vector3(50, 0, 60)
      ]);

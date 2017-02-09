@@ -5,9 +5,9 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, UTIL) {
+define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
      var s_camera = Symbol('camera');
-     var s_scene = Symbol('scene');
+     var s_objects = Symbol('objects');
      var s_controls = Symbol('controls');
 
      // Drag control variables
@@ -18,14 +18,17 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
      var s_previousPoint = Symbol('previouspoint');
 
      class DragControls {
-
-          constructor(scene, controls, camera) {
+          /**
+           * Objects needs to be an array of meshes.
+           * NOTE: not an object3D!
+           */
+          constructor(objects = [], controls, camera) {
                this.mouseUp = this.mouseUp.bind(this);
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
 
                // Initialize viewport variables
-               this[s_scene] = scene;
+               this[s_objects] = objects;
                this[s_controls] = controls;
                this[s_camera] = camera;
                this[s_enabled] = true;
@@ -43,6 +46,10 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
 
           disable() {
                this[s_enabled] = false;
+          }
+
+          addDragable(object) {
+               this[s_objects].push(object);
           }
 
           listenTo(domElement) {
@@ -65,14 +72,8 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     return;
                }
 
-               // Get the mouse position relative to canvas
-               var vector2 = UTIL.Util.getPositionOnCanvas(event);
-               var mouseVector = new THREE.Vector3(vector2.x, vector2.y, 0);
-
-               this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
-
                // Find all intersected objects
-               var intersects = this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children, true);
+               var intersects = this[s_raycaster].intersectObjects(this[s_objects]);
 
                if (intersects.length > 0) {
                     // Disable the controls
@@ -128,8 +129,7 @@ define(['jquery', 'three', './happah', 'lib/util'], function($, THREE, happah, U
                     });
                } else {
                     // Update position of the plane if need
-                    var intersects =
-                         this[s_raycaster].intersectObjects(this[s_scene]._controlPointImpostors.children, true);
+                    var intersects = this[s_raycaster].intersectObjects(this[s_objects]);
                     if (intersects.length > 0) {
 
                          // Update normal-vector

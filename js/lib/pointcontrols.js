@@ -6,25 +6,27 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE, happah, UTIL) {
      var s_camera = Symbol('camera');
-     var s_scene = Symbol('scene');
-     var s_viewport = Symbol('viewport');
+
+     var s_impostors = Symbol('impostors');
+     var s_vectors = Symbol('vectors');
      var s_viewPlane = Symbol('viewplane');
 
      var s_addMode = Symbol('addMode');
      var s_isHead = Symbol('ishead');
      var s_limit = Symbol('limit');
 
-     class AddControls {
+     class PointControls {
 
           /** Limit of zero means infinite */
-          constructor(viewport, scene, camera, limit = 0) {
+          constructor(impostors = new THREE.Group(), vectors = [], camera, limit = 0) {
                this.onMouseDoubleclick = this.onMouseDoubleclick.bind(this);
                this.onMouseClick = this.onMouseClick.bind(this);
                this.enterAddMode = this.enterAddMode.bind(this);
 
-               this[s_scene] = scene;
+               this[s_impostors] = impostors;
+               this[s_vectors] = vectors;
+
                this[s_limit] = limit;
-               this[s_viewport] = viewport;
                this[s_addMode] = false;
                this[s_camera] = camera;
                this[s_viewPlane] = new THREE.Plane();
@@ -32,9 +34,9 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
 
           /** Force add mode */
           enterAddMode() {
-               if (this[s_scene].controlPoints.length < this[s_limit] || this[s_limit] == 0) {
+               if (this[s_impostors].children.length < this[s_limit] || this[s_limit] == 0) {
                     // Change cursor to crosshair
-                    this[s_viewport].renderer.domElement.style.cursor = "crosshair";
+                    $('.hph-canvas')[0].style.cursor = "crosshair";
                     this[s_addMode] = true;
                } else {
                     console.warn("Control-point limit reached!");
@@ -50,18 +52,17 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
 
                     // Add the point to head/tail of the array
                     if (head) {
-                         this[s_scene]._controlPointImpostors.children.unshift(sphere);
-                         this[s_scene].controlPoints.unshift(points[i]);
+                         this[s_impostors].children.unshift(sphere);
+                         this[s_vectors].unshift(sphere.position);
                     } else {
-                         this[s_scene]._controlPointImpostors.add(sphere);
-                         this[s_scene].controlPoints.push(points[i]);
+                         this[s_impostors].children.push(sphere);
+                         this[s_vectors].push(sphere.position);
                     }
                }
 
-               //this[s_viewport].rebuildStoryboard();
                $.event.trigger({
                     type: "rebuildStoryboard",
-                    message: "controlpoints added!"
+                    message: "points added!"
                });
           }
 
@@ -89,7 +90,7 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
 
                // Check if we hit a sphericalImpostor. If so, save the position
                // NOTE: only check for first and last impostor (head/tail)
-               var impostors = this[s_scene]._controlPointImpostors.children;
+               var impostors = this[s_impostors].children;
                var headTail = [impostors[0], impostors[impostors.length - 1]];
                var intersects = raycaster.intersectObjects(headTail, true);
                if (intersects[0] == headTail[0]) {
@@ -115,13 +116,13 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
                     raycaster.setFromCamera(vector, this[s_camera]);
 
                     // Intersect with impostors
-                    var impostors = this[s_scene]._controlPointImpostors.children;
-                    var intersects = raycaster.intersectObjects(impostors, true);
+                    var impostors = this[s_impostors];
+                    var intersects = raycaster.intersectObjects(impostors.children, true);
 
                     // Exit add mode.
-                    if (intersects[0] || (this[s_scene].controlPoints.length >= this[s_limit] && this[s_limit] != 0)) {
+                    if (intersects[0] || (this[s_impostors].children.length >= this[s_limit] && this[s_limit] != 0)) {
                          this[s_addMode] = false;
-                         this[s_viewport].renderer.domElement.style.cursor = "default";
+                         $('.hph-canvas')[0].style.cursor = "default";
                          return;
                     }
 
@@ -135,9 +136,9 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
           }
 
 
-     } //class Addcontrols
+     } //class PointControls
 
      return {
-          AddControls: AddControls
+          PointControls: PointControls
      };
 });

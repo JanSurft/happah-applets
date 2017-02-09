@@ -34,9 +34,7 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
      class Viewport {
 
-          constructor(canvas, scene, algorithm, params = {
-               enableDragcontrols: true,
-          }) {
+          constructor(canvas, scene, algorithm) {
                var _this = this;
                var context = canvas.getContext('webgl');
                context.getExtension('EXT_frag_depth');
@@ -93,12 +91,6 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
                this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
                $(document).on("rebuildStoryboard", this.rebuildStoryboard);
 
-               if (params['enableDragcontrols']) {
-                    // to move objects
-                    this[s_dragControls] = new dragcontrols.DragControls(this[s_scene], this[s_trackballControls], this[s_camera]);
-                    this[s_dragControls].listenTo(this[s_renderer].domElement);
-               }
-
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
                this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
@@ -147,7 +139,6 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
           nextFrame() {
                this[s_storyboard].nextFrame();
-               //this[s_scene].redraw();
                $.event.trigger({
                     type: "change",
                     message: "switched to next frame!"
@@ -156,7 +147,6 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
 
           previousFrame() {
                this[s_storyboard].previousFrame();
-               //this[s_scene].redraw();
                $.event.trigger({
                     type: "change",
                     message: "switched to previous frame!"
@@ -232,7 +222,7 @@ define(['jquery', 'three', 'TrackballControls', './trackballcontrols', './dragco
           }
 
           /**
-           *
+           * Animation frame
            */
           update() {
                requestAnimationFrame(this.update.bind(this));

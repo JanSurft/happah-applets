@@ -28,18 +28,21 @@ require.config({
      }
 });
 
-require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, THREE, $) {
+require(['./lib/happah', './lib/pointcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
 
+     var points = [];
+     var impostors = new THREE.Object3D();
+
+     scene.add(impostors);
+
      // Canvas coordinates relative to middle of canvas element
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var algorithm = new happah.DeCasteljauAlgorithm(scene.controlPoints);
+     var algorithm = new happah.DeCasteljauAlgorithm(points);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      var scrollbar = new happah.Scrollbar(pos, viewport);
-     var dragControls = new happah.DragControls(scene, viewport.controls, viewport.camera);
-     dragControls.listenTo(viewport.renderer.domElement);
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
@@ -48,11 +51,14 @@ require(['./lib/happah', './lib/addcontrols', 'three', 'jquery', 'bootstrap', 'i
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
-     addControls.listenTo(viewport.renderer.domElement);
+     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
+     dragControls.listenTo(viewport.renderer.domElement);
+
+     var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
+     pointControls.listenTo(viewport.renderer.domElement);
 
      // Initialize some points
-     addControls.addControlPoints([
+     pointControls.addControlPoints([
           new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
           new THREE.Vector3(-5, 0, 40), new THREE.Vector3(50, 0, 60)
      ]);

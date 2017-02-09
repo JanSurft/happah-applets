@@ -2,17 +2,20 @@ require.config({
      baseUrl: '../../js',
 });
 
-require(['./lib/happah', './lib/addcontrols', './precision/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, PRECISION, THREE, $) {
+require(['./lib/happah', './lib/pointcontrols', './precision/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, CONTROLS, PRECISION, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
 
+     var points = [];
+     var impostors = new THREE.Group();
+     scene.add(impostors);
+
      // Canvas coordinates relative to middle of canvas element
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var algorithm = new PRECISION.Algorithm(scene.controlPoints);
-     var viewport = new happah.Viewport(canvas, scene, algorithm, {
-          enableDragcontrols: false
-     });
+     var algorithm = new PRECISION.Algorithm(points);
+     var viewport = new happah.Viewport(canvas, scene, algorithm);
+
      var scrollbar = new happah.Scrollbar(pos, viewport);
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
@@ -22,7 +25,7 @@ require(['./lib/happah', './lib/addcontrols', './precision/algorithm', 'three', 
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var addControls = new ADDCONTROLS.AddControls(viewport, scene, viewport.camera, 0);
+     var addControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
      addControls.listenTo(viewport.renderer.domElement);
 
      // Initialize some points
