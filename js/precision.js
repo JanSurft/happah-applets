@@ -1,4 +1,30 @@
 require.config({
+     shim: {
+          'bootstrap': {
+               deps: ['jquery']
+          },
+          'three': {
+               exports: 'THREE'
+          },
+          'TrackballControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          },
+          'TransformControls': {
+               deps: ['three'],
+               exports: 'THREE'
+          }
+     },
+     paths: {
+          i18n: "http://rawgit.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
+          impromptu: "https://cdn.rawgit.com/trentrichardson/jQuery-Impromptu/master/dist/jquery-impromptu.min",
+          mathjax: "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML",
+          jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
+          three: "http://threejs.org/build/three",
+          TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
+          TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
+          bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap",
+     },
      baseUrl: '../../js',
 });
 

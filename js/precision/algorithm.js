@@ -20,18 +20,10 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
+define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
-
-     const IMPOSTOR_COLOR = 0x666666;
-     const IMPOSTOR_COLOR_EMPH = 0xFFA500;
-     const LINE_COLOR = 0x888888;
-     const COLOR1 = 0x000000;
-     const COLOR2 = 0xFF0000;
-     const COLOR3 = 0x666666;
-     const COLOR4 = 0xFF6666;
 
      class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
@@ -75,10 +67,10 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                // impostor templates only need to created once
                var radius = 3;
                var imp_template = new IMPOSTOR.SphericalImpostor(radius);
-               imp_template.material.uniforms.diffuse.value.set(IMPOSTOR_COLOR);
+               imp_template.material.uniforms.diffuse.value.set(HAPPAH.Colors.COLOR2);
                var imp_template_emph = new IMPOSTOR.SphericalImpostor(radius);
                imp_template_emph.material.uniforms.diffuse.value.set(
-                    IMPOSTOR_COLOR_EMPH);
+                    HAPPAH.Colors.COLOR4);
 
                var frame0 = new HAPPAH.Storyboard.Frame();
                for (var i in pointMatrix[0]) {
@@ -91,7 +83,7 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                          var nextPoint = pointMatrix[0][++i].clone();
                          var segment = [point, nextPoint];
                          var strip = UTIL.Util.insertSegmentStrip(
-                              segment, LINE_COLOR);
+                              segment, HAPPAH.Colors.GREY);
                          frame0.lines.push(strip);
                     }
                }
@@ -123,17 +115,17 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                          prev.y += offset;
                          var segment = [prev, point];
                          frame.lines.push(UTIL.Util.insertSegmentStrip(
-                              segment, COLOR1));
+                              segment, HAPPAH.Colors.BLACK));
                          baseFrame.lines.push(UTIL.Util.insertSegmentStrip(
-                              segment, COLOR3));
+                              segment, HAPPAH.Colors.GREY));
 
                          var next = pointMatrix[frameIndex][i + 1].clone();
                          next.y += offset;
                          var segment2 = [point, next];
                          frame.lines.push(UTIL.Util.insertSegmentStrip(
-                              segment2, COLOR2));
+                              segment2, HAPPAH.Colors.COLOR1));
                          baseFrame.lines.push(UTIL.Util.insertSegmentStrip(
-                              segment2, COLOR4));
+                              segment2, HAPPAH.Colors.COLOR1_LIGHTEST));
                     }
                     storyboard.append(frame);
                     offset += 10;
@@ -159,7 +151,8 @@ define(['jquery', 'three', 'lib/happah', 'lib/spherical-impostor', 'lib/util'], 
                               nextPoint.y += offset;
                               var segment = [point, nextPoint];
                               upshiftFrame.lines.push(
-                                   UTIL.Util.insertSegmentStrip(segment, LINE_COLOR));
+                                   UTIL.Util.insertSegmentStrip(segment,
+                                        HAPPAH.Colors.COLOR4_LIGHTEST));
                          }
                     }
                     storyboard.append(upshiftFrame);
