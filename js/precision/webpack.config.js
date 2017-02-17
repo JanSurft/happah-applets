@@ -1,30 +1,32 @@
+var path = require('path')
+
 module.exports = {
-     entry: './js/precision.js',
+     entry: './main.js',
      output: {
           path: './bin',
           filename: 'precision.js',
+          publicPath: '/bin/',
      },
      module: {
-          preLoaders: [{
-               test: /\.json$/,
-               exclude: /node-modules/,
-               loader: 'json-loader',
-          }, {
-               test: /\.coffee$/,
-               loader: 'coffee-hint-loader',
-          }],
           loaders: [{
                test: /\.js$/,
                exclude: /node_modules/,
                loader: 'babel-loader',
           }, {
+               test: /\.yaml$/,
+               exclude: /node_modules/,
+               loader: 'yaml-loader',
+          }, {
                test: /\.json$/,
                exclude: /node_modules/,
                loader: 'json-loader',
           }, {
                test: /\.coffee$/,
-               loader: 'coffee-loader',
-          }]
+               loader: "coffee-loader",
+          }, {
+               test: /\.(coffee\.md|litcoffee)$/,
+               loader: "coffee-loader?literate",
+          }],
      },
      node: {
           fs: "empty",

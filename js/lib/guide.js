@@ -7,6 +7,7 @@
  //
  /////////////////////////////////////////////////////////////////////////////
  define(['jquery', './translator'], function($, Translator) {
+
       var s_tourStates = Symbol('tourstates');
       var s_helpStates = Symbol('helpstates');
 

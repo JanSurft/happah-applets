@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "css-loader": "^0.26.1",
+    "exports-loader": "^0.6.3",
+    "file-loader": "^0.10.0",
+    "i18n-js": "^1.0.0",
+    "imports-loader": "^0.7.0",
+    "jquery": "^3.1.1",
+    "json-loader": "^0.5.4",
+    "less": "2.7.2",
+    "less-loader": "^2.2.3",
+    "mathjax": "^2.7.0",
+    "path": "^0.12.7",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.13.1",
+    "three": "^0.84.0",
+    "three-trackballcontrols": "^0.0.5",
+    "url-loader": "^0.5.7",
+    "yaml-loader": "^0.4.0"
+  }
+}
