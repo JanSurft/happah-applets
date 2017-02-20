@@ -69,5 +69,4 @@ require(['../lib/happah', './algorithm', '../lib/twohandlescrollbar', '../lib/po
 
      var menu = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");
-
 });
