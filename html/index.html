@@ -8,11 +8,52 @@
           crossorigin="anonymous">
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
      <link rel="stylesheet" type="text/css" href="../../css/happah.css"></link>
+     <link rel="stylesheet" type="text/css" href="../../css/impromptu.css"></link>
 
-     <script src="/bin/precision.js"></script>
+     <script src="../../js/build/shaders.js"></script>
+     <script src="../../three.js-master/build/three.min.js"></script>
+     <script>
+          var require = {
+               shim:
+               {
+                    'bootstrap':
+                    {
+                         deps: ['jquery']
+                    },
+                    'three':
+                    {
+                         exports: 'THREE'
+                    },
+                    'TrackballControls':
+                    {
+                         deps: ['three'],
+                         exports: 'THREE'
+                    },
+                    'TransformControls':
+                    {
+                         deps: ['three'],
+                         exports: 'THREE'
+                    }
+               },
+               paths:
+               {
+                    TrackballControls: "http://threejs.org/examples/js/controls/TrackballControls",
+                    TransformControls: "http://threejs.org/examples/js/controls/TransformControls",
+                    bootstrap: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap",
+                    i18n: "http://rawgit.com/fnando/i18n-js/master/app/assets/javascripts/i18n",
+                    impromptu: "https://cdn.rawgit.com/trentrichardson/jQuery-Impromptu/master/dist/jquery-impromptu.min",
+                    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min",
+                    mathjax: "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML",
+                    nunjucks: "https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.0.0/nunjucks.min",
+                    three: "http://threejs.org/build/three",
+               }
+          };
+     </script>
+     <script data-main="../../js/precision" src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
      <script type="text/x-mathjax-config">
           MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
      </script>
+     <script src="../../js/lib/geomify.js"></script>
 </head>
 
 <body>

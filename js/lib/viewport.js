@@ -5,9 +5,9 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './trackballcontrols', './dragcontrols',
+define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
      './spherical-impostor', './defaults', './labelmanager'
-], function($, THREE, CONTROLS, dragcontrols, sphericalimpostor, defaults, LABEL) {
+], function($, THREE, dragcontrols, TrackBallControls, sphericalimpostor, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -76,7 +76,7 @@ define(['jquery', 'three', './trackballcontrols', './dragcontrols',
                     _this.update();
                });
 
-               this[s_trackballControls] = new THREE.TrackballControls(this[s_camera], this[s_renderer].domElement);
+               this[s_trackballControls] = new TrackballControls(this[s_camera], this[s_renderer].domElement);
                this[s_trackballControls].noZoom = true;
                //this[s_trackballControls] = new CONTROLS.TrackballControls(this[s_camera], this[s_scene]);
 

@@ -38,3 +38,9 @@ ehthumbs.db
 Thumbs.db
 *~
 *.swp
+
+bin/
+
+node_modules/
+
+yarn\.lock

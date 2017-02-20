@@ -28,60 +28,46 @@ require.config({
      }
 });
 
-require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ADDCONTROLS, ALGORITHM, THREE, $) {
+require(['../lib/happah', '../lib/pointcontrols', 'three', 'jquery'], function(happah, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
-     // TODO: Get position relative to window size
-     var pos = new THREE.Vector3(0, -30, 100);
-     var algorithm = new ALGORITHM.Algorithm(new THREE.Vector3(-50, 0, +50));
+
+     var points = [];
+     var impostors = new THREE.Object3D();
+
+     scene.add(impostors);
+
+     // Canvas coordinates relative to middle of canvas element
+     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+     var algorithm = new happah.DeCasteljauAlgorithm(points);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
-     viewport.camera.position.set(0, 1000, 0);
+     var scrollbar = new happah.Scrollbar(pos, viewport);
+     algorithm.scrollbar = scrollbar;
+     scrollbar.listenTo(viewport.renderer.domElement);
+     viewport.overlay.add(scrollbar);
+     viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
-     viewport.camera.zoom = 4;
+     viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     // Create a frame
-     // X-Axis
-     var geometry = new THREE.CylinderGeometry(0.5, 0.5, 130, 16);
-     var coneGeo = new THREE.CylinderGeometry(0, 2, 6, 5, 16);
-     coneGeo.rotateZ(-Math.PI / 2);
-     coneGeo.translate(68, 0, 0);
-     geometry.rotateZ(Math.PI / 2);
-     geometry.merge(coneGeo);
+     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
+     dragControls.listenTo(viewport.renderer.domElement);
 
-     var secondGeometry = new THREE.CylinderGeometry(0.5, 0.5, 101, 16);
-     secondGeometry.rotateZ(Math.PI / 2);
-     secondGeometry.rotateY(Math.PI / 2);
-     secondGeometry.translate(-50, 0, -50);
-     geometry.merge(secondGeometry);
-     secondGeometry.translate(100, 0, 0);
-     geometry.merge(secondGeometry);
+     var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
+     pointControls.listenTo(viewport.renderer.domElement);
 
-     var thirdGeometry = new THREE.CylinderGeometry(0.5, 0.5, 101, 16);
-     thirdGeometry.rotateZ(-Math.PI / 2);
-     thirdGeometry.translate(0, 0, -100);
-     geometry.merge(thirdGeometry);
-     var material = new THREE.MeshBasicMaterial({
-          color: 0x4d4d4d
-     });
-     var frame = new THREE.Mesh(geometry, material);
-     frame.position.set(0, 0, 50);
-     scene.add(frame);
-
-     // Add labels
-     viewport.labelManager.addLabel("0", new THREE.Vector3(-52, 0, 50), "axis", false);
-     viewport.labelManager.addLabel("1", new THREE.Vector3(55, 0, 50), "axis", false);
-     viewport.labelManager.addLabel("1", new THREE.Vector3(-52, 0, -55), "axis", false);
+     // Initialize some points
+     pointControls.addControlPoints([
+          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
+          new THREE.Vector3(-5, 0, 40), new THREE.Vector3(50, 0, 60)
+     ]);
 
      var menu = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");
 
 });
 
-//TODO: animate? why not just paint?
-//TODO: take animate out of scene
-//TODO: fix fragDepth
 //TODO: simplify vertex shaders
 //TODO: move shaders into module
 //TODO: move camera from position 0 to position 1 (use quaternion)
@@ -91,7 +77,5 @@ require(['./lib/happah', './lib/addcontrols', './bernsteinPolynomials/algorithm'
 //TODO: single insert() method for all inserts with type variable in object classes
 //TODO: webgl2...use features such as instanced arrays
 //TODO: data should be only once in memory with flags about how to render it
-//TODO: event-based rendering instead of infinite loop
 //TODO: ray/sphere intersection in fragment shader...also important for point manipulation
-//TODO: interval overlay for choosing ratio in de casteljau algorithm
 //TODO: install and use compass

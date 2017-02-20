@@ -55,6 +55,7 @@
 
                 if (overlay) {
                      pos.project(this[s_overlayCamera]);
+                     label.addClass('overlay');
                 } else {
                      pos.project(this[s_sceneCamera]);
                 }
@@ -89,7 +90,7 @@
 
                 for (var i in this[s_labels]) {
                      // Skip overlay labels
-                     if (this[s_labels][i].selector.includes("overlay")) {
+                     if (this[s_labels][i].hasClass("overlay")) {
                           continue;
                      }
 
@@ -121,7 +122,7 @@
                 var positions = [];
                 for (var i in this[s_labels]) {
                      // Only remove labels with matching tag
-                     if (this[s_labels][i].selector.includes(tag)) {
+                     if (this[s_labels][i].hasClass("label" + tag)) {
                           this[s_labels][i].remove();
                      } else {
                           labels.push(this[s_labels][i]);

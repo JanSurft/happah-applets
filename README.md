@@ -10,6 +10,8 @@ the teached algorithms.
   * jre as dependency of Google Closure Compiler
   * python2
   * python-yaml
+  * node 7.x
+  * webpack 2.x
 
 # Building
 

@@ -7,6 +7,8 @@
 
 define(['jquery', 'three'], function($, THREE) {
 
+     var shaders = require("../build/shaders.json");
+
      class Material extends THREE.ShaderMaterial {
 
                static get VERTEX_SHADER() {
