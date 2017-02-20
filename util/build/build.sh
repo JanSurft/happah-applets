@@ -15,11 +15,13 @@ mkdir -p ../../js/build
 python2 build.py --include shaders
 
 # generate lang files
+echo ""
+echo " * Generating i18n locales"
 for dir in ../../html/*/
 do
   app_dir=$(basename "$dir")
   mkdir -p $dir/build/i18n
-  echo " * generating i18n locales for app $app_dir"
+  echo "   * generating i18n locales for app $app_dir"
   for file in $dir/i18n/*.yaml
     do
         filename=$(basename "$file")
@@ -28,3 +30,7 @@ do
         python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)' < $file > $out_file
     done
 done
+
+echo ""
+echo " * Starting Webpack"
+webpack --config ../../webpack.config.js
