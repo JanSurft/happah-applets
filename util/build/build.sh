@@ -1,11 +1,18 @@
 #!/bin/sh
 
+##############################################################################
+#
+# @author Stephan Engelmann (stephan-engelmann@gmx.de)
+#
+# Parse glsl shader files to json.
+#
+##############################################################################
+
 cd "$(dirname "$0")"
 mkdir -p ../../js/build
 
 # join custom shaders in one file
-python2 build.py --include common --output ../../js/build/shaders.js
-python2 build.py --include common --minify --output ../../js/build/shaders.min.js
+python2 build.py --include shaders
 
 # generate lang files
 for dir in ../../html/*/
