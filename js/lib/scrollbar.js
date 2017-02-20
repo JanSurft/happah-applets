@@ -34,7 +34,8 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     position.unproject(this.camera);
 
                     // TODO: remove reference to viewport
-                    this.viewport = viewport;
+                    //this.viewport = viewport;
+                    this.controls = viewport.controls;
 
                     this.raycaster = new THREE.Raycaster();
 
@@ -117,6 +118,9 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                }
                get value() {
                     return this.handle.value;
+               }
+               set handle(handle) {
+                    this.handle = handle;
                }
                set value(value) {
                     this.handle.position.setX(-75 + (150 * value));
@@ -240,7 +244,8 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                }
 
                get value() {
-                    return (this.position.x / 150) + 0.5;
+                    //return (this.position.x / 150) + 0.5;
+                    return this.handle.value;
                }
 
                set value(value) {

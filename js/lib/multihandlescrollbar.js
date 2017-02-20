@@ -38,6 +38,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                     this[s_handles] = [];
                }
 
+               // Deprecated
                valueOf(index) {
                     if (index >= this[s_handles].length)
                          return -1;
@@ -45,16 +46,24 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                     return this[s_handles][index].value;
                }
 
+               // Deprecated
                show(handle) {
                     this.add(handle);
                }
 
+               // Deprecated
                hide(handle) {
                     this.remove(handle);
                }
 
+               // Deprecated
                get handles() {
                     return this[s_handles];
+               }
+
+               // @Override
+               handle(i) {
+                    return this[s_handles][i];
                }
 
                updateLines(handle) {
@@ -167,7 +176,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                          this.lineLeft.geometry.verticesNeedUpdate = true;
 
                          // New value means new storyboard
-                         //this.viewport.rebuildStoryboard();
                          $.event.trigger({
                               type: "rebuildStoryboard",
                               message: "scrollbar dragging started!"
