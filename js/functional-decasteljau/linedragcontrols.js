@@ -4,7 +4,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'lib/happah'], function($, THREE, HAPPAH) {
+define(['jquery', 'three', '../lib/happah'], function($, THREE, HAPPAH) {
      var s_axis = Symbol('axis');
      //var s_selectedObject = Symbol('selectedobject');
 

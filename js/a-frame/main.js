@@ -28,23 +28,29 @@ require.config({
      }
 });
 
-require(['./lib/happah', './lib/pointcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, CONTROLS, THREE, $) {
+require(['../lib/happah', './algorithm', '../lib/twohandlescrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
+     // Canvas element
+     var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
 
+     // Points & impostors
      var points = [];
      var impostors = new THREE.Object3D();
-     scene.add(impostors);
 
-     var algorithm = new happah.DeCasteljauAlgorithm(points);
-     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
+     scene.add(impostors);
 
      // Canvas coordinates relative to middle of canvas element
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var scrollbar = new happah.Scrollbar(pos, viewport);
+     var algorithm = new ALGORITHM.Algorithm(points);
 
-     algorithm.scrollbar = scrollbar;
+     var viewport = new happah.Viewport(canvas, scene, algorithm);
+
+     var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
+
      var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
+
+     algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
@@ -52,14 +58,15 @@ require(['./lib/happah', './lib/pointcontrols', 'three', 'jquery', 'bootstrap', 
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var addControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 2);
-     addControls.listenTo(viewport.renderer.domElement);
+     var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
+     pointControls.listenTo(viewport.renderer.domElement);
 
      // Initialize some points
-     addControls.addControlPoints([
-          new THREE.Vector3(0, 0, 66),
-          new THREE.Vector3(0, 0, -66)
+     pointControls.addControlPoints([
+          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, 0),
+          new THREE.Vector3(50, 0, 60)
      ]);
+
      var menu = new happah.Menu(".btn-group", scene, viewport);
      console.log("happah initialized.");
 

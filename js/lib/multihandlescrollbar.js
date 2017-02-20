@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
+define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_handles = Symbol('handles');
      //var s_color = Symbol('color');
      //const default_handle_color = 0xE50A00;

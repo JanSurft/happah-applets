@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['./lib/happah', './functionalDecasteljau/algorithm', './lib/pointcontrols', './lib/labelmanager', './functionalDecasteljau/linedragcontrols', 'three', 'jquery', 'bootstrap', 'impromptu', 'mathjax'], function(happah, ALGORITHM, POINTCONTROLS, LABEL, CONTROLS, THREE, $) {
+require(['../lib/happah', './algorithm', '../lib/pointcontrols', '../lib/labelmanager', './linedragcontrols', 'three', 'jquery'], function(happah, ALGORITHM, POINTCONTROLS, LABEL, CONTROLS, THREE, $) {
 
      // Canvas element
      var canvas = $('.hph-canvas')[0];

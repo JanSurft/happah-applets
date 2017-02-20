@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'lib/happah', 'lib/util'], function($, THREE, HAPPAH, UTIL) {
+define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTIL) {
      var s_handles = Symbol('handles');
      var s_lineMiddle = Symbol('linemiddle');
      const left_segment_color = 0x54334f;
