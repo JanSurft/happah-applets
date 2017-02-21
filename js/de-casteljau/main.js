@@ -60,7 +60,7 @@ require(['../lib/happah', '../lib/pointcontrols', 'three', 'jquery'], function(h
      // Initialize some points
      pointControls.addControlPoints([
           new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
-          new THREE.Vector3(-5, 0, 40), new THREE.Vector3(50, 0, 60)
+          new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
      ]);
 
      var menu = new happah.Menu(".btn-group", scene, viewport);
