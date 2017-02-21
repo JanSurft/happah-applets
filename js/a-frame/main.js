@@ -45,9 +45,7 @@ require(['../lib/happah', './algorithm', '../lib/twohandlescrollbar', '../lib/po
 
      var viewport = new happah.Viewport(canvas, scene, algorithm);
 
-     console.log("create scrollb");
      var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
-     console.log("done");
 
      var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);

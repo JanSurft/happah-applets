@@ -98,9 +98,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     frame0.lines[0] = new THREE.Object3D();
                     return storyboard;
                }
-               // TODO: display warning if amount of controlpoints exceeds a
-               //       certain level
-
                //         O
                //        , ,            |
                //       ,   + <-        v
@@ -122,6 +119,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                var color = 0x54334f;
                var radius = 3;
                var template = new IMPOSTOR.SphericalImpostor(radius);
+               template.material.uniforms.diffuse.value.set(color);
 
 
                // 0        1
@@ -151,15 +149,21 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                frame1.lines.push(UTIL.Util.insertSegmentStrip(segment4, left_segment_color));
                frame1.lines.push(UTIL.Util.insertSegmentStrip(segment5, middle_segment_color));
                frame1.lines.push(UTIL.Util.insertSegmentStrip(segment6, right_segment_color));
-               frame1.points = new THREE.Object3D().add(segment2.concat(segment5));
+
+               var points = segment2.concat(segment5);
+               for (var i = 0; i < points.length; i++) {
+                    var imp = template.clone();
+                    imp.position.copy(points[i]);
+                    frame1.points.add(imp);
+               }
                storyboard.append(frame1);
 
                // Second iteration segments
-               var leftInterpoint1 = interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(0));
-               var leftInterpoint2 = interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(1));
+               var leftInterpoint1 = this.interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(0));
+               var leftInterpoint2 = this.interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(1));
 
-               var rightInterpoint1 = interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(0));
-               var rightInterpoint2 = interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(1));
+               var rightInterpoint1 = this.interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(0));
+               var rightInterpoint2 = this.interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(1));
 
                // 0        1
                // O########O--------O--------O
@@ -179,10 +183,13 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                //                   0        1
                // O--------O--------O########O
                var segment6 = [rightInterpoint2, pointMatrixRight[1][1]];
+               //          v
+               // O--------O--------O--------O
+               var frame2 = frame1.clone();
+               var imp = template.clone();
+               imp.position.copy(this.interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(1)));
+               frame2.points.add(imp);
 
-               // Frame for second iteration segment strips
-               var frame2 = frame.clone();
-               frame2.points.add(pointMatrixLeft[2][0]);
                frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, left_segment_color));
                frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, middle_segment_color));
                frame2.lines.push(UTIL.Util.insertSegmentStrip(segment3, right_segment_color));
@@ -191,11 +198,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                frame2.lines.push(UTIL.Util.insertSegmentStrip(segment5, middle_segment_color));
                frame2.lines.push(UTIL.Util.insertSegmentStrip(segment6, right_segment_color));
 
-
-               var imp = template.clone();
-               imp.position.copy(point);
-               imp.material.uniforms.diffuse.value.set(0x333333);
-               frame2.points.add(imp);
                storyboard.append(frame2);
 
                return storyboard;
