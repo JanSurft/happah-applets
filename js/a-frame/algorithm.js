@@ -154,58 +154,48 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                frame1.points = new THREE.Object3D().add(segment2.concat(segment5));
                storyboard.append(frame1);
 
-               // TODO: 3 segments for second iteration ""\('')/""
+               // Second iteration segments
+               var leftInterpoint1 = interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(0));
+               var leftInterpoint2 = interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(1));
+
+               var rightInterpoint1 = interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(0));
+               var rightInterpoint2 = interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(1));
+
                // 0        1
                // O########O--------O--------O
-               var segment1 = [pointMatrixLeft[0][0], pointMatrixLeft[1][0]];
+               var segment1 = [pointMatrixLeft[1][0], leftInterpoint1];
                //          0        1
                // O--------O########O--------O
-               var segment2 = [pointMatrixLeft[1][0], pointMatrixRight[1][0]];
+               var segment2 = [leftInterpoint1, leftInterpoint2];
                //                   0        1
                // O--------O--------O########O
-               var segment3 = [pointMatrixRight[1][0], pointMatrixLeft[0][1]];
+               var segment3 = [leftInterpoint2, pointMatrixLeft[1][1]];
                // 0        1
                // O########O--------O--------O
-               var segment4 = [pointMatrixLeft[0][1], pointMatrixLeft[1][1]];
+               var segment4 = [pointMatrixRight[1][0], rightInterpoint1];
                //          0        1
                // O--------O########O--------O
-               var segment5 = [pointMatrixLeft[1][1], pointMatrixRight[1][1]];
+               var segment5 = [rightInterpoint1, rightInterpoint2];
                //                   0        1
                // O--------O--------O########O
-               var segment6 = [pointMatrixRight[1][1], pointMatrixLeft[0][2]];
+               var segment6 = [rightInterpoint2, pointMatrixRight[1][1]];
+
                // Frame for second iteration segment strips
                var frame2 = frame.clone();
+               frame2.points.add(pointMatrixLeft[2][0]);
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, left_segment_color));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, middle_segment_color));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment3, right_segment_color));
 
-               for (var k = 0; k < pointMatrixLeft[1].length - 1; k++) {
-                    // Also add intersection point to the frame
-                    // FIXME: this is restricted to two scrollbar handles
-                    // TODO need second interpoint here too
-                    var point = this.interPointByRatio(pointMatrixLeft[1][k], pointMatrixLeft[1][k + 1], this[s_scrollbar].valueOf(1));
-
-                    // *** LEFT ***
-                    // Left to middle
-                    var segment1 = [pointMatrixLeft[1][k], point];
-                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, middle_segment_color));
-
-                    // Middle to right
-                    var segment2 = [point, pointMatrixLeft[1][k + 1]];
-                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, right_segment_color));
-
-                    // *** RIGHT ***
-                    // Left to middle
-                    var segment3 = [pointMatrixRight[1][k], point];
-                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment3, left_segment_color));
-
-                    // Middle to right
-                    var segment4 = [point, pointMatrixRight[1][k + 1]];
-                    frame2.lines.push(UTIL.Util.insertSegmentStrip(segment4, middle_segment_color));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment4, left_segment_color));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment5, middle_segment_color));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment6, right_segment_color));
 
 
-                    var imp = template.clone();
-                    imp.position.copy(point);
-                    imp.material.uniforms.diffuse.value.set(0x333333);
-                    frame2.points.add(imp);
-               }
+               var imp = template.clone();
+               imp.position.copy(point);
+               imp.material.uniforms.diffuse.value.set(0x333333);
+               frame2.points.add(imp);
                storyboard.append(frame2);
 
                return storyboard;

@@ -34,7 +34,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     position.unproject(this.camera);
 
                     // TODO: remove reference to viewport
-                    //this.viewport = viewport;
+                    this.viewport = viewport;
                     this.controls = viewport.controls;
 
                     this.raycaster = new THREE.Raycaster();
@@ -62,7 +62,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     var bar = new THREE.Mesh(geo, mat);
                     bar.position.set(0, 0, 0);
 
-                    this.handle = new Handle(initialValue, 0x5D5D5D);
+                    //this.handle = new Handle(initialValue, 0x5D5D5D);
 
                     // Sections to devide interval into separate colors
                     var leftVec = new THREE.Vector3(-75, 2, 0);
@@ -91,7 +91,6 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
 
                     this.selectionPlane = new THREE.Plane(new THREE.Vector3(0, 10, 0), 0);
 
-
                     // Add meshes to container
                     this.add(this.lineRight);
                     this.add(this.lineLeft);
@@ -117,11 +116,12 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     this.enabled = false;
                }
                get value() {
-                    return this.handle.value;
+                    return this.handle;
                }
-               set handle(handle) {
-                    this.handle = handle;
-               }
+
+               //set handle(handle2) {
+               //this.handle = handle2;
+               //}
                set value(value) {
                     this.handle.position.setX(-75 + (150 * value));
                }
@@ -245,7 +245,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
 
                get value() {
                     //return (this.position.x / 150) + 0.5;
-                    return this.handle.value;
+                    return this.value;
                }
 
                set value(value) {

@@ -18,7 +18,7 @@ define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTI
                     super(position, viewport, initialValue);
 
                     this[s_handles] = [this.handle];
-                    this[s_handles].push(this.addHandle(0.8, 0x3d3d3d));
+                    this.addHandle(0.8, 0x3d3d3d);
 
                     // Re-Setup lines:
                     // left goes from 0 to first handle
