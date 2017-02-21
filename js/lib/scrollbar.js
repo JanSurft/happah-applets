@@ -62,7 +62,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     var bar = new THREE.Mesh(geo, mat);
                     bar.position.set(0, 0, 0);
 
-                    //this.handle = new Handle(initialValue, 0x5D5D5D);
+                    this.handle = new Handle(initialValue, 0x5D5D5D);
 
                     // Sections to devide interval into separate colors
                     var leftVec = new THREE.Vector3(-75, 2, 0);
@@ -244,8 +244,8 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                }
 
                get value() {
-                    //return (this.position.x / 150) + 0.5;
-                    return this.value;
+                    return (this.position.x / 150) + 0.5;
+                    //return this.value;
                }
 
                set value(value) {
