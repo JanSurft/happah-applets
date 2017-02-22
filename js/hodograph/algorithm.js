@@ -7,14 +7,22 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
      var s_controlPoints = Symbol('controlPoints');
      var s_origin = Symbol('origin');
      var s_axis = Symbol('axis');
+     var s_scrollbar = Symbol('scrollbar');
 
-     class Algorithm {
+     class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
           /** Default constructor. */
           constructor(controlPoints, scrollbar, camera) {
+               super(controlPoints, scrollbar);
+
+               this[s_scrollbar] = scrollbar;
                this[s_controlPoints] = controlPoints;
                this[s_origin] = new THREE.Vector3(40, 0, 0);
                this[s_axis] = new THREE.Vector3(1, 0, 0);
+          }
+
+          set scrollbar(scrollbar) {
+               this[s_scrollbar] = scrollbar;
           }
 
           /**
@@ -30,7 +38,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
-               if (this[s_controlPoints] == 0) {
+               if (this[s_scrollbar] == null || this[s_controlPoints] == 0) {
                     frame0.lines[0] = new THREE.Object3D();
                     return storyboard;
                }
@@ -68,8 +76,36 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     frame1.lines.push(line);
                     frame1.lines.push(cone);
                }
+               var poly = UTIL.Util.insertSegmentStrip(this.subdivide(4, 0.5), 0x000000);
+               var point = new IMPOSTOR.SphericalImpostor(3);
+               point.material.uniforms.diffuse.value.set(0x333333);
+               var epoints = [];
+               var p = this.evaluate(this[s_scrollbar].value, function add(point) {
+                    epoints.push(point);
+               });
+               //         O----------------O
+               //        /    ../    \..    \
+               //       /  ../----O-----\..  \
+               //      /../                \..\
+               //     //                      \\
+               //    /                          \
+               //   /                            \
+               //  O                              O
+               // Get the tangent vector
+               var tangentvec = epoints[1][1].clone().sub(epoints[1][0]);
+
+               // Move vector to point p
+               tangentvec = p.clone().add(tangentvec);
+
+               var tangent = UTIL.Util.insertSegmentStrip([p, tangentvec], 0x006600);
+
+               // Final point to move along the curve
+               point.position.copy(p);
                var axish = new THREE.AxisHelper(10);
+               frame1.lines.push(poly);
                frame1.lines.push(axish);
+               frame1.points.add(point);
+               frame1.lines.push(tangent);
                storyboard.append(frame1);
 
                return storyboard;
