@@ -6,13 +6,15 @@
 define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_origin = Symbol('origin');
+     var s_axis = Symbol('axis');
 
      class Algorithm {
 
           /** Default constructor. */
           constructor(controlPoints, scrollbar, camera) {
                this[s_controlPoints] = controlPoints;
-               this[s_origin] = new THREE.Vector3(10, 10, 10);
+               this[s_origin] = new THREE.Vector3(40, 0, 0);
+               this[s_axis] = new THREE.Vector3(1, 0, 0);
           }
 
           /**
@@ -33,23 +35,41 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     return storyboard;
                }
 
+               var material = new THREE.MeshBasicMaterial({
+                    color: 0x000000
+               });
+               // Add an arrow to the end
+               var geo = new THREE.CylinderBufferGeometry(0, 4, 8, 20, 8);
+               var cone_template = new THREE.Mesh(geo, material);
+               cone_template.rotateZ(-Math.PI / 2);
+
                var points = this[s_controlPoints];
 
                var frame1 = frame0.clone();
 
                for (var i = 0; i < points.length - 1; i++) {
                     var vector = points[i + 1].clone().sub(points[i]);
+                    vector.multiplyScalar(points.length - 1);
                     var vector2 = this[s_origin].clone().add(vector);
 
-                    // TODO manually add segment strip, so we can add a cone on
-                    // top
-                    //var line = UTIL.Util.insertSegmentStrip([this[s_origin], vector2], 0x003300);
+                    var line = UTIL.Util.insertSegmentStrip([this[s_origin], vector2], 0x000000);
+                    var cone = cone_template.clone();
 
-                    // Add an arrow to the end
-                    var cone = new CylinderBufferGeometry(0, 0.5, 1, 5, 1);
-                    var line.geometry.merge(cone);
+                    // Get the angle between vector and z-axis
+                    var angle = this[s_axis].angleTo(vector.clone().normalize());
+                    //angle = vector2.x > 0 ? angle : -angle;
+                    cone.position.copy(vector2);
+                    if (vector2.z < 0) {
+                         cone.rotateX(2 * Math.PI - angle);
+                    } else {
+                         cone.rotateX(angle);
+                    }
 
+                    frame1.lines.push(line);
+                    frame1.lines.push(cone);
                }
+               var axish = new THREE.AxisHelper(10);
+               frame1.lines.push(axish);
                storyboard.append(frame1);
 
                return storyboard;

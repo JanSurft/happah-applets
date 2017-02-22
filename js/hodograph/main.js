@@ -53,20 +53,22 @@ require(['../lib/happah', './algorithm', '../lib/scrollbar', '../lib/pointcontro
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
-     viewport.camera.position.set(1000, 1000, 0);
+     viewport.camera.position.set(0, 1000, 0);
      viewport.camera.lookAt(scene.position);
-     viewport.camera.zoom = 2.5;
+     viewport.camera.zoom = 2.0;
      viewport.camera.updateProjectionMatrix();
 
      var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
      pointControls.listenTo(viewport.renderer.domElement);
 
+     var origin = new THREE.Vector3(80, 0, 40);
+
      // Initialize some points
      pointControls.addControlPoints([
-          new THREE.Vector3(50, 0, 60),
-          new THREE.Vector3(-50, 0, 40),
-          new THREE.Vector3(-50, 0, -40),
-          new THREE.Vector3(50, 0, -60)
+          new THREE.Vector3(-30, 0, 40).sub(origin),
+          new THREE.Vector3(-20, 0, 0).sub(origin),
+          new THREE.Vector3(20, 0, 0).sub(origin),
+          new THREE.Vector3(30, 0, 40).sub(origin)
      ]);
 
      var menu = new happah.Menu(".btn-group", scene, viewport);
