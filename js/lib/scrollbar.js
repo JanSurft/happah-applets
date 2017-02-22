@@ -116,7 +116,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     this.enabled = false;
                }
                get value() {
-                    return this.handle;
+                    return this.handle.value;
                }
 
                //set handle(handle2) {
