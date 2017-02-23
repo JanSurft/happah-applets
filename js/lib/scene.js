@@ -25,7 +25,7 @@ define(['jquery', 'three', './spherical-impostor'], function($, THREE, happah) {
 
                constructor() {
                     super();
-                    console.warn("HAPPAH.Scene should not be used!");
+                    console.warn("HAPPAH.Scene should not be used... Use THREE.Scene instead!");
                     this[s_controlPoints] = [];
                     this[s_controlPointImpostors] = [];
                     this[s_points] = new THREE.Object3D();
