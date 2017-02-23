@@ -29,6 +29,8 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
      var s_storyboard = Symbol('storyboard');
      var s_zoom = Symbol('zoom');
      var s_labelmanager = Symbol('labelmanager');
+     var s_lines = Symbol('lines');
+     var s_points = Symbol('points');
      var s_storyboardNeedsUpdate = Symbol('storyboardneedsupdate');
      var s_sceneNeedsUpdate = Symbol('sceneneedsupdate');
 
@@ -43,6 +45,8 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                this.update = this.update.bind(this);
 
 
+               this[s_points] = new THREE.Object3D();
+               this[s_lines] = [new THREE.Object3D()];
                this[s_algorithm] = algorithm;
                this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
                this[s_cameraOverlay] = this[s_camera].clone()
@@ -254,10 +258,22 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                          this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
                     }
 
-                    //this[s_scene].points = impostors;
-                    this[s_scene].points = points;
-                    this[s_scene].lines = lines;
-                    this[s_scene].paint();
+                    //this[s_scene].points = points;
+                    // THIS PART WAS MOVED HERE FROM SCENE
+                    this[s_scene].remove(this[s_points]);
+                    this[s_points] = points;
+                    this[s_scene].add(points);
+
+                    //this[s_scene].lines = lines;
+                    // THIS PART WAS MOVED HERE FROM SCENE
+                    this[s_scene].remove(this[s_lines])
+                    this[s_lines] = new THREE.Object3D()
+                    for (var i in lines) {
+                         this[s_lines].add(lines[i])
+                    }
+                    this[s_scene].add(this[s_lines])
+
+                    //this[s_scene].paint();
                     this[s_sceneNeedsUpdate] = false;
                }
 
