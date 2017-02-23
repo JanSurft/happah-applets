@@ -47,7 +47,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     color: 0x000000
                });
                // Add an arrow to the end
-               var geo = new THREE.CylinderBufferGeometry(0, 4, 8, 20, 8);
+               var geo = new THREE.CylinderBufferGeometry(0, 3, 7, 16, 7);
                var cone_template = new THREE.Mesh(geo, material);
                cone_template.rotateZ(-Math.PI / 2);
 
@@ -85,7 +85,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                });
                //         O----------------O
                //        /    ../    \..    \
-               //       /  ../----O-----\..  \
+               //  ---  /  ../----O-----\..  \  ----> Tangent at O
                //      /../                \..\
                //     //                      \\
                //    /                          \
@@ -93,9 +93,15 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                //  O                              O
                // Get the tangent vector
                var tangentvec = epoints[1][1].clone().sub(epoints[1][0]);
+               var cone = cone_template.clone();
+               var angle = this[s_axis].angleTo(tangentvec.clone().normalize());
+               angle = tangentvec.z < 0 ? 2 * Math.PI - angle : angle;
 
                // Move vector to point p
                tangentvec = p.clone().add(tangentvec);
+
+               cone.position.copy(tangentvec);
+               cone.rotateX(angle);
 
                var tangent = UTIL.Util.insertSegmentStrip([p, tangentvec], 0x006600);
 
@@ -106,6 +112,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                frame1.lines.push(axish);
                frame1.points.add(point);
                frame1.lines.push(tangent);
+               frame1.lines.push(cone);
                storyboard.append(frame1);
 
                return storyboard;
