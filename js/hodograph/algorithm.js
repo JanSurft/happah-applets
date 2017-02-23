@@ -107,9 +107,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                // Final point to move along the curve
                point.position.copy(p);
-               var axish = new THREE.AxisHelper(10);
                frame1.lines.push(poly);
-               frame1.lines.push(axish);
                frame1.points.add(point);
                frame1.lines.push(tangent);
                frame1.lines.push(cone);

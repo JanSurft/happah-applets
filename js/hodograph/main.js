@@ -31,7 +31,7 @@ require.config({
 require(['../lib/happah', './algorithm', '../lib/scrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
-     var scene = new happah.Scene();
+     var scene = new THREE.Scene();
 
      // Points & impostors
      var points = [];
