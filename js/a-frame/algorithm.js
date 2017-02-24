@@ -88,16 +88,17 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
                frame0.points = new THREE.Object3D();
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
-               if (this[s_controlPoints].length == 0) {
+               if (this[s_controlPoints].length < 3) {
                     // Add a dummy mesh
                     frame0.lines[0] = new THREE.Object3D();
+                    console.log("yey its 0!");
                     return storyboard;
                }
+               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
                //         O
                //        , ,            |
                //       ,   + <-        v
