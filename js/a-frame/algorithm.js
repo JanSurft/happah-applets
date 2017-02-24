@@ -95,7 +95,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                if (this[s_controlPoints].length < 3) {
                     // Add a dummy mesh
                     frame0.lines[0] = new THREE.Object3D();
-                    console.log("yey its 0!");
+                    storyboard.index = 0;
                     return storyboard;
                }
                frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
