@@ -30,6 +30,9 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
                this[s_addMode] = false;
                this[s_camera] = camera;
                this[s_viewPlane] = new THREE.Plane();
+
+               this.removeControlPoints = this.removeControlPoints.bind(this);
+               $(document).on("clear-all", this.removeControlPoints);
           }
 
           /** Force add mode */
@@ -64,6 +67,18 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
                     type: "rebuildStoryboard",
                     message: "points added!"
                });
+          }
+
+          /** Remove control points */
+          removeControlPoints() {
+               this[s_impostors].children.length = 0;
+               this[s_vectors].length = 0;
+
+               $.event.trigger({
+                    type: "rebuildStoryboard",
+                    message: "points removed!"
+               });
+               this.enterAddMode();
           }
 
           listenTo(domElement) {
