@@ -6,7 +6,7 @@
  // @author Tarek Wilkening (tarek_wilkening@web.de)
  //
  /////////////////////////////////////////////////////////////////////////////
- define(['three', 'jquery'], function(THREE, $) {
+ define(['three', 'jquery', './menu'], function(THREE, $, MENU) {
       class Defaults {
            static orthographicCamera(canvas) {
                 return new THREE.OrthographicCamera(canvas.width() / -2, canvas.width() / 2, canvas.height() / 2, canvas.height() / -2, 10, 10000);
@@ -23,6 +23,22 @@
                 dirLight.position.set(0, 200, 100).normalize();
                 lights.add(dirLight);
                 return lights;
+           }
+           static toolbarMenu(container) {
+                var menu = new MENU.Menu(container);
+                menu.addButton("Toggle grid", "grid-toggle", "fa-th", "Grid");
+                menu.addButton("Toggle controlpolygon", "poly-toggle", "fa-low-vision", "Control polygon");
+                menu.addButton("Clear scene", "clear-all", "fa-trash", "Clear");
+                menu.addButton("Start Tour", "show-help", "fa-info", "Guide");
+                return menu;
+           }
+           static playerMenu(container) {
+                var menu = new MENU.Menu(container);
+                menu.addButton("Previous Frame", "hph-backward", "fa-chevron-left", "");
+                menu.addButton("Play", "hph-play", "fa-play", "");
+                menu.addButton("Pause", "hph-pause", "fa-pause", "");
+                menu.addButton("Next Frame", "hph-forward", "fa-chevron-right", "");
+                return menu;
            }
 
       } // Class Defaults
