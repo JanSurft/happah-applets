@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['../lib/happah', './algorithm', '../lib/scrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/scrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new THREE.Scene();
@@ -71,6 +71,9 @@ require(['../lib/happah', './algorithm', '../lib/scrollbar', '../lib/pointcontro
           new THREE.Vector3(30, 0, 40).sub(origin)
      ]);
 
-     var menu = new happah.Menu(".btn-group", scene, viewport);
+     // Menu & toolbar
+     var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
+     var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+
      console.log("happah initialized.");
 });

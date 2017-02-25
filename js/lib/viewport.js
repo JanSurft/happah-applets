@@ -95,6 +95,15 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
                $(document).on("rebuildStoryboard", this.rebuildStoryboard);
 
+               //this.clearScene = this.clearScene.bind(this);
+               //$(document).on("clear-all", this.clearScene);
+
+               this.nextFrame = this.nextFrame.bind(this);
+               $(document).on("hph-forward", this.nextFrame);
+
+               this.previousFrame = this.previousFrame.bind(this);
+               $(document).on("hph-backward", this.previousFrame);
+
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
                this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
@@ -109,15 +118,6 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
           // Call if the storyboard is out of date
           rebuildStoryboard(event) {
                this[s_storyboardNeedsUpdate] = true;
-
-               //var storyboard_index = this[s_storyboard].index;
-               //this[s_storyboard] = this[s_algorithm].storyboard();
-               //this[s_storyboard].index = storyboard_index;
-               ////this.update();
-               //$.event.trigger({
-               //type: "change",
-               //message: "storyboard updated!"
-               //});
           }
 
           get overlay() {
@@ -157,16 +157,9 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                });
           }
 
-          clearScene() {
-               this[s_scene].removeControlPoints();
-
-               // Fire event
-               var event = new CustomEvent('clrscene', {
-                    "detail": "Controlpoints removed"
-               });
-               this[s_storyboard].index = 0;
-               this[s_renderer].domElement.dispatchEvent(event);
-          }
+          //clearScene() {
+          //this[s_storyboard].index = 0;
+          //}
 
           get labelManager() {
                return this[s_labelmanager];
@@ -258,13 +251,11 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                          this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
                     }
 
-                    //this[s_scene].points = points;
                     // THIS PART WAS MOVED HERE FROM SCENE
                     this[s_scene].remove(this[s_points]);
                     this[s_points] = points;
                     this[s_scene].add(points);
 
-                    //this[s_scene].lines = lines;
                     // THIS PART WAS MOVED HERE FROM SCENE
                     this[s_scene].remove(this[s_lines])
                     this[s_lines] = new THREE.Object3D()
