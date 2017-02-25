@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['../lib/happah', './algorithm', '../lib/pointcontrols', '../lib/labelmanager', './linedragcontrols', 'three', 'jquery'], function(happah, ALGORITHM, POINTCONTROLS, LABEL, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/pointcontrols', '../lib/labelmanager', './linedragcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, POINTCONTROLS, LABEL, CONTROLS, THREE, $) {
 
      // Canvas element
      var canvas = $('.hph-canvas')[0];
@@ -85,7 +85,10 @@ require(['../lib/happah', './algorithm', '../lib/pointcontrols', '../lib/labelma
      ];
      pointControls.addControlPoints(points);
 
-     var menu = new happah.Menu(".btn-group", scene, viewport);
+     // Menu & toolbar
+     var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
+     var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+
      console.log("happah initialized.");
 
 });
