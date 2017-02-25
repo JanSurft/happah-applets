@@ -67,7 +67,6 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
           new THREE.Vector3(50, 0, 60)
      ]);
 
-     //var menu = new happah.Menu(".btn-group", algorithm);
      var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
      var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
      console.log("happah initialized.");
