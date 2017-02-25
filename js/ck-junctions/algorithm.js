@@ -5,15 +5,9 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
+     var s_extraPoints = Symbol('extrapoints');
      var s_scrollbar = Symbol('scrollbar');
      var s_camera = Symbol('camera');
-     var s_colors = Symbol('colors');
-     var s_color = Symbol('color');
-     var s_handles = Symbol('handles');
-
-     const left_segment_color = 0x54334f;
-     const middle_segment_color = 0x00dd00;
-     const right_segment_color = 0x0000dd;
 
      class Algorithm {
 
@@ -23,7 +17,13 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                this[s_controlPoints] = controlPoints;
                this[s_scrollbar] = scrollbar;
                this[s_camera] = camera;
-               this[s_handles] = [];
+               var origin = new THREE.Vector3(120, 0, -30);
+               this[s_extraPoints] = [
+                    new THREE.Vector3(-50, 0, 60).add(origin),
+                    new THREE.Vector3(-40, 0, 0).add(origin),
+                    new THREE.Vector3(40, 0, 0).add(origin),
+                    new THREE.Vector3(50, 0, 60).add(origin)
+               ];
           }
 
           /**
@@ -31,53 +31,20 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
            */
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
-               this[s_handles] = scrollbar.handles;
-
-               // We need an extra handle (TODO: this does not belong here)
-               //this[s_handles].push(this[s_scrollbar].addHandle(0.8, 0x33dd55));
           }
 
           /**
-           * Returns the intermediate point (vector) between two points a, b
-           * with distance from a set to |b-a|*ratio
+           *
            */
-          interPointByRatio(a, b, ratio) {
+          extraPointByRatio(a, b, ratio) {
                // The direction is b - a
                var direction = new THREE.Vector3().subVectors(b, a);
 
                // Start point were we want to add the direction
-               var startPoint = a.clone();
+               var startPoint = b.clone();
 
-               // Add the scaled direction (scale factor defined by ratio)
-               return startPoint.add(direction.multiplyScalar(ratio));
-          }
-
-          subdivide(points, ratio) {
-               var newPoints = [];
-               // Iterate over points
-               for (var i = 0; i < points.length - 1; i++) {
-                    // Get the new point between point i and i+1
-                    newPoints.push(this.interPointByRatio(points[i], points[i + 1], ratio));
-               }
-               return newPoints;
-          }
-
-          evaluate(scrollbar) {
-               // TODO remove control points from pointMatrix.
-               var pointMatrix = [this[s_controlPoints].slice()];
-
-               // Get the first iteration
-               var newPoints = this.subdivide(this[s_controlPoints], this[s_scrollbar].valueOf(scrollbar));
-
-               pointMatrix.push(newPoints);
-
-               // Iterate over the new points and repeat
-               //var interPoints = this.subdivide(this[s_controlPoints], this[s_scrollbar].valueOf(1));
-
-               //pointMatrix.push(interPoints);
-
-
-               return pointMatrix;
+               // Add the scaled direction (scale factor defined by 1 / ratio)
+               return startPoint.add(direction.multiplyScalar(1 / ratio));
           }
 
           /**
@@ -88,9 +55,18 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.points = new THREE.Object3D();
                frame0.title = "Controlpolygon";
+               frame0.lines.push(UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000));
+               frame0.lines.push(UTIL.Util.insertSegmentStrip(this[s_extraPoints], 0xff0000));
                storyboard.append(frame0);
+               var imp_template = new IMPOSTOR.SphericalImpostor(3);
+               imp_template.material.uniforms.diffuse.value.set(0x00ff00);
+
+               for (var i of this[s_extraPoints]) {
+                    var imp = imp_template.clone();
+                    imp.position.copy(i);
+                    frame0.points.add(imp);
+               }
 
                if (this[s_controlPoints].length < 3) {
                     // Add a dummy mesh
@@ -98,108 +74,53 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     storyboard.index = 0;
                     return storyboard;
                }
-               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
-               //         O
-               //        , ,            |
-               //       ,   + <-        v
-               //      ,     ,       O--+-------1
-               //  -> +       ,
-               //    ,         ,
-               //   O           O
-               var pointMatrixLeft = this.evaluate(0);
-               //         O
-               //        , ,
-               //    -> +   ,                |
-               //      ,     ,               v
-               //     ,       + <-   O-------+--1
-               //    ,         ,
-               //   O           O
-               var pointMatrixRight = this.evaluate(1);
 
-               // Helper points settings here
-               var color = 0x54334f;
-               var radius = 3;
-               var template = new IMPOSTOR.SphericalImpostor(radius);
-               template.material.uniforms.diffuse.value.set(color);
-
-
-               // 0        1
-               // O########O--------O--------O
-               var segment1 = [pointMatrixLeft[0][0], pointMatrixLeft[1][0]];
-               //          0        1
-               // O--------O########O--------O
-               var segment2 = [pointMatrixLeft[1][0], pointMatrixRight[1][0]];
-               //                   0        1
-               // O--------O--------O########O
-               var segment3 = [pointMatrixRight[1][0], pointMatrixLeft[0][1]];
-               // 0        1
-               // O########O--------O--------O
-               var segment4 = [pointMatrixLeft[0][1], pointMatrixLeft[1][1]];
-               //          0        1
-               // O--------O########O--------O
-               var segment5 = [pointMatrixLeft[1][1], pointMatrixRight[1][1]];
-               //                   0        1
-               // O--------O--------O########O
-               var segment6 = [pointMatrixRight[1][1], pointMatrixLeft[0][2]];
-
+               // First frame goes here:
+               //     O-------O
+               //    /         \
+               //   /           \             O
+               //  /             O <-C^0     /
+               // O              |          /
+               //                |         /
+               //                O--------O
                var frame1 = new HAPPAH.Storyboard.Frame();
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment1, left_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment2, middle_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment3, right_segment_color));
+               var k = 0;
+               var points = [];
 
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment4, left_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment5, middle_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment6, right_segment_color));
+               var geometry = new THREE.Geometry();
+               geometry.vertices = [
+                    this[s_controlPoints][this[s_controlPoints].length - 2],
+                    this[s_controlPoints][this[s_controlPoints].length - 1],
+                    this[s_extraPoints][0],
+                    this[s_extraPoints][1]
+               ];
+               // We move the controlpoint
+               var joint = this[s_controlPoints][this[s_controlPoints].length - 1];
 
-               var points = segment2.concat(segment5);
-               for (var i = 0; i < points.length; i++) {
-                    var imp = template.clone();
-                    imp.position.copy(points[i]);
+               for (var i = 0; i < this[s_controlPoints].length; i++) {
+                    points.push(this[s_controlPoints][i]);
+                    //var imp = imp_template.clone();
+                    //imp.position.copy(this[s_controlPoints][i]);
+                    //frame1.points.add(imp);
+               }
+
+               //var imp = imp_template.clone();
+               //imp.position.copy(joint);
+               //frame1.points.add(imp);
+
+               for (var i = 1; i < this[s_extraPoints].length; i++) {
+                    points.push(this[s_extraPoints][i]);
+                    var imp = imp_template.clone();
+                    imp.position.copy(this[s_extraPoints][i]);
                     frame1.points.add(imp);
                }
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(points, 0xff0000));
                storyboard.append(frame1);
 
-               // Second iteration segments
-               var leftInterpoint1 = this.interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(0));
-               var leftInterpoint2 = this.interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(1));
+               var frame2 = new HAPPAH.Storyboard.Frame();
+               // TODO: make this an algorithm
+               //var frame2.points.push(this.extraPointByRatio(
 
-               var rightInterpoint1 = this.interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(0));
-               var rightInterpoint2 = this.interPointByRatio(pointMatrixRight[1][0], pointMatrixRight[1][1], this[s_scrollbar].valueOf(1));
-
-               // 0        1
-               // O########O--------O--------O
-               var segment1 = [pointMatrixLeft[1][0], leftInterpoint1];
-               //          0        1
-               // O--------O########O--------O
-               var segment2 = [leftInterpoint1, leftInterpoint2];
-               //                   0        1
-               // O--------O--------O########O
-               var segment3 = [leftInterpoint2, pointMatrixLeft[1][1]];
-               // 0        1
-               // O########O--------O--------O
-               var segment4 = [pointMatrixRight[1][0], rightInterpoint1];
-               //          0        1
-               // O--------O########O--------O
-               var segment5 = [rightInterpoint1, rightInterpoint2];
-               //                   0        1
-               // O--------O--------O########O
-               var segment6 = [rightInterpoint2, pointMatrixRight[1][1]];
-               //          v
-               // O--------O--------O--------O
-               var frame2 = frame1.clone();
-               var imp = template.clone();
-               imp.position.copy(this.interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(1)));
-               frame2.points.add(imp);
-
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, left_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, middle_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment3, right_segment_color));
-
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment4, left_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment5, middle_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment6, right_segment_color));
-
-               storyboard.append(frame2);
 
                return storyboard;
           }

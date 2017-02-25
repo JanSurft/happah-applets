@@ -32,6 +32,7 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
+     var origin = new THREE.Vector3(-120, 0, -30);
 
      // Points & impostors
      var points = [];
@@ -53,7 +54,7 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
-     viewport.camera.position.set(1000, 1000, 0);
+     viewport.camera.position.set(0, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
@@ -63,8 +64,10 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
 
      // Initialize some points
      pointControls.addControlPoints([
-          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, 0),
-          new THREE.Vector3(50, 0, 60)
+          new THREE.Vector3(-50, 0, 60).add(origin),
+          new THREE.Vector3(-40, 0, 0).add(origin),
+          new THREE.Vector3(40, 0, 0).add(origin),
+          new THREE.Vector3(50, 0, 60).add(origin)
      ]);
 
      //var menu = new happah.Menu(".btn-group", algorithm);
