@@ -87,13 +87,13 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                //frame0.lines.push(UTIL.Util.insertSegmentStrip(decasteljau.subdivide(4, 0.5), 0x333333));
 
                // First frame goes here:
-               //     O-------O
-               //    /         \
-               //   /           \             O   3
-               //  /          0  O <-C^0     /
-               // O              |          /
-               //                |         /
-               //             1  O--------O   2
+               //    ,-X-,
+               //  O'     'O
+               // /         \
+               //O           O   --> C^0
+               // \          /
+               //  \        /
+               //   O       O
 
                var geometry = new THREE.Geometry();
                geometry.vertices = [
@@ -113,12 +113,14 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     }
 
                     // Last point of controlpolygon is junction point
-                    for (var i = 0; i < k; i++) {
+                    var i = 0;
+                    for (i = 0; i < k; i++) {
                          extraPoints[i].copy(this.extraPointByRatio(controlPoints[controlPoints.length - k],
                               controlPoints[controlPoints.length - 1], this[s_scrollbar].value));
+                         points.push(extraPoints[i]);
                     }
 
-                    for (var i = 1; i < extraPoints.length; i++) {
+                    for (i = i; i < extraPoints.length; i++) {
                          points.push(extraPoints[i]);
                          var imp = imp_template.clone();
                          imp.position.copy(extraPoints[i]);
@@ -128,7 +130,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     //var curvePoints = algorithm.subdivide(4, 0.5);
                     frame.lines.push(UTIL.Util.insertSegmentStrip(points, 0xff0000));
                     //frame.lines.push(UTIL.Util.insertSegmentStrip(curvePoints, 0x333333));
-                    frame0.lines.push(UTIL.Util.insertSegmentStrip(decasteljau.subdivide(4, 0.5), 0x333333));
+                    //frame0.lines.push(UTIL.Util.insertSegmentStrip(decasteljau.subdivide(4, 0.5), 0x333333));
                     storyboard.append(frame);
                }
 
