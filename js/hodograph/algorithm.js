@@ -55,6 +55,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                var frame1 = frame0.clone();
 
+               var derivativepoints = [];
                for (var i = 0; i < points.length - 1; i++) {
                     var vector = points[i + 1].clone().sub(points[i]);
                     vector.multiplyScalar(points.length - 1);
@@ -62,6 +63,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                     var line = UTIL.Util.insertSegmentStrip([this[s_origin], vector2], 0x000000);
                     var cone = cone_template.clone();
+                    derivativepoints.push(vector2);
 
                     // Get the angle between vector and z-axis
                     var angle = this[s_axis].angleTo(vector.clone().normalize());
@@ -76,6 +78,11 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     frame1.lines.push(line);
                     frame1.lines.push(cone);
                }
+               // Derivative curve
+               var decasteljau = new HAPPAH.DeCasteljauAlgorithm(derivativepoints, this[s_scrollbar]);
+               derivativepoints = decasteljau.subdivide(4, 0.5);
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(derivativepoints, 0x0000ff));
+
                var poly = UTIL.Util.insertSegmentStrip(this.subdivide(4, 0.5), 0x000000);
                var point = new IMPOSTOR.SphericalImpostor(3);
                point.material.uniforms.diffuse.value.set(0x333333);
@@ -92,7 +99,9 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                //   /                            \
                //  O                              O
                // Get the tangent vector
-               var tangentvec = epoints[1][1].clone().sub(epoints[1][0]);
+               var lastseg = epoints.length - 2;
+               var lastseglength = epoints[lastseg].length - 1;
+               var tangentvec = epoints[lastseg][lastseglength].clone().sub(epoints[lastseg][lastseglength - 1]);
                var cone = cone_template.clone();
                var angle = this[s_axis].angleTo(tangentvec.clone().normalize());
                angle = tangentvec.z < 0 ? 2 * Math.PI - angle : angle;
