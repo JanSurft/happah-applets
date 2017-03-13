@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './util'], function($, THREE, UTIL) {
+define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEFAULTS) {
      var s_camera = Symbol('camera');
      var s_controls = Symbol('controls');
      var s_selectionPlane = Symbol('plane');
@@ -22,20 +22,22 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     this.mouseMove = this.mouseMove.bind(this);
                     this.mouseUp = this.mouseUp.bind(this);
 
-                    this.controls = viewport.controls;
-
                     // TODO: remove reference to camera
                     // we assume this is only used in an overlay so the
                     // direction is always straight down
-                    this.camera = viewport.overlayCam;
+                    //this.camera = viewport.overlayCam;
+                    this.camera = DEFAULTS.Defaults.orthographicCamera($('.hph-canvas'));
+                    this.camera.position.set(0, 1, 0);
+                    this.camera.zoom = 2.2;
+                    this.camera.updateProjectionMatrix();
                     this.enabled = true;
 
                     // Get world coordinates
                     position.unproject(this.camera);
 
                     // TODO: remove reference to viewport
-                    this.viewport = viewport;
-                    this.controls = viewport.controls;
+                    //this.viewport = viewport;
+                    //this.controls = viewport.controls;
 
                     this.raycaster = new THREE.Raycaster();
 
@@ -104,8 +106,8 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                          rightVec);
 
                     // Labels
-                    this.viewport.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
-                    this.viewport.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
+                    //this.viewport.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
+                    //this.viewport.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
                }
                enable() {
                     //this[s_enabled] = true;
@@ -159,7 +161,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                          this.selectedObject = true;
 
                          // Disable the controls
-                         this.controls.enabled = false;
+                         //this.controls.enabled = false;
                     } else {
                          this.selectedObject = false;
                     }
@@ -205,7 +207,6 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                          this.lineLeft.geometry.verticesNeedUpdate = true;
 
                          // New value means new storyboard
-                         //this.viewport.rebuildStoryboard();
                          $.event.trigger({
                               type: "rebuildStoryboard",
                               message: "scrollbar dragging started!"
@@ -216,7 +217,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                /** Called whenever a mouse button is released */
                mouseUp() {
                     // Enable the controls
-                    this.controls.enabled = true;
+                    //this.controls.enabled = true;
                     this.selectedObject = false;
                }
 

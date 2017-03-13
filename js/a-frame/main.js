@@ -45,13 +45,13 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
 
      var viewport = new happah.Viewport(canvas, scene, algorithm);
 
-     var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
+     //var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
 
      var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
-     algorithm.scrollbar = scrollbar;
-     scrollbar.listenTo(viewport.renderer.domElement);
+     //algorithm.scrollbar = scrollbar;
+     //scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);

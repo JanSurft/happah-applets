@@ -11,30 +11,15 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
      var s_color = Symbol('color');
      var s_handles = Symbol('handles');
 
-     const left_segment_color = 0x54334f;
-     const middle_segment_color = 0x00dd00;
-     const right_segment_color = 0x0000dd;
-
      class Algorithm {
 
           /** Default constructor. */
-          constructor(controlPoints, scrollbar, camera) {
+          constructor(controlPoints, viewport, camera) {
                this.storyboard = this.storyboard.bind(this);
                this[s_controlPoints] = controlPoints;
-               this[s_scrollbar] = scrollbar;
+               this[s_scrollbar] = new HAPPAH.TwoHandleScrollbar(new THREE.Vector3(0, -(1 / 1.2), 0), viewport, 0.2);
                this[s_camera] = camera;
                this[s_handles] = [];
-          }
-
-          /**
-           * Set scrollbar
-           */
-          set scrollbar(scrollbar) {
-               this[s_scrollbar] = scrollbar;
-               this[s_handles] = scrollbar.handles;
-
-               // We need an extra handle (TODO: this does not belong here)
-               //this[s_handles].push(this[s_scrollbar].addHandle(0.8, 0x33dd55));
           }
 
           /**
@@ -143,13 +128,13 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                var segment6 = [pointMatrixRight[1][1], pointMatrixLeft[0][2]];
 
                var frame1 = new HAPPAH.Storyboard.Frame();
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment1, left_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment2, middle_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment3, right_segment_color));
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment1, HAPPAH.Colors.COLOR1));
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment2, HAPPAH.Colors.COLOR2));
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment3, HAPPAH.Colors.COLOR3));
 
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment4, left_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment5, middle_segment_color));
-               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment6, right_segment_color));
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment4, HAPPAH.Colors.COLOR1));
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment5, HAPPAH.Colors.COLOR2));
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(segment6, HAPPAH.Colors.COLOR3));
 
                var points = segment2.concat(segment5);
                for (var i = 0; i < points.length; i++) {
@@ -191,13 +176,13 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                imp.position.copy(this.interPointByRatio(pointMatrixLeft[1][0], pointMatrixLeft[1][1], this[s_scrollbar].valueOf(1)));
                frame2.points.add(imp);
 
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, left_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, middle_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment3, right_segment_color));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment1, HAPPAH.Colors.COLOR1));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment2, HAPPAH.Colors.COLOR2));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment3, HAPPAH.Colors.COLOR3));
 
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment4, left_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment5, middle_segment_color));
-               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment6, right_segment_color));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment4, HAPPAH.Colors.COLOR1));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment5, HAPPAH.Colors.COLOR2));
+               frame2.lines.push(UTIL.Util.insertSegmentStrip(segment6, HAPPAH.Colors.COLOR3));
 
                storyboard.append(frame2);
 
