@@ -106,20 +106,30 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                var angle = this[s_axis].angleTo(tangentvec.clone().normalize());
                angle = tangentvec.z < 0 ? 2 * Math.PI - angle : angle;
 
+               // Hodograph vector that moves along the line
+               var tangentvec2 = this[s_origin].clone().add(tangentvec.clone().multiplyScalar(points.length - 1));
+
                // Move vector to point p
                tangentvec = p.clone().add(tangentvec);
 
                cone.position.copy(tangentvec);
                cone.rotateX(angle);
 
+               var cone2 = cone_template.clone();
+               cone2.position.copy(tangentvec2);
+               cone2.rotateX(angle);
+
                var tangent = UTIL.Util.insertSegmentStrip([p, tangentvec], 0x006600);
+               var tangent2 = UTIL.Util.insertSegmentStrip([this[s_origin], tangentvec2], 0x006600);
 
                // Final point to move along the curve
                point.position.copy(p);
                frame1.lines.push(poly);
                frame1.points.add(point);
                frame1.lines.push(tangent);
+               frame1.lines.push(tangent2);
                frame1.lines.push(cone);
+               frame1.lines.push(cone2);
                storyboard.append(frame1);
 
                return storyboard;
