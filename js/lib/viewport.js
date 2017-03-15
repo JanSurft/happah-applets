@@ -5,9 +5,9 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
+define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', './dragcontrols',
      './spherical-impostor', './defaults', './labelmanager'
-], function($, THREE, dragcontrols, TrackBallControls, sphericalimpostor, defaults, LABEL) {
+], function(ALGORITHM, $, THREE, dragcontrols, TrackBallControls, sphericalimpostor, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -37,7 +37,6 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
      class Viewport {
 
           constructor(canvas, scene, algorithm) {
-               var _this = this;
                var context = canvas.getContext('webgl');
                context.getExtension('EXT_frag_depth');
 
@@ -47,7 +46,12 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
 
                this[s_points] = new THREE.Object3D();
                this[s_lines] = [new THREE.Object3D()];
-               this[s_algorithm] = algorithm;
+               if (algorithm != null) {
+                    this[s_algorithm] = algorithm;
+               } else {
+                    this[s_algorithm] = new ALGORITHM.DeCasteljauAlgorithm([]);
+                    console.log(this[s_algorithm]);
+               }
                this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
                this[s_cameraOverlay] = this[s_camera].clone()
                this[s_cameraOverlay].position.set(0, 1, 0); // 0 for orthographic camera
@@ -69,13 +73,15 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                this[s_renderer].setClearColor(background_color);
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
                this[s_sequence] = false;
-               this[s_storyboard] = algorithm.storyboard();
+               //this[s_storyboard] = algorithm.storyboard();
+               this[s_storyboardNeedsUpdate] = false;
                this[s_labelmanager] = new LABEL.LabelManager(this[s_camera], this[s_cameraOverlay]);
 
                this[s_scene] = scene;
                this[s_scene].add(defaults.Defaults.basicLights());
-               this[s_scene].lines = this[s_storyboard].frame(0).lines;
+               //this[s_scene].lines = this[s_storyboard].frame(0).lines;
                // TBD..
+               var _this = this;
                $(this[s_scene]).bind('update.happah', function() {
                     _this.update();
                });
@@ -92,8 +98,14 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                this.updateListener = this.updateListener.bind(this);
                $(document).on("change", this.updateListener);
 
+               // TODO: too unspecific
                this.rebuildStoryboard = this.rebuildStoryboard.bind(this);
+               this.enableControls = this.enableControls.bind(this);
+               this.disableControls = this.disableControls.bind(this);
                $(document).on("rebuildStoryboard", this.rebuildStoryboard);
+               $(document).on("draggingStarted", this.disableControls);
+               $(document).on("draggingStopped", this.enableControls);
+               $(document).on("dragging", this.rebuildStoryboard);
 
                //this.clearScene = this.clearScene.bind(this);
                //$(document).on("clear-all", this.clearScene);
@@ -113,6 +125,12 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                $.event.trigger({
                     type: "rebuildStoryboard"
                });
+          }
+          disableControls(event) {
+               this[s_trackballControls].enabled = false;
+          }
+          enableControls(event) {
+               this[s_trackballControls].enabled = true;
           }
 
           // Call if the storyboard is out of date
@@ -157,12 +175,13 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                });
           }
 
-          //clearScene() {
-          //this[s_storyboard].index = 0;
-          //}
-
           get labelManager() {
                return this[s_labelmanager];
+          }
+
+          set algorithm(algorithm) {
+               this[s_algorithm] = algorithm;
+               this[s_storyboard] = algorithm.storyboard();
           }
 
           set gridState(state) {
@@ -225,7 +244,7 @@ define(['jquery', 'three', 'three-trackballcontrols', './dragcontrols',
                requestAnimationFrame(this.update.bind(this));
 
                // Rebuild the storyboard if necessary
-               if (this[s_storyboardNeedsUpdate]) {
+               if (this[s_storyboardNeedsUpdate] && this[s_storyboard] != null) {
                     var storyboard_index = this[s_storyboard].index;
                     this[s_storyboard] = this[s_algorithm].storyboard();
                     this[s_storyboard].index = storyboard_index;
