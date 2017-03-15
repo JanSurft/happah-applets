@@ -41,9 +41,10 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
 
      // Canvas coordinates relative to middle of canvas element
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var algorithm = new ALGORITHM.Algorithm(points);
 
-     var viewport = new happah.Viewport(canvas, scene, algorithm);
+     var viewport = new happah.Viewport(canvas, scene);
+     var algorithm = new ALGORITHM.Algorithm(points, viewport, null);
+     viewport.algorithm = algorithm;
 
      //var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
 
@@ -52,7 +53,7 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
 
      //algorithm.scrollbar = scrollbar;
      //scrollbar.listenTo(viewport.renderer.domElement);
-     viewport.overlay.add(scrollbar);
+     //viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;

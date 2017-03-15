@@ -3,7 +3,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
+define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/twohandlescrollbar', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, SCROLLBAR, UTIL) {
      var s_controlPoints = Symbol('controlPoints');
      var s_scrollbar = Symbol('scrollbar');
      var s_camera = Symbol('camera');
@@ -17,7 +17,10 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
           constructor(controlPoints, viewport, camera) {
                this.storyboard = this.storyboard.bind(this);
                this[s_controlPoints] = controlPoints;
-               this[s_scrollbar] = new HAPPAH.TwoHandleScrollbar(new THREE.Vector3(0, -(1 / 1.2), 0), viewport, 0.2);
+               this[s_scrollbar] = new SCROLLBAR.TwoHandleScrollbar(new THREE.Vector3(0, -(1 / 1.2), 0), viewport, 0.2);
+               //this[s_scrollbar] = new SCROLLBAR2.Scrollbar(new THREE.Vector3(0, -(1 / 1.2), 0.2), viewport, 0.5);
+               this[s_scrollbar].listenTo(viewport.renderer.domElement);
+               viewport.overlay.add(this[s_scrollbar]);
                this[s_camera] = camera;
                this[s_handles] = [];
           }
