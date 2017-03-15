@@ -119,7 +119,11 @@ define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTI
                          this.selectedObject = intersects[0].object;
 
                          // Disable the controls
-                         this.controls.enabled = false;
+                         //this.controls.enabled = false;
+                         $.event.trigger({
+                              type: "draggingStarted",
+                              message: "scrollbar dragging started!"
+                         });
                     } else {
                          this.selectedObject = false;
                     }
@@ -173,8 +177,8 @@ define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTI
                          // New value means new storyboard
                          //this.viewport.rebuildStoryboard();
                          $.event.trigger({
-                              type: "rebuildStoryboard",
-                              message: "scrollbar dragging started!"
+                              type: "dragging",
+                              message: "scrollbar dragging!"
                          });
                     }
                }

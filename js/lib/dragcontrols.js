@@ -8,7 +8,6 @@
 define(['jquery', 'three', './util'], function($, THREE, UTIL) {
      var s_camera = Symbol('camera');
      var s_objects = Symbol('objects');
-     var s_controls = Symbol('controls');
 
      // Drag control variables
      var s_raycaster = Symbol('raycaster');
@@ -22,14 +21,13 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
            * Objects needs to be an array of meshes.
            * NOTE: not an object3D!
            */
-          constructor(objects = [], controls, camera) {
+          constructor(objects = [], camera) {
                this.mouseUp = this.mouseUp.bind(this);
                this.mouseDown = this.mouseDown.bind(this);
                this.mouseMove = this.mouseMove.bind(this);
 
                // Initialize viewport variables
                this[s_objects] = objects;
-               this[s_controls] = controls;
                this[s_camera] = camera;
                this[s_enabled] = true;
 
@@ -76,9 +74,6 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                var intersects = this[s_raycaster].intersectObjects(this[s_objects]);
 
                if (intersects.length > 0) {
-                    // Disable the controls
-                    this[s_controls].enabled = false;
-
                     // Set the selection - first intersected object
                     this.selectObject(intersects[0]);
 
@@ -86,6 +81,12 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     var intersectionPoint = this[s_raycaster].ray.intersectPlane(this[s_selectionPlane]);
 
                     this[s_previousPoint].copy(intersectionPoint.sub(intersects[0].position));
+
+                    // Inform viewport to disable movement controls
+                    $.event.trigger({
+                         type: "draggingStarted",
+                         message: "controlpoint dragging started!"
+                    });
                }
           }
 
@@ -124,7 +125,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                     this[s_selectionPlane].setFromNormalAndCoplanarPoint(this[s_camera].getWorldDirection(), this.selectedObject.position);
 
                     $.event.trigger({
-                         type: "rebuildStoryboard",
+                         type: "dragging",
                          message: "dragging controlpoint!"
                     });
                } else {
@@ -142,7 +143,10 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
           /** Called whenever a mouse button is released */
           mouseUp() {
                // Enable the controls
-               this[s_controls].enabled = true;
+               $.event.trigger({
+                    type: "draggingStopped",
+                    message: "controlpoint dragging stopped!"
+               });
                this.selectedObject = null;
           }
 

@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEFAULTS) {
      var s_camera = Symbol('camera');
-     var s_controls = Symbol('controls');
      var s_selectionPlane = Symbol('plane');
      var s_selectionLine = Symbol('line');
      var s_selectedObject = Symbol('selectedobject');
@@ -31,6 +30,7 @@ define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEF
                     this.camera.zoom = 2.2;
                     this.camera.updateProjectionMatrix();
                     this.enabled = true;
+                    this.camera = viewport.overlayCam;
 
                     // Get world coordinates
                     position.unproject(this.camera);
@@ -160,11 +160,14 @@ define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEF
                          // Enable drag-mode
                          this.selectedObject = true;
 
-                         // Disable the controls
-                         //this.controls.enabled = false;
                     } else {
                          this.selectedObject = false;
                     }
+                    // Inform the viewport to disable controls
+                    $.event.trigger({
+                         type: "draggingStarted",
+                         message: "scrollbar dragging has started!"
+                    });
                }
 
                /** Called whenever a mouse button is moved */
@@ -206,18 +209,23 @@ define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEF
                          this.lineRight.geometry.verticesNeedUpdate = true;
                          this.lineLeft.geometry.verticesNeedUpdate = true;
 
-                         // New value means new storyboard
+                         // New value means new storyboard also disable other
+                         // controls e.g. movement
                          $.event.trigger({
-                              type: "rebuildStoryboard",
-                              message: "scrollbar dragging started!"
+                              type: "dragging",
+                              message: "scrollbar dragging!"
                          });
                     }
                }
 
                /** Called whenever a mouse button is released */
                mouseUp() {
-                    // Enable the controls
-                    //this.controls.enabled = true;
+                    // Inform the viewport that we stopped dragging
+                    $.event.trigger({
+                         type: "draggingStopped",
+                         message: "scrollbar dragging has stopped!"
+                    });
+
                     this.selectedObject = false;
                }
 
