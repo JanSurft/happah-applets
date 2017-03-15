@@ -48,7 +48,7 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescr
 
      //var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
 
-     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
+     var dragControls = new happah.DragControls(impostors.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      //algorithm.scrollbar = scrollbar;
