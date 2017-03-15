@@ -50,7 +50,6 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
                     this[s_algorithm] = algorithm;
                } else {
                     this[s_algorithm] = new ALGORITHM.DeCasteljauAlgorithm([]);
-                    console.log(this[s_algorithm]);
                }
                this[s_camera] = defaults.Defaults.orthographicCamera($(canvas));
                this[s_cameraOverlay] = this[s_camera].clone()
