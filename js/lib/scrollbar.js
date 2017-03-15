@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEFAULTS) {
+define(['jquery', 'three', './util', './defaults', './colors'], function($, THREE, UTIL, DEFAULTS, COLORS) {
      var s_camera = Symbol('camera');
      var s_selectionPlane = Symbol('plane');
      var s_selectionLine = Symbol('line');
@@ -20,6 +20,12 @@ define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEF
                     this.mouseDown = this.mouseDown.bind(this);
                     this.mouseMove = this.mouseMove.bind(this);
                     this.mouseUp = this.mouseUp.bind(this);
+
+                    this.setIntervalColors([
+                         COLORS.Colors.COLOR1,
+                         COLORS.Colors.COLOR2
+                    ]);
+
 
                     // TODO: remove reference to camera
                     // we assume this is only used in an overlay so the
@@ -71,7 +77,7 @@ define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEF
                     var rightVec = new THREE.Vector3(75, 2, 0);
                     var lineGeo = new THREE.Geometry();
                     var lineMat = new THREE.LineBasicMaterial({
-                         color: 0xFF0000,
+                         color: this.intervalColors[0],
                          linewidth: 5
                     });
 
@@ -85,7 +91,7 @@ define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEF
                     lineGeo2.vertices.push(this.handle.position);
                     lineGeo2.vertices.push(leftVec);
                     lineMat = new THREE.LineBasicMaterial({
-                         color: 0x000000,
+                         color: this.intervalColors[1],
                          linewidth: 5
                     });
                     this.lineLeft = new THREE.Line(lineGeo2, lineMat);
@@ -108,6 +114,12 @@ define(['jquery', 'three', './util', './defaults'], function($, THREE, UTIL, DEF
                     // Labels
                     //this.viewport.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
                     //this.viewport.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
+               }
+               getIintervalColors() {
+                    return this.intervalColors;
+               }
+               setIntervalColors(intervalColors) {
+                    this.intervalColors = intervalColors;
                }
                enable() {
                     //this[s_enabled] = true;

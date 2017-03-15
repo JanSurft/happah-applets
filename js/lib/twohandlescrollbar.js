@@ -5,12 +5,9 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTIL) {
+define(['jquery', 'three', './happah', './util', './colors'], function($, THREE, HAPPAH, UTIL, COLORS) {
      var s_handles = Symbol('handles');
      var s_lineMiddle = Symbol('linemiddle');
-     const left_segment_color = 0x54334f;
-     const middle_segment_color = 0x00dd00;
-     const right_segment_color = 0x0000dd;
 
      class TwoHandleScrollbar extends HAPPAH.Scrollbar {
 
@@ -19,6 +16,12 @@ define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTI
 
                     this[s_handles] = [this.handle];
                     this.addHandle(0.8, 0x3d3d3d);
+
+                    this.setIntervalColors([
+                         COLORS.Colors.COLOR1,
+                         COLORS.Colors.COLOR2,
+                         COLORS.Colors.COLOR3
+                    ]);
 
                     // Re-Setup lines:
                     // left goes from 0 to first handle
@@ -29,7 +32,7 @@ define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTI
                     lineGeo.vertices.push(this[s_handles][1].position);
 
                     var lineMat = new THREE.LineBasicMaterial({
-                         color: middle_segment_color,
+                         color: this.intervalColors[1],
                          linewidth: 5
                     });
                     this[s_lineMiddle] = new THREE.Line(lineGeo, lineMat);
@@ -38,8 +41,8 @@ define(['jquery', 'three', './happah', './util'], function($, THREE, HAPPAH, UTI
                     this.lineRight.geometry.vertices[1] = this[s_handles][1].position;
 
                     // Colors may have changed
-                    this.lineRight.material.color.set(right_segment_color);
-                    this.lineLeft.material.color.set(left_segment_color);
+                    this.lineRight.material.color.set(this.intervalColors[2]);
+                    this.lineLeft.material.color.set(this.intervalColors[0]);
                }
 
                addHandle(value = 0.5, color) {
