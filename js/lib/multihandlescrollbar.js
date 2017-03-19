@@ -7,14 +7,12 @@
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, HAPPAH, UTIL) {
      var s_handles = Symbol('handles');
-     //var s_color = Symbol('color');
-     //const default_handle_color = 0xE50A00;
+
      class MultiHandleScrollbar extends HAPPAH.Scrollbar {
 
                constructor(position, viewport, initialValue) {
                     super(position, viewport, initialValue);
 
-                    //this[s_color] = default_handle_color;
                     this[s_handles] = [this.handle];
                }
 
