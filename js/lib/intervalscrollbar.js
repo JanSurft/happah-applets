@@ -9,7 +9,7 @@ define(['jquery', 'three', './happah', './util', './colors'], function($, THREE,
      var s_handles = Symbol('handles');
      var s_lineMiddle = Symbol('linemiddle');
 
-     class TwoHandleScrollbar extends HAPPAH.Scrollbar {
+     class IntervalScrollbar extends HAPPAH.Scrollbar {
 
                constructor(position, viewport, initialValue) {
                     super(position, viewport, initialValue);
@@ -186,9 +186,9 @@ define(['jquery', 'three', './happah', './util', './colors'], function($, THREE,
                     }
                }
 
-          } //class TwoHandleScrollbar
+          } //class IntervalScrollbar
 
      return {
-          TwoHandleScrollbar: TwoHandleScrollbar
+          IntervalScrollbar: IntervalScrollbar
      };
 });
