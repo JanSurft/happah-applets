@@ -32,8 +32,7 @@ require(['../lib/happah', '../lib/defaults', '../lib/pointcontrols', './algorith
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
-     // TODO: Get position relative to window size
-     var pos = new THREE.Vector3(0, -30, 100);
+
      var algorithm = new ALGORITHM.Algorithm(new THREE.Vector3(-50, 0, +50));
      var viewport = new happah.Viewport(canvas, scene, algorithm);
      viewport.camera.position.set(0, 1000, 0);
