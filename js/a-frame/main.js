@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/twohandlescrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
