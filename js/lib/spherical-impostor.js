@@ -5,7 +5,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three'], function($, THREE) {
+define(['three'], function(THREE) {
 
      var shaders = require("../build/shaders.json");
 

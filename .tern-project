@@ -4,6 +4,7 @@
     "jquery"
   ],
   "plugins": [
-    "requirejs"
+    "requirejs",
+    "webpack",
   ]
 }
