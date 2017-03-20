@@ -1,9 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// @author Tarek Wilkening (tarek_wilkening@web.de)
+// @author Stephan Engelmann (stephan-engelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
+
+define(['three', '../lib/happah'], function(THREE, HAPPAH) {
+
      var s_controlPoints = Symbol('controlPoints');
      var s_extraPoints = Symbol('extrapoints');
      var s_scrollbar = Symbol('scrollbar');
@@ -19,10 +21,10 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                this[s_camera] = camera;
                var origin = new THREE.Vector3(120, 0, -30);
                this[s_extraPoints] = [
-                    new THREE.Vector3(-50, 0, 60).add(origin),
-                    new THREE.Vector3(-40, 0, 0).add(origin),
-                    new THREE.Vector3(40, 0, 0).add(origin),
-                    new THREE.Vector3(50, 0, 60).add(origin)
+                    new THREE.Vector3(-60, 0, 0).add(origin),
+                    new THREE.Vector3(-20, 0, 0).add(origin),
+                    new THREE.Vector3(20, 0, 0).add(origin),
+                    new THREE.Vector3(60, 0, 0).add(origin),
                ];
           }
 
@@ -31,23 +33,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
            */
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
-          }
-
-          /**
-           *
-           */
-          extraPointByRatio(a, b, ratio) {
-               if (a == b) {
-                    return a.clone();
-               }
-               // The direction is b - a
-               var direction = new THREE.Vector3().subVectors(b, a);
-
-               // Start point were we want to add the direction
-               var startPoint = a.clone();
-
-               // Add the scaled direction (scale factor defined by 1 / ratio)
-               return startPoint.add(direction.multiplyScalar(1 / ratio));
           }
 
           /**
@@ -63,10 +48,12 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
                frame0.title = "Controlpolygon";
-               frame0.lines.push(UTIL.Util.insertSegmentStrip(controlPoints, 0xff0000));
-               frame0.lines.push(UTIL.Util.insertSegmentStrip(extraPoints, 0xff0000));
+               frame0.lines.push(HAPPAH.Util.insertSegmentStrip(controlPoints,
+                    HAPPAH.Colors.RED));
+               frame0.lines.push(HAPPAH.Util.insertSegmentStrip(extraPoints,
+                    HAPPAH.Colors.RED));
                storyboard.append(frame0);
-               var imp_template = new IMPOSTOR.SphericalImpostor(3);
+               var imp_template = new HAPPAH.SphericalImpostor(3);
                imp_template.material.uniforms.diffuse.value.set(0x00ff00);
 
                for (var i of extraPoints) {
@@ -74,8 +61,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     imp.position.copy(i);
                     frame0.points.add(imp);
                }
-               //var decasteljau = new HAPPAH.DeCasteljauAlgorithm(extraPoints, this[s_scrollbar]);
-               //frame0.lines.push(UTIL.Util.insertSegmentStrip(decasteljau.subdivide(4, 0.5), 0x333333));
 
                if (controlPoints.length < 3) {
                     // Add a dummy mesh
@@ -83,66 +68,108 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     storyboard.index = 0;
                     return storyboard;
                }
-               //decasteljau = new HAPPAH.DeCasteljauAlgorithm(controlPoints, this[s_scrollbar]);
-               //frame0.lines.push(UTIL.Util.insertSegmentStrip(decasteljau.subdivide(4, 0.5), 0x333333));
 
-               // First frame goes here:
-               //    ,-X-,
-               //  O'     'O
-               // /         \
-               //O           O   --> C^0
-               // \          /
-               //  \        /
-               //   O       O
-
-               var geometry = new THREE.Geometry();
-               geometry.vertices = [
-                    controlPoints[controlPoints.length - 2],
-                    controlPoints[controlPoints.length - 1],
-                    extraPoints[0],
-                    extraPoints[1]
+               // characteristic points for ck junctions
+               // ======================================
+               // 1. To joint two curves some of the endpoints of the curves
+               // have to be manipulated. The positions of those points can be
+               // calculated using the de' Casteljau construction of the
+               // characterizing points.
+               // 2. Divide the junction into the left and right part
+               // respective for the two curves.
+               var b = this[s_scrollbar];
+               var characteristicPoints = [
+                    // the c^0 junction is a special case!
+                    // [controlPoints[controlPoints.length - 1]],
+                    [
+                         controlPoints[controlPoints.length - 2],
+                         extraPoints[1],
+                    ],
+                    [
+                         controlPoints[controlPoints.length - 3],
+                         controlPoints[controlPoints.length - 3].clone().add((
+                              controlPoints[controlPoints.length - 2].clone().sub(
+                                   controlPoints[controlPoints.length - 3])
+                         ).multiplyScalar(1 / b.value)),
+                         extraPoints[2],
+                    ],
+                    [
+                         controlPoints[controlPoints.length - 4],
+                         controlPoints[controlPoints.length - 4].clone().add((
+                              controlPoints[controlPoints.length - 3].clone().sub(
+                                   controlPoints[controlPoints.length - 4])
+                         ).multiplyScalar(1 / b.value)),
+                         extraPoints[3].clone().add((extraPoints[3].clone().sub(
+                              extraPoints[2])).multiplyScalar(-1 / (1 - b.value))),
+                         extraPoints[3],
+                    ]
                ];
-
-               for (var k = 0; k < 3; k++) {
-                    // Keep the controlpolygon and segment strips
-                    var frame = new HAPPAH.Storyboard.Frame();
-
-                    var points = [];
-                    for (var i = 0; i < controlPoints.length; i++) {
-                         points.push(controlPoints[i]);
-                    }
-
-                    // Last point of controlpolygon is junction point
-                    var i = 0;
-                    for (i = 0; i < k; i++) {
-                         extraPoints[i].copy(this.extraPointByRatio(controlPoints[controlPoints.length - k],
-                              controlPoints[controlPoints.length - 1], this[s_scrollbar].value));
-                         points.push(extraPoints[i]);
-                    }
-
-                    for (i = i; i < extraPoints.length; i++) {
-                         points.push(extraPoints[i]);
-                         var imp = imp_template.clone();
-                         imp.position.copy(extraPoints[i]);
-                         frame.points.add(imp);
-                    }
-                    //var algorithm = new HAPPAH.DeCasteljauAlgorithm(points, this[s_scrollbar]);
-                    //var curvePoints = algorithm.subdivide(4, 0.5);
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(points, 0xff0000));
-                    //frame.lines.push(UTIL.Util.insertSegmentStrip(curvePoints, 0x333333));
-                    //frame0.lines.push(UTIL.Util.insertSegmentStrip(decasteljau.subdivide(4, 0.5), 0x333333));
-                    storyboard.append(frame);
+               var leftJunctionPoints = [];
+               var rightJunctionPoints = [];
+               for (var pointSet of characteristicPoints) {
+                    var algorithm = new HAPPAH.DeCasteljauAlgorithm(pointSet, b);
+                    var front = [];
+                    var back = [];
+                    algorithm.evaluate(b.value, function(result) {
+                         front.push(result[0]);
+                         back.push(result[result.length - 1])
+                    });
+                    back = back.reverse();
+                    leftJunctionPoints.push(front);
+                    rightJunctionPoints.push(back);
                }
 
-               //var frame2 = frame1.clone(); //new HAPPAH.Storyboard.Frame();
-               //// TODO: make this an algorithm
-               //var imp = imp_template.clone();
-               //imp.position.copy(this.extraPointByRatio(controlPoints[2],
-               //controlPoints[3], this[s_scrollbar].value));
-               //frame2.points.add(imp);
-               //storyboard.append(frame2);
+               // Create frames for c^k junktions for k in [2,4]
+               // ==============================================
+               for (var frameCounter = 0; frameCounter < 3; frameCounter++) {
 
+                    var frame = new HAPPAH.Storyboard.Frame();
 
+                    // Add characteriying points and polygon
+                    for (var cp of characteristicPoints[frameCounter]) {
+                         var cp_imp = imp_template.clone();
+                         cp_imp.position.copy(cp);
+                         frame.points.add(cp_imp);
+                    }
+
+                    // Construct point coordinates for left and right curve
+                    // using their original coordinates and the calculated
+                    // junction points.
+                    var leftPoints = [];
+                    var rightPoints = [];
+                    var k = 0;
+                    for (var i = 0; i < controlPoints.length; i++) {
+                         if (i < controlPoints.length - frameCounter - 1) {
+                              leftPoints.push(controlPoints[i]);
+                              rightPoints.push(extraPoints[extraPoints.length - i - 1]);
+                              k = 0;
+                         } else {
+                              leftPoints.push(leftJunctionPoints[frameCounter][k]);
+                              rightPoints.push(rightJunctionPoints[frameCounter][
+                                   rightJunctionPoints[frameCounter].length - k - 1]);
+                              k++;
+                         }
+                    }
+                    rightPoints = rightPoints.reverse();
+
+                    // Add left and right curve control polygons
+                    frame.lines.push(HAPPAH.Util.insertSegmentStrip(
+                         leftPoints, HAPPAH.Colors.COLOR1));
+                    frame.lines.push(HAPPAH.Util.insertSegmentStrip(
+                         rightPoints, HAPPAH.Colors.COLOR2));
+
+                    // Add left and right curve
+                    var leftCurve = new HAPPAH.DeCasteljauAlgorithm(
+                         leftPoints, null);
+                    frame.lines.push(HAPPAH.Util.insertSegmentStrip(
+                         leftCurve.subdivide(4, 0.5), HAPPAH.Colors.BLACK));
+                    var rightCurve = new HAPPAH.DeCasteljauAlgorithm(
+                         rightPoints, null);
+                    frame.lines.push(HAPPAH.Util.insertSegmentStrip(
+                         rightCurve.subdivide(4, 0.5), HAPPAH.Colors.BLACK));
+
+                    storyboard.append(frame);
+               }
                return storyboard;
           }
      }
