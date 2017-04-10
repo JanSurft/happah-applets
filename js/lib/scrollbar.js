@@ -176,10 +176,10 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                          this.selectedObject = false;
                     }
                     // Inform the viewport to disable controls
-                    $.event.trigger({
-                         type: "draggingStarted",
-                         message: "scrollbar dragging has started!"
-                    });
+                    //$.event.trigger({
+                    //type: "draggingStarted",
+                    //message: "scrollbar dragging has started!"
+                    //});
                }
 
                /** Called whenever a mouse button is moved */

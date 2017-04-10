@@ -1,228 +1,125 @@
-define(['three'], function(THREE) {
-     var s_raycaster = Symbol('raycaster');
-     var s_target = Symbol('target');
-     var s_previousRay = Symbol('previousray');
-     var s_previousIntersect = Symbol('previousintersect');
-     var s_raycaster = Symbol('raycaster');
-     var s_cameraPlane = Symbol('cameraplane');
-     var s_mouseVector = Symbol('mousevector');
-     var s_mouseRay = Symbol('mouseray');
-     var s_cameraRay = Symbol('cameraray');
-     var s_sphere = Symbol('sphere');
-     var s_moving = Symbol('moving');
-     var s_radius = Symbol('radius');
-     var s_oldAngle = Symbol('oldangle');
-     var s_cameraVector = Symbol('cameraVector');
+define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
      var s_camera = Symbol('camera');
+     var s_oldMouse = Symbol('old');
      var s_enabled = Symbol('enabled');
-     //TEMP
+     var s_cameraTarget = Symbol('cameratarget');
      var s_scene = Symbol('scene');
-     var s_helper = Symbol('arrow');
-     var s_plane = Symbol('plane');
-     var s_box = Symbol('box');
+     var s_helper = Symbol('helper');
+     var s_pq = Symbol('pq');
+
+     var s_ppos = Symbol('ppos');
 
      class TrackballControls {
 
           constructor(camera, scene) {
-               this.onMouseKeyUp = this.onMouseKeyUp.bind(this);
-               this.onMouseMove = this.onMouseMove.bind(this);
-               this.onMouseKeyDown = this.onMouseKeyDown.bind(this);
-               this.enable = this.enable.bind(this);
-               this.disable = this.disable.bind(this);
+               this.mouseDown = this.mouseDown.bind(this);
+               this.mouseMove = this.mouseMove.bind(this);
+               this.mouseUp = this.mouseUp.bind(this);
 
-               this[s_raycaster] = new THREE.Raycaster();
                this[s_camera] = camera;
-
-               // The point where the camera looks at
-               this[s_target] = new THREE.Vector3(0, 0, 0);
-               this[s_previousRay] = new THREE.Ray(this[s_camera].position, this[s_target]);
-               this[s_previousIntersect] = new THREE.Vector3();
-               this[s_mouseVector] = new THREE.Vector2();
-               this[s_cameraVector] = new THREE.Vector3(0, 0, 10);
-               this[s_mouseRay] = new THREE.Ray(this[s_mouseVector], this[s_target]);
-               this[s_sphere] = new THREE.Sphere(this[s_target], 10);
-               this[s_cameraPlane] = new THREE.Plane(this[s_mouseRay].direction, 10);
-               this[s_raycaster] = new THREE.Raycaster();
-               this[s_cameraRay] = new THREE.Ray(this[s_target], this[s_camera].getWorldDirection());
-               this[s_plane] = new THREE.Plane(this[s_camera].position, 0);
-               this[s_moving] = false;
-               this[s_radius] = 10;
-               this[s_oldAngle] = 1;
-               this[s_enabled] = true;
+               this[s_oldMouse] = camera.position;
+               this[s_enabled] = false;
                this[s_scene] = scene;
-               var geo = new THREE.BoxGeometry(1, 1, 1);
-               var mat = new THREE.MeshBasicMaterial({
-                    color: 0x00dd00
-               });
-               this[s_box] = new THREE.Mesh(geo, mat);
-               //            this[s_scene].add(this[s_box]);
+               this[s_ppos] = new THREE.Vector3();
+               this[s_pq] = new THREE.Quaternion();
 
-               this[s_helper] = new THREE.ArrowHelper(this[s_mouseVector], this[s_target], 4, 0xfffe00);
+               // The target where the camera is looking
+               this[s_cameraTarget] = new THREE.Vector3(0, 0, 0);
+
+               if ((camera && camera.isPerspectiveCamera)) {
+                    //
+               } else if ((camera && camera.isOrthographicCamera)) {
+                    this[s_oldMouse].setZ((camera.near + camera.far) / (camera.near - camera.far)).unproject(camera);
+               } else {
+                    console.error('HAPPAH.TrackballControls: Unsupported camera type.');
+               }
+          }
+
+          listenTo(domElement) {
+               domElement.addEventListener('mousedown', this.mouseDown, false);
+               domElement.addEventListener('mousemove', this.mouseMove, false);
+               domElement.addEventListener('mouseup', this.mouseUp, false);
+          }
+          stopListeningTo(domElement) {
+               domElement.removeEventListener('mousedown', this.mouseDown, false);
+               domElement.removeEventListener('mousemove', this.mouseMove, false);
+               domElement.removeEventListener('mouseup', this.mouseUp, false);
+          }
+
+          mouseDown(event) {
+               // Enable trackball controls
+               this[s_enabled] = true;
+          }
+
+          mouseMove(event) {
+               if (!this[s_enabled]) {
+                    return;
+               }
+               // Get html position for origin offset
+               var elementPosition = UTIL.Util.getElementPosition(event.currentTarget);
+
+               // Calculate relative mouse position
+               var newMouse = new THREE.Vector3();
+               newMouse.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
+               newMouse.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
+
+               // Direction of the camera
+               var eyeDirection = this[s_camera].position.sub(this[s_cameraTarget]);
+
+               // Extracted from THREE.Raycaster
+               if ((this[s_camera] && this[s_camera].isPerspectiveCamera)) {
+                    //this.ray.origin.setFromMatrixPosition(camera.matrixWorld);
+                    //this.ray.direction.set(coords.x, coords.y, 0.5).unproject(camera).sub(this.ray.origin).normalize();
+               } else if ((this[s_camera] && this[s_camera].isOrthographicCamera)) {
+                    newMouse.setZ((this[s_camera].near + this[s_camera].far) / (this[s_camera].near - this[s_camera].far)).unproject(this[s_camera]);
+               } else {
+                    console.error('HAPPAH.TrackballControls: Unsupported camera type.');
+               }
+               // Direction in which we moved the cursor
+               var mouseDirection = new THREE.Vector3(newMouse.x - this[s_oldMouse].x, newMouse.y - this[s_oldMouse].y, newMouse.z - this[s_oldMouse].z);
+
+               // TODO: calculate median of previous directions to get smooth
+               // movement
+               if (mouseDirection.length() < 2) {
+                    return;
+               }
+               var axis = mouseDirection.cross(this[s_camera].getWorldDirection()).normalize()
+
+               this[s_scene].remove(this[s_helper]);
+               this[s_helper] = new THREE.ArrowHelper(axis, new THREE.Vector3(0, 0, 0), 10);
                this[s_scene].add(this[s_helper]);
 
+               // Calculate distance to previous point
+               var delta = mouseDirection.length();
+
+               // Calculate angle to move TODO parameter for radius
+               var angle = 0.1; //2 * Math.asin(delta / 2 * 4) * (Math.PI / 180);
+
+               // Create the quaternion
+               //this[s_pq].copy(this[s_camera].quaternion);
+               //var qm = new THREE.Quaternion();
+               //qm.setFromAxisAngle(axis, angle);
+               //var q = new THREE.Quaternion();
+               //THREE.Quaternion.slerp(this[s_camera].quaternion, q, qm, 0.07);
+               //this[s_camera].quaternion.copy(qm);
+               //this[s_camera].quaternion.normalize();
+
+               // Apply quaternion
+               //this[s_camera].setRotationFromAxisAngle(axis, angle);
+               var previousAngle = this[s_camera].quaternion.w;
+               //this[s_camera].setRotationFromAxisAngle(axis, previousAngle);
+               //this[s_camera].quaternion.w += 1;
+
+               this[s_oldMouse] = newMouse;
+
+               $.event.trigger({
+                    type: "change",
+                    message: "trackball controls update"
+               });
           }
 
-          /** Returns the position of our HTML element */
-          getElementPosition(element) {
-               var position = new THREE.Vector2(0, 0);
-
-               while (element) {
-                    position.x += (element.offsetLeft - element.scrollLeft + element.clientLeft);
-                    position.y += (element.offsetTop - element.scrollTop + element.clientTop);
-                    element = element.offsetParent;
-               }
-               return position;
-          }
-
-          /**
-           * 1. Create the direction vector from old and new mouse position
-           * 2. quaternion.setFromAxisAngle(ax, angle);
-           * 3. cam.applyQuaternion(quat);
-           * 4. ???
-           * 5. profit.
-           */
-          // TODO: override intersect method of three.sphere so that one can
-          // get an intersect point that is on the sphere.
-          onMouseMove(event) {
-
-               if (this[s_enabled] == false) return;
-
-               if (this[s_moving]) {
-                    // TODO: don't calculate the position every time.
-                    var elementPosition = this.getElementPosition(event.currentTarget);
-                    var currentMouseVec = new THREE.Vector2();
-
-                    // Get current mouse coordinates
-                    currentMouseVec.x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-                    currentMouseVec.y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
-
-                    // Adjust raycaster
-                    this[s_raycaster].setFromCamera(currentMouseVec, this[s_camera]);
-
-                    // Get eye direction
-                    var eyeDirection = this[s_raycaster].ray.direction.clone().normalize();
-
-                    // Create plane in front (inside) of camera
-                    this[s_plane] = new THREE.Plane(eyeDirection, -this[s_camera].position.length());
-
-                    // Create intersect with plane
-                    var intersect = this[s_raycaster].ray.intersectPlane(this[s_plane]);
-                    console.log(intersect);
-
-                    // Get move direction
-                    var moveDirection = intersect.clone().add(this[s_previousIntersect]);
-
-                    // Get angle
-                    var angle = moveDirection.length();
-
-                    // Get move axis
-                    var axis = new THREE.Vector3();
-                    // TODO: set the origin of these vectors
-                    axis = this[s_target].clone().add(axis.crossVectors(eyeDirection, moveDirection));
-
-                    // Create quaternion from axis and angle
-                    var quaternion = new THREE.Quaternion();
-                    quaternion.setFromAxisAngle(axis, angle);
-
-                    // Apply to camera position vector
-                    this[s_camera].position.applyQuaternion(quaternion);
-                    this[s_camera].lookAt(this[s_target]);
-                    this[s_camera].updateProjectionMatrix();
-                    /*
-                     // RIGHT AFERT CURRENTMOUSEVEC..
-                    // Get the cameras eye direction
-                    this[s_raycaster].setFromCamera(currentMouseVec, this[s_camera]);
-                    var ray = new happah.Ray();
-                    ray.copy(this[s_raycaster].ray);
-
-                    // Create sphere in front of the camera
-                    var sphere = new THREE.Sphere(this[s_target], this[s_camera].position.length());
-
-                    var newIntersect = ray.intersectSphere(sphere);
-
-                    var ray1 = sphere.center.clone().add(this[s_previousIntersect]);
-                    var ray2 = sphere.center.clone().add(newIntersect);
-
-                    var angle = ray1.angleTo(ray2);
-
-
-                    // Get the axis to rotate the camera around
-                    var axis = this[s_previousIntersect].clone().add(newIntersect) //.cross(this[s_raycaster].ray.direction);
-                    axis = this[s_target].clone().add(axis).cross(this[s_raycaster].ray.direction);
-                    axis = axis.normalize();
-
-                    //this[s_previousIntersect] = newIntersect;
-
-                    var quaternion = new THREE.Quaternion();
-                    quaternion.setFromAxisAngle(axis.normalize(), angle * 0.15);
-
-                    console.log("distance to target:");
-                    console.log(this[s_target].distanceTo(this[s_camera].position));
-                    //this[s_camera].position.applyQuaternion(quaternion);
-                    this[s_scene].remove(this[s_helper]);
-                    this[s_helper] = new THREE.ArrowHelper(axis, this[s_target], 5, 0x335544);
-                    this[s_scene].add(this[s_helper]);
-
-                    this[s_camera].lookAt(this[s_target]);
-                    this[s_camera].updateProjectionMatrix();
-                    console.log(this[s_camera].position);
-                    */
-               }
-          }
-
-          enable() {
-               this[s_enabled] = true;
-          }
-          disable() {
+          mouseUp(event) {
                this[s_enabled] = false;
-          }
-
-          onMouseKeyDown(event) {
-               if (this[s_enabled] == false) return;
-               // Test
-               this[s_moving] = true;
-               var elementPosition = this.getElementPosition(event.currentTarget);
-
-               // Get the current mouse vector
-               this[s_mouseVector].x = ((event.clientX - elementPosition.x) / event.currentTarget.width) * 2 - 1;
-               this[s_mouseVector].y = -((event.clientY - elementPosition.y) / event.currentTarget.height) * 2 + 1;
-
-               this[s_mouseRay].set(this[s_mouseVector], this[s_target]);
-
-               // Get the cameras eye direction
-               this[s_raycaster].setFromCamera(this[s_mouseVector], this[s_camera]);
-
-               // Create sphere in front of the camera
-               this[s_plane] = new THREE.Plane(this[s_raycaster].ray.direction.clone().normalize(), -this[s_camera].position.length());
-
-               //
-               this[s_previousIntersect] = this[s_raycaster].ray.intersectPlane(this[s_plane]);
-          }
-
-          onMouseKeyUp(event) {
-               if (this[s_enabled] == false) return;
-               // Test
-
-               this[s_moving] = false;
-          }
-
-          onMouseWheelMove(event) {
-               if (this[s_enabled] == false) return;
-               // Test
-               console.log("Wheel moved!");
-
-               // Check the wheels direction
-               var wheelDelta = event.wheelDelta / 40;
-
-               // Increase the sphere's radius
-               this[s_sphere].radius += wheelDelta;
-
-               // Get the new camera position from the sphere
-               this[s_cameraVector].z -= wheelDelta;
-          }
-
-          setTarget(x, y, z) {
-               this[s_target].set(x, y, z);
           }
 
      } // Class Trackball controls

@@ -47,7 +47,7 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/scrollbar', 
 
      var scrollbar = new SCROLLBAR.Scrollbar(pos, viewport, 0.2);
 
-     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
+     var dragControls = new happah.DragControls(impostors.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      algorithm.scrollbar = scrollbar;
