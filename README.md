@@ -1,11 +1,11 @@
-# Happah-Applets
+## Happah-Applets
 
 Visualizing geometric algorithms.
 
 This project targets students. Giving them an interactive way to interact with
 the teached algorithms.
 
-# Building Dependencies
+## Building Dependencies
 
   * jre as dependency of Google Closure Compiler
   * python2
@@ -23,11 +23,11 @@ the teached algorithms.
      * mathjax
      * three-trackballcontrols
 
-# Building
+## Building
 
   ./util/build/build.sh
 
-# Applet structure
+## Applet structure
 
 Every applet has it's own subdirectory in `js/` and `html/`.
 The `js/<applet name>` directory contains two mandatory files:
