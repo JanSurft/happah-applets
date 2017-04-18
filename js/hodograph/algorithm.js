@@ -12,7 +12,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
      class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
           /** Default constructor. */
-          constructor(controlPoints, scrollbar, camera) {
+          constructor(controlPoints, scrollbar) {
                super(controlPoints, scrollbar);
 
                this[s_scrollbar] = scrollbar;
@@ -54,6 +54,8 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                var points = this[s_controlPoints];
 
                var frame1 = frame0.clone();
+               var impostorTemplate = new IMPOSTOR.SphericalImpostor(3);
+               impostorTemplate.material.uniforms.diffuse.value.set(0xf0f0f0);
 
                var derivativepoints = [];
                for (var i = 0; i < points.length - 1; i++) {
@@ -64,6 +66,9 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     var line = UTIL.Util.insertSegmentStrip([this[s_origin], vector2], 0x000000);
                     var cone = cone_template.clone();
                     derivativepoints.push(vector2);
+                    var impostor = impostorTemplate.clone();
+                    impostor.position.copy(vector2);
+                    frame1.points.add(impostor);
 
                     // Get the angle between vector and z-axis
                     var angle = this[s_axis].angleTo(vector.clone().normalize());
@@ -78,6 +83,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     frame1.lines.push(line);
                     frame1.lines.push(cone);
                }
+
                // Derivative curve
                var decasteljau = new HAPPAH.DeCasteljauAlgorithm(derivativepoints, this[s_scrollbar]);
                derivativepoints = decasteljau.subdivide(4, 0.5);

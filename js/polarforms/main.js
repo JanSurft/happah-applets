@@ -28,10 +28,10 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/scrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/multihandlescrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
-     var scene = new THREE.Scene();
+     var scene = new happah.Scene();
 
      // Points & impostors
      var points = [];
@@ -41,39 +41,36 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/scrollbar', 
 
      // Canvas coordinates relative to middle of canvas element
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var algorithm = new ALGORITHM.Algorithm(points);
 
+     var algorithm = new ALGORITHM.Algorithm(points, null);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
+     viewport.algorithm = algorithm;
+     algorithm.labelmanager = viewport.labelManager;
 
-     var scrollbar = new SCROLLBAR.Scrollbar(pos, viewport, 0.2);
+     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.5);
+     algorithm.scrollbar = scrollbar;
 
      var dragControls = new happah.DragControls(impostors.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
-     algorithm.scrollbar = scrollbar;
+     //algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
-     viewport.camera.position.set(0, 1000, 0);
+     viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
-     viewport.camera.zoom = 2.0;
+     viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
      var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
      pointControls.listenTo(viewport.renderer.domElement);
 
-     var origin = new THREE.Vector3(80, 0, 40);
-
      // Initialize some points
      pointControls.addControlPoints([
-          new THREE.Vector3(-30, 0, 40).sub(origin),
-          new THREE.Vector3(-20, 0, 0).sub(origin),
-          new THREE.Vector3(20, 0, 0).sub(origin),
-          new THREE.Vector3(30, 0, 40).sub(origin)
+          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
+          new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
      ]);
 
-     // Menu & toolbar
      var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
      var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
-
      console.log("happah initialized.");
 });

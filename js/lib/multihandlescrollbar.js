@@ -123,12 +123,13 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                          }
                          // Enable drag-mode
                          this.selectedObject = intersects[0].object;
-
-                         // Disable the controls
-                         this.controls.enabled = false;
                     } else {
                          this.selectedObject = false;
                     }
+                    $.event.trigger({
+                         type: "draggingStarted",
+                         message: "scrollbar dragging has started!"
+                    });
                }
 
                /** Called whenever a mouse button is moved */
@@ -175,7 +176,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
 
                          // New value means new storyboard
                          $.event.trigger({
-                              type: "rebuildStoryboard",
+                              type: "dragging",
                               message: "scrollbar dragging started!"
                          });
                     }

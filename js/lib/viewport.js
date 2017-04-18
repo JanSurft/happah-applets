@@ -72,7 +72,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
                this[s_renderer].setClearColor(background_color);
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
                this[s_sequence] = false;
-               //this[s_storyboard] = algorithm.storyboard();
+               this[s_storyboard] = algorithm.storyboard();
                this[s_storyboardNeedsUpdate] = false;
                this[s_labelmanager] = new LABEL.LabelManager(this[s_camera], this[s_cameraOverlay]);
 
@@ -152,6 +152,11 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
           get overlayCam() {
                return this[s_cameraOverlay];
           }
+
+          //applyStoryboard(storyboard) {
+          //this[s_storyboard] = storyboard;
+          //this[s_storyboardNeedsUpdate] = true;
+          //}
 
           addLight(lights) {
                this[s_scene].add(lights);
@@ -266,7 +271,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
 
                     // Create new labels for intermediate points
                     for (var i in currentFrame.labels) {
-                         this[s_labelmanager].addLabel(currentFrame.labels[i], points[i], "points");
+                         this[s_labelmanager].addLabel(currentFrame.labels[i], points.children[i].position, "points", false);
                     }
 
                     // THIS PART WAS MOVED HERE FROM SCENE

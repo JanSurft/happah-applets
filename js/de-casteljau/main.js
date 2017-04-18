@@ -51,7 +51,7 @@ require(['../lib/happah', '../lib/defaults', '../lib/pointcontrols', 'three', 'j
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
+     var dragControls = new happah.DragControls(impostors.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
