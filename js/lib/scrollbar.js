@@ -224,7 +224,7 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                          // New value means new storyboard also disable other
                          // controls e.g. movement
                          $.event.trigger({
-                              type: "dragging",
+                              type: "draggingStarted",
                               message: "scrollbar dragging!"
                          });
                     }

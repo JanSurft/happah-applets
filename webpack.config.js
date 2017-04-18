@@ -16,6 +16,7 @@ module.exports = {
           "lerp": __dirname + "/js/lerp/main.js",
           "precision": __dirname + "/js/precision/main.js",
           "hodograph": __dirname + "/js/hodograph/main.js",
+          "polarforms": __dirname + "/js/polarforms/main.js",
      },
      output: {
           path: './bin',

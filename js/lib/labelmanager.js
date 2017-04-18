@@ -59,6 +59,8 @@
                 } else {
                      pos.project(this[s_sceneCamera]);
                 }
+                //pos.project(this[s_overlayCamera]);
+
                 pos.x = Math.round((pos.x + 1) * canvas.width / 2);
                 pos.y = Math.round((-pos.y + 1) * canvas.height / 2);
 
@@ -88,7 +90,7 @@
            updatePositions() {
                 var canvas = $(".hph-canvas")[0];
 
-                for (var i in this[s_labels]) {
+                for (var i = 0; i < this[s_labelCount]; i++) {
                      // Skip overlay labels
                      if (this[s_labels][i].hasClass("overlay")) {
                           continue;
@@ -120,9 +122,9 @@
            removeLabels(tag = "") {
                 var labels = [];
                 var positions = [];
-                for (var i in this[s_labels]) {
+                for (var i = 0; i < this[s_labelCount]; i++) {
                      // Only remove labels with matching tag
-                     if (this[s_labels][i].hasClass("label" + tag)) {
+                     if (this[s_labels][i].hasClass("label" + tag + i)) {
                           this[s_labels][i].remove();
                      } else {
                           labels.push(this[s_labels][i]);
@@ -131,6 +133,7 @@
                 }
                 this[s_labels] = labels;
                 this[s_positions] = positions;
+                this[s_labelCount] = 0;
            }
 
 

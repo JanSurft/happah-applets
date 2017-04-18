@@ -126,10 +126,10 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                     } else {
                          this.selectedObject = false;
                     }
-                    //$.event.trigger({
-                    //type: "draggingStarted",
-                    //message: "scrollbar dragging has started!"
-                    //});
+                    $.event.trigger({
+                         type: "draggingStarted",
+                         message: "scrollbar dragging has started!"
+                    });
                }
 
                /** Called whenever a mouse button is moved */
@@ -176,7 +176,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
 
                          // New value means new storyboard
                          $.event.trigger({
-                              type: "rebuildStoryboard",
+                              type: "dragging",
                               message: "scrollbar dragging started!"
                          });
                     }
