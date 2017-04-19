@@ -28,6 +28,12 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                     return handle;
                }
 
+               popHandle() {
+                    var handle = this[s_handles].pop();
+                    this.remove(handle);
+                    return handle;
+               }
+
                removeHandles() {
                     // Remove them from the scene first
                     for (var i = 0; i < this[s_handles].length - 1; i++) {

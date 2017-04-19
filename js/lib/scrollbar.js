@@ -112,8 +112,8 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                          rightVec);
 
                     // Labels
-                    //this.viewport.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
-                    //this.viewport.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
+                    viewport.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
+                    viewport.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
                }
                getIintervalColors() {
                     return this.intervalColors;
