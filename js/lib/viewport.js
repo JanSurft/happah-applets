@@ -33,16 +33,17 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
      var s_points = Symbol('points');
      var s_storyboardNeedsUpdate = Symbol('storyboardneedsupdate');
      var s_sceneNeedsUpdate = Symbol('sceneneedsupdate');
+     var s_canvas = Symbol('canvas');
 
      class Viewport {
 
           constructor(canvas, scene, algorithm) {
                var context = canvas.getContext('webgl');
+               this[s_canvas] = canvas;
                context.getExtension('EXT_frag_depth');
 
                this.mouseWheel = this.mouseWheel.bind(this);
                this.update = this.update.bind(this);
-
 
                this[s_points] = new THREE.Object3D();
                this[s_lines] = [new THREE.Object3D()];
@@ -135,6 +136,10 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
           // Call if the storyboard is out of date
           rebuildStoryboard(event) {
                this[s_storyboardNeedsUpdate] = true;
+          }
+
+          get canvas() {
+               return this[s_canvas];
           }
 
           get overlay() {
