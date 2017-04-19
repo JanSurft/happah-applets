@@ -122,10 +122,12 @@
            removeLabels(tag = "") {
                 var labels = [];
                 var positions = [];
+                var newCount = this[s_labelCount];
                 for (var i = 0; i < this[s_labelCount]; i++) {
                      // Only remove labels with matching tag
                      if (this[s_labels][i].hasClass("label" + tag + i)) {
                           this[s_labels][i].remove();
+                          newCount--;
                      } else {
                           labels.push(this[s_labels][i]);
                           positions.push(this[s_positions][i]);
@@ -133,7 +135,7 @@
                 }
                 this[s_labels] = labels;
                 this[s_positions] = positions;
-                this[s_labelCount] = 0;
+                this[s_labelCount] = newCount;
            }
 
 
