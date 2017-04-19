@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/multihandlescrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './algorithm', '../lib/multihandlescrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, LABEL, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -44,8 +44,13 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/multihandles
 
      var algorithm = new ALGORITHM.Algorithm(points, null);
      var viewport = new happah.Viewport(canvas, scene, algorithm);
+     viewport.camera.position.set(1000, 1000, 0);
+     viewport.camera.lookAt(scene.position);
+     viewport.camera.zoom = 2.5;
+     viewport.camera.updateProjectionMatrix();
      viewport.algorithm = algorithm;
-     algorithm.labelmanager = viewport.labelManager;
+
+     algorithm.labelmanager = new LABEL.LabelManager(viewport);
 
      var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.5);
      algorithm.scrollbar = scrollbar;
@@ -56,10 +61,6 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/multihandles
      //algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
-     viewport.camera.position.set(1000, 1000, 0);
-     viewport.camera.lookAt(scene.position);
-     viewport.camera.zoom = 2.5;
-     viewport.camera.updateProjectionMatrix();
 
      var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
      pointControls.listenTo(viewport.renderer.domElement);

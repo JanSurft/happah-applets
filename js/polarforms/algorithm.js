@@ -9,10 +9,11 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
      var s_scrollbar = Symbol('scrollbar');
      var s_labelmanager = Symbol('labelmanager');
 
-     class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
+     class Algorithm {
 
           constructor(controlPoints, scrollbar) {
-               super(controlPoints, scrollbar);
+               this.storyboard = this.storyboard.bind(this);
+
                this[s_scrollbar] = scrollbar;
                this[s_controlPoints] = controlPoints;
           }
@@ -25,6 +26,33 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                this[s_scrollbar] = scrollbar;
                this[s_scrollbar].value = 0.3;
                this[s_scrollbar].addHandle(0.7, 0xff0000);
+          }
+
+          evaluate(callback = null) {
+               var segmentLength = this[s_controlPoints].length;
+               var points = new Array(segmentLength);
+               points[0] = new Array(segmentLength);
+               for (var i in this[s_controlPoints]) {
+                    points[0][i] = this[s_controlPoints][i];
+               }
+               // Until only 1 point remains
+               for (var i = 0; i < segmentLength - 1; i++) {
+                    points[i + 1] = new Array(segmentLength - i - 1);
+                    // Calc next level points
+                    for (var j = 0; j < points[i].length - 1; j++) {
+                         var newPoint = points[i][j].clone();
+                         // Not sure if value(i) or (i-1)
+                         newPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(i));
+                         var tmpPoint = points[i][j + 1].clone();
+                         tmpPoint.multiplyScalar(this[s_scrollbar].valueOf(i));
+                         newPoint.add(tmpPoint);
+                         points[i + 1][j] = newPoint;
+                    }
+                    callback(points[i + 1]);
+               }
+               // return points[points.length -1][0];
+               return points;
+
           }
 
           storyboard() {
@@ -48,37 +76,55 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     return storyboard;
                }
 
+               // Add handles if necessary
+               while (this[s_scrollbar].handles.length < this[s_controlPoints].length - 1) {
+                    this[s_scrollbar].addHandle(0.5, 0x343456);
+               }
+               while (this[s_scrollbar].handles.length > this[s_controlPoints].length - 1) {
+                    this[s_scrollbar].popHandle();
+               }
+
+               this[s_labelmanager].removeLabelsByTag("handles");
+               // Identifier for handle
+               var id = 'α';
+               for (var i = 0; i < this[s_scrollbar].handles.length; i++) {
+                    this[s_labelmanager].addLabel(id++, this[s_scrollbar].handles[i].position, "handles", true);
+               }
+
                // matrix of points for every iteration
                var pointMatrix = new Array();
 
                // First set of points is the control polygon
-               pointMatrix.push(this[s_controlPoints]);
+               //pointMatrix.push(this[s_controlPoints]);
+               pointMatrix = this.evaluate(function() {});
 
                // fill matrix with points from each iteration
-               this.evaluate(ratio, function add(points) {
-                    pointMatrix.push(points);
-               });
+               //this.evaluate(ratio, function add(points) {
+               //pointMatrix.push(points);
+               //});
 
                // Helper points radius
                var radius = 3;
                var color = 0x3d3d3d;
 
+               frame0.points = new THREE.Object3D();
+
+               // Impostor template
+               var template = new IMPOSTOR.SphericalImpostor(radius);
+
                // Add labels for control polygon
-               for (var i = 0; i < this[s_controlPoints].length; i++) {
-                    //this[s_labelmanager].addLabel("[000]", this[s_controlPoints][i], "polar", false);
-                    //frame0.labels.push("[000]");
-                    //var obj = new THREE.Object3D();
-                    //obj.position.copy(this[s_controlPoints][i]);
-                    //frame0.points.add(obj);
-               }
+               //for (var i = 0; i < this[s_controlPoints].length; i++) {
+               //frame0.labels.push("[000]");
+               //var imp = template.clone();
+               //imp.position.copy(this[s_controlPoints][i]);
+               //frame0.points.add(imp);
+               //}
 
                // Skip the control polygon
                for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step " + i;
 
-                    // Impostor template
-                    var template = new IMPOSTOR.SphericalImpostor(radius);
                     frame.points = new THREE.Object3D();
 
                     //frame.points = pointMatrix[i];
@@ -87,7 +133,17 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          imp.position.copy(pointMatrix[i][k]);
                          imp.material.uniforms.diffuse.value.set(color);
                          frame.points.add(imp);
-                         frame.labels.push("[100]");
+
+                         var str = "";
+                         for (var m = 0; m < pointMatrix[1].length; m++) {
+                              if (m < pointMatrix[i].length - k - 1) {
+                                   str += "0";
+                              } else {
+                                   // TODO: valueOf(handles[k - 1])
+                                   str += "1";
+                              }
+                         }
+                         frame.labels.push("[" + str + "]");
                     }
 
                     var pointStack = new Array();
@@ -133,7 +189,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                // Create the last frame also by hand
                var frameLast = new HAPPAH.Storyboard.Frame();
                frameLast.title = "Limes curve";
-               frameLast.lines[0] = UTIL.Util.insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
+               //frameLast.lines[0] = UTIL.Util.insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
 
                // Can't create a curve from two points.
                if (this[s_controlPoints].length > 2) {
