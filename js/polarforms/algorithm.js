@@ -3,19 +3,23 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/scrollbar', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, SCROLLBAR, UTIL) {
+define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/scrollbar', '../lib/util', '../lib/colors'], function($, THREE, HAPPAH, IMPOSTOR, SCROLLBAR, UTIL, COLORS) {
 
      var s_controlPoints = Symbol('controlpoints');
      var s_scrollbar = Symbol('scrollbar');
      var s_labelmanager = Symbol('labelmanager');
+     var s_handleChar = Symbol('handlechar');
 
      class Algorithm {
 
           constructor(controlPoints, scrollbar) {
                this.storyboard = this.storyboard.bind(this);
+               this.adjustLabels = this.adjustLabels.bind(this);
 
                this[s_scrollbar] = scrollbar;
                this[s_controlPoints] = controlPoints;
+               // Base character is latin alpha
+               this[s_handleChar] = 0x03B1;
           }
 
           set labelmanager(labelmanager) {
@@ -25,7 +29,27 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
                this[s_scrollbar].value = 0.3;
-               this[s_scrollbar].addHandle(0.7, 0xff0000);
+               this[s_scrollbar].popHandle();
+               this.adjustLabels();
+          }
+
+          adjustLabels() {
+               if (this[s_controlPoints].length == 0) {
+                    return;
+               }
+               // Add handles if necessary
+               while (this[s_scrollbar].handles.length < this[s_controlPoints].length - 1) {
+                    var handle = this[s_scrollbar].addHandle(0.5, COLORS.Colors.COLOR1);
+                    // TODO make scrollbar manage it's own labelmanager, so we
+                    // can simply call handle.setLabel("<text>"); maybe with
+                    // color or something...
+                    handle.label = this[s_labelmanager].addLabel(String.fromCharCode(this[s_handleChar]++), handle, "handle" + handle.id, true);
+               }
+               while (this[s_scrollbar].handles.length > this[s_controlPoints].length - 1) {
+                    var handle = this[s_scrollbar].popHandle();
+                    this[s_labelmanager].removeLabelsByTag("handle" + handle.id);
+                    this[s_handleChar]--;
+               }
           }
 
           evaluate(callback = null) {
@@ -65,7 +89,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], COLORS.Colors.RED);
                frame0.title = "Controlpolygon";
                frame0.points = new THREE.Object3D();
                storyboard.append(frame0);
@@ -76,59 +100,21 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     return storyboard;
                }
 
-               var id = 'a';
-               // Add handles if necessary
-               while (this[s_scrollbar].handles.length < this[s_controlPoints].length - 1) {
-                    var handle = this[s_scrollbar].addHandle(0.5, 0x343456);
-                    var position = handle.position;
-                    //var position = this[s_scrollbar].position;
-                    //position.setX(handle.position.x);
-                    this[s_labelmanager].addLabel(id + this[s_scrollbar].handles.length, position, "handle" + handle.id, true);
-               }
-               while (this[s_scrollbar].handles.length > this[s_controlPoints].length - 1) {
-                    var handle = this[s_scrollbar].popHandle();
-                    this[s_labelmanager].removeLabelsByTag("handle" + handle.id);
-               }
-
-               // Identifier for handle
-               //var id = 'α';
-               //for (var i = 0; i < this[s_scrollbar].handles.length; i++) {
-               //// Remove old label first
-               //this[s_labelmanager].removeLabelsByTag("handles" + i);
-
-               //var position = this[s_scrollbar].position.clone();
-               //position.setX(this[s_scrollbar].handles[i].position.x);
-               //this[s_labelmanager].addLabel(id + i, position, "handles" + i, true);
-               //}
+               this.adjustLabels();
 
                // matrix of points for every iteration
                var pointMatrix = new Array();
 
-               // First set of points is the control polygon
-               //pointMatrix.push(this[s_controlPoints]);
                pointMatrix = this.evaluate(function() {});
-
-               // fill matrix with points from each iteration
-               //this.evaluate(ratio, function add(points) {
-               //pointMatrix.push(points);
-               //});
 
                // Helper points radius
                var radius = 3;
-               var color = 0x3d3d3d;
+               var color = COLORS.Colors.GREY;
 
                frame0.points = new THREE.Object3D();
 
                // Impostor template
                var template = new IMPOSTOR.SphericalImpostor(radius);
-
-               // Add labels for control polygon
-               //for (var i = 0; i < this[s_controlPoints].length; i++) {
-               //frame0.labels.push("[000]");
-               //var imp = template.clone();
-               //imp.position.copy(this[s_controlPoints][i]);
-               //frame0.points.add(imp);
-               //}
 
                // Skip the control polygon
                for (var i = 1; i < pointMatrix.length; i++) {
@@ -149,8 +135,9 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                               if (m < pointMatrix[i].length - k - 1) {
                                    str += "0";
                               } else {
-                                   // TODO: valueOf(handles[k - 1])
-                                   str += "1";
+                                   //FIXME: error null has no properties...
+                                   str += this[s_scrollbar].handles[i - 1].label.text;
+                                   //str += "1";
                               }
                          }
                          frame.labels.push("[" + str + "]");
@@ -176,7 +163,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          segment.push(pointStack[k - 2]);
                          // Paint the strips in the interval's color
                          var strip = (k % 2 == 0) ?
-                              UTIL.Util.insertSegmentStrip(segment, 0x3D3D3D) : UTIL.Util.insertSegmentStrip(segment, 0xFF0000);
+                              UTIL.Util.insertSegmentStrip(segment, COLORS.Colors.BLACK) : UTIL.Util.insertSegmentStrip(segment, COLORS.Colors.RED);
                          frame.lines.push(strip);
 
                     }
@@ -190,20 +177,10 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          frame.lines.pop();
                     }
                     // Also add the newly generated polygon
-                    frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], 0xFF0000));
+                    frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], COLORS.Colors.RED));
                     frame.points.children = frame.points.children.concat(storyboard.frame(storyboard.size() - 1).points);
 
                     storyboard.append(frame);
-               }
-
-               // Create the last frame also by hand
-               var frameLast = new HAPPAH.Storyboard.Frame();
-               frameLast.title = "Limes curve";
-               //frameLast.lines[0] = UTIL.Util.insertSegmentStrip(this.subdivide(4, 0.5), 0xff0000);
-
-               // Can't create a curve from two points.
-               if (this[s_controlPoints].length > 2) {
-                    storyboard.append(frameLast);
                }
 
                return storyboard;
