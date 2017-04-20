@@ -76,20 +76,30 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     return storyboard;
                }
 
+               var id = 'a';
                // Add handles if necessary
                while (this[s_scrollbar].handles.length < this[s_controlPoints].length - 1) {
-                    this[s_scrollbar].addHandle(0.5, 0x343456);
+                    var handle = this[s_scrollbar].addHandle(0.5, 0x343456);
+                    var position = handle.position;
+                    //var position = this[s_scrollbar].position;
+                    //position.setX(handle.position.x);
+                    this[s_labelmanager].addLabel(id + this[s_scrollbar].handles.length, position, "handle" + handle.id, true);
                }
                while (this[s_scrollbar].handles.length > this[s_controlPoints].length - 1) {
-                    this[s_scrollbar].popHandle();
+                    var handle = this[s_scrollbar].popHandle();
+                    this[s_labelmanager].removeLabelsByTag("handle" + handle.id);
                }
 
-               this[s_labelmanager].removeLabelsByTag("handles");
                // Identifier for handle
-               var id = 'α';
-               for (var i = 0; i < this[s_scrollbar].handles.length; i++) {
-                    this[s_labelmanager].addLabel(id++, this[s_scrollbar].handles[i].position, "handles", true);
-               }
+               //var id = 'α';
+               //for (var i = 0; i < this[s_scrollbar].handles.length; i++) {
+               //// Remove old label first
+               //this[s_labelmanager].removeLabelsByTag("handles" + i);
+
+               //var position = this[s_scrollbar].position.clone();
+               //position.setX(this[s_scrollbar].handles[i].position.x);
+               //this[s_labelmanager].addLabel(id + i, position, "handles" + i, true);
+               //}
 
                // matrix of points for every iteration
                var pointMatrix = new Array();
