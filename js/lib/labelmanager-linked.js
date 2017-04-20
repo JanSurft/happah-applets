@@ -17,18 +17,16 @@
 
            constructor(viewport) {
                 this.addLabel = this.addLabel.bind(this);
+                this.updatePositions = this.updatePositions.bind(this);
+
+                $(document).on("dragging", this.updatePositions);
+
                 this.sceneCamera = viewport.camera;
                 this.overlayCamera = viewport.overlayCam;
                 this[s_viewport] = viewport;
                 this[s_head] = null;
                 this.canvas = viewport.canvas;
-           }
 
-           listenTo(element) {
-                element.addEventListener('change', this.updatePositions, false);
-           }
-           stopListeningTo(element) {
-                element.removeEventListener('change', this.updatePositions, false);
            }
 
            /**
@@ -37,19 +35,20 @@
             * camera
             */
            addLabel(text, position, tag = "", overlay = false) {
-                     var label = null;
-                     if (!this[s_head]) {
-                          this[s_head] = new Label(text, position, tag, overlay, null, this[s_viewport]);
-                          this[s_tail] = this[s_head];
-                     } else {
-                          label = new Label(text, position, tag, overlay, null, this[s_viewport]);
-                          this[s_tail].next = label
-                          this[s_tail] = label;
-                     }
+                var label = null;
+                if (!this[s_head]) {
+                     this[s_head] = new Label(text, position, tag, overlay, null, this[s_viewport]);
+                     this[s_tail] = this[s_head];
+                } else {
+                     label = new Label(text, position, tag, overlay, null, this[s_viewport]);
+                     this[s_tail].next = label
+                     this[s_tail] = label;
                 }
-                /**
-                 * Remove all labels with matching tag
-                 */
+           }
+
+           /**
+            * Remove all labels with matching tag
+            */
            removeLabelsByTag(tag) {
                 var iterator = this[s_head];
                 var flag = false;
@@ -58,22 +57,21 @@
                 }
                 if (iterator.tag == tag) {
                      this.removeLabel(iterator);
-                     flag = true;
+                     return true;
                 }
                 var i = 0;
-                while (iterator.next != this[s_head]) {
+                while (iterator.next) {
+                     // Head has already been checked
+                     iterator = iterator.next;
                      if (iterator.tag == tag) {
                           this.removeLabel(iterator);
                           flag = true;
                      }
-                     iterator = iterator.next;
-                     if (i > 200) {
-                          return;
-                     }
-                     i++;
                 }
                 return flag;
            }
+
+           // TODO: removeAfter() to prevent iterating
            removeLabel(label) {
                 // Remove div
                 label.remove();
@@ -107,11 +105,13 @@
             * that was given when added
             */
            updatePositions() {
+                console.log("update positions triggered!");
                 var iterator = this[s_head];
-                if (!this[s_head]) {
+                if (!iterator) {
                      return;
                 } else if (!iterator.next) {
                      iterator.updatePosition();
+                     return;
                 }
                 while (iterator.next) {
                      iterator.updatePosition();
@@ -156,11 +156,9 @@
 
                 if (overlay) {
                      pos.project(this[s_overlayCamera]);
-                     //pos.project(this.overlayCamera);
                      this[s_htmlObject].addClass('overlay');
                 } else {
                      pos.project(this[s_sceneCamera]);
-                     //pos.project(this.sceneCamera);
                 }
                 //pos.project(this[s_overlayCamera]);
 
@@ -180,20 +178,23 @@
                 this[s_htmlObject].append(text);
            }
            updatePosition() {
-                if (this[s_htmlObject].hasClass("overlay")) {
-                     return;
-                }
+                //if (this[s_htmlObject].hasClass("overlay")) {
+                //return;
+                //}
                 var pos = this[s_position].clone();
 
-                pos.project(this[s_sceneCamera]);
-                //pos.project(this.sceneCamera);
+                if (this[s_htmlObject].hasClass("overlay")) {
+                     pos.project(this[s_overlayCamera]);
+                } else {
+                     pos.project(this[s_sceneCamera]);
+                }
 
-                pos.x = Math.round((pos.x + 1) * this[s_canvas].width / 2);
-                pos.y = Math.round((-pos.y + 1) * this[s_canvas].height / 2);
+                pos.x = Math.round((pos.x + 1) * this.canvas.width / 2);
+                pos.y = Math.round((-pos.y + 1) * this.canvas.height / 2);
 
                 // Limit to canvas frame
-                pos.x = (pos.x > this[s_canvas].width - 20) ? this[s_canvas].width - 20 : pos.x;
-                pos.y = (pos.y > this[s_canvas].height - 20) ? this[s_canvas].height - 20 : pos.y;
+                pos.x = (pos.x > this.canvas.width - 20) ? this.canvas.width - 20 : pos.x;
+                pos.y = (pos.y > this.canvas.height - 20) ? this.canvas.height - 20 : pos.y;
 
                 pos.max(new THREE.Vector3(0, 0, 0));
 
