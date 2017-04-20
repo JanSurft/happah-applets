@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './util', './defaults', './colors'], function($, THREE, UTIL, DEFAULTS, COLORS) {
+define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-linked'], function($, THREE, UTIL, DEFAULTS, COLORS, LABEL) {
      var s_camera = Symbol('camera');
      var s_selectionPlane = Symbol('plane');
      var s_selectionLine = Symbol('line');
@@ -30,12 +30,6 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                     // TODO: remove reference to camera
                     // we assume this is only used in an overlay so the
                     // direction is always straight down
-                    //this.camera = viewport.overlayCam;
-                    this.camera = DEFAULTS.Defaults.orthographicCamera($('.hph-canvas'));
-                    this.camera.position.set(0, 1, 0);
-                    this.camera.zoom = 2.2;
-                    this.camera.updateProjectionMatrix();
-                    this.enabled = true;
                     this.camera = viewport.overlayCam;
 
                     // Get world coordinates
@@ -105,7 +99,7 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                     this.add(this.handle);
                     //this.add(this.selectionLine);
                     this.add(bar);
-                    this.handle.position.setZ(position.z);
+                    //this.handle.position.setZ(position.z);
                     this.position.copy((position != null) ? position : new THREE.Vector3());
                     leftVec = this.position.clone().add(leftVec);
                     rightVec = this.position.clone().add(rightVec);
@@ -113,8 +107,9 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                          rightVec);
 
                     // Labels
-                    viewport.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
-                    viewport.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
+                    this.labelManager = new LABEL.LabelManager(viewport);
+                    this.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
+                    this.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
                }
                getIintervalColors() {
                     return this.intervalColors;
@@ -248,6 +243,8 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
 
           } //class Scrollbar
 
+     var s_label = Symbol('label');
+
      class Handle extends THREE.Mesh {
                constructor(position, color) {
                     var geo = new THREE.BoxGeometry(4, 8, 8);
@@ -261,13 +258,20 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                     this.position.setY(6);
                }
 
+               get label() {
+                    return this[s_label];
+               }
+
                get color() {
                     return this.material.color;
                }
 
                get value() {
                     return (this.position.x / 150) + 0.5;
-                    //return this.value;
+               }
+
+               set label(label) {
+                    this[s_label] = label;
                }
 
                set value(value) {
