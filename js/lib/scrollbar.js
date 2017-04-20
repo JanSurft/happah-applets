@@ -105,6 +105,7 @@ define(['jquery', 'three', './util', './defaults', './colors'], function($, THRE
                     this.add(this.handle);
                     //this.add(this.selectionLine);
                     this.add(bar);
+                    this.handle.position.setZ(position.z);
                     this.position.copy((position != null) ? position : new THREE.Vector3());
                     leftVec = this.position.clone().add(leftVec);
                     rightVec = this.position.clone().add(rightVec);
