@@ -67,8 +67,8 @@ require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './al
 
      // Initialize some points
      pointControls.addControlPoints([
-          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
-          new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
+          new THREE.Vector3(50, 0, 60), new THREE.Vector3(-50, 0, 40),
+          new THREE.Vector3(-50, 0, -40), new THREE.Vector3(50, 0, -60)
      ]);
 
      var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
