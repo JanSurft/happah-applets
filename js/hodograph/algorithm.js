@@ -61,7 +61,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                for (var i = 0; i < points.length - 1; i++) {
                     var vector = points[i + 1].clone().sub(points[i]);
                     vector.multiplyScalar(points.length - 1);
-                    var vector2 = this[s_origin].clone().add(vector);
+                    var vector2 = this[s_origin].clone().add(vector).subScalar(-3);
 
                     var line = UTIL.Util.insertSegmentStrip([this[s_origin], vector2], 0x000000);
                     var cone = cone_template.clone();
@@ -83,10 +83,11 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     frame1.lines.push(line);
                     frame1.lines.push(cone);
                }
+               frame1.lines.push(UTIL.Util.insertSegmentStrip(derivativepoints, HAPPAH.Colors.GREY));
 
                // Derivative curve
                var decasteljau = new HAPPAH.DeCasteljauAlgorithm(derivativepoints, this[s_scrollbar]);
-               derivativepoints = decasteljau.subdivide(4, 0.5);
+               derivativepoints = decasteljau.subdivide(6, 0.5);
                frame1.lines.push(UTIL.Util.insertSegmentStrip(derivativepoints, 0x0000ff));
 
                var poly = UTIL.Util.insertSegmentStrip(this.subdivide(4, 0.5), 0x000000);

@@ -17,6 +17,7 @@ module.exports = {
           "precision": __dirname + "/js/precision/main.js",
           "hodograph": __dirname + "/js/hodograph/main.js",
           "polarforms": __dirname + "/js/polarforms/main.js",
+          "ck-junctions": __dirname + "/js/ck-junctions/main.js",
      },
      output: {
           path: './bin',
