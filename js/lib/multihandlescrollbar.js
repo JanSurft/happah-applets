@@ -19,8 +19,12 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                addHandle(value = 0.5, color) {
                     var handle = this.createHandle(value, color);
 
+
                     handle.value = value;
                     this[s_handles].push(handle);
+
+                    // Fix position offset from scrollbar
+                    handle.position.setZ(this.position.z);
 
                     // Add to scene
                     this.add(handle);
