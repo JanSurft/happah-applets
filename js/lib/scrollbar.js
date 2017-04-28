@@ -11,6 +11,7 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
      var s_selectionLine = Symbol('line');
      var s_selectedObject = Symbol('selectedobject');
      var s_viewport = Symbol('viewport');
+     var s_labelManager = Symbol('labelmanager');
 
      class Scrollbar extends THREE.Object3D {
 
@@ -26,6 +27,7 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                          COLORS.Colors.COLOR2
                     ]);
 
+                    this.labelManager = new LABEL.LabelManager(viewport);
 
                     // TODO: remove reference to camera
                     // we assume this is only used in an overlay so the
@@ -237,8 +239,12 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                     this.selectedObject = false;
                }
 
-               createHandle(position, color) {
-                    return new Handle(position, color);
+               createHandle(position, color, text = null) {
+                    var handle = new Handle(position, color);
+                    if (text) {
+                         handle.label = this.labelManager.addLabel(text, handle, "handle" + handle.id, true);
+                    }
+                    return handle;
                }
 
           } //class Scrollbar
