@@ -75,6 +75,9 @@
 
            // TODO: removeAfter() to prevent iterating
            removeLabel(label) {
+                if (!label) {
+                     return;
+                }
                 // Remove div
                 label.remove();
 
