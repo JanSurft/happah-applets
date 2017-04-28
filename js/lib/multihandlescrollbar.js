@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, HAPPAH, UTIL) {
+define(['jquery', 'three', '../lib/happah', '../lib/util', '../lib/labelmanager-linked'], function($, THREE, HAPPAH, UTIL, LABEL) {
      var s_handles = Symbol('handles');
 
      class MultiHandleScrollbar extends HAPPAH.Scrollbar {
@@ -16,8 +16,8 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
                     this[s_handles] = [this.handle];
                }
 
-               addHandle(value = 0.5, color) {
-                    var handle = this.createHandle(value, color);
+               addHandle(value = 0.5, color, text) {
+                    var handle = this.createHandle(value, color, text);
 
 
                     handle.value = value;
@@ -34,6 +34,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/util'], function($, THREE, H
 
                popHandle() {
                     var handle = this[s_handles].pop();
+                    this.labelManager.removeLabel(handle.label);
                     this.remove(handle);
                     return handle;
                }
