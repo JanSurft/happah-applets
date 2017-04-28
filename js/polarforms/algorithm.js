@@ -39,15 +39,15 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                }
                // Add handles if necessary
                while (this[s_scrollbar].handles.length < this[s_controlPoints].length - 1) {
-                    var handle = this[s_scrollbar].addHandle(0.5, COLORS.Colors.COLOR1);
+                    var handle = this[s_scrollbar].addHandle(0.5, COLORS.Colors.COLOR1, String.fromCharCode(this[s_handleChar]++));
                     // TODO make scrollbar manage it's own labelmanager, so we
                     // can simply call handle.setLabel("<text>"); maybe with
                     // color or something...
-                    handle.label = this[s_labelmanager].addLabel(String.fromCharCode(this[s_handleChar]++), handle, "handle" + handle.id, true);
+                    //handle.label = this[s_labelmanager].addLabel(String.fromCharCode(this[s_handleChar]++), handle, "handle" + handle.id, true);
                }
                while (this[s_scrollbar].handles.length > this[s_controlPoints].length - 1) {
                     var handle = this[s_scrollbar].popHandle();
-                    this[s_labelmanager].removeLabelsByTag("handle" + handle.id);
+                    //this[s_labelmanager].removeLabelsByTag("handle" + handle.id);
                     this[s_handleChar]--;
                }
           }
@@ -130,14 +130,30 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          imp.material.uniforms.diffuse.value.set(color);
                          frame.points.add(imp);
 
+                         var length = pointMatrix[i].length;
                          var str = "";
+                         var j = 0;
+
+                         //for (var m = 0; m < length; m++) {
+                         //if (m < length - k - 1) {
+                         //str += "0";
+                         //} else {
+                         //str += this[s_scrollbar].handles[i - 1 - m].label.text;
+                         //}
+                         //}
+
                          for (var m = 0; m < pointMatrix[1].length; m++) {
                               if (m < pointMatrix[i].length - k - 1) {
                                    str += "0";
-                              } else {
-                                   //FIXME: error null has no properties...
+                              } else if (m == pointMatrix[i].length - k - 1) {
                                    str += this[s_scrollbar].handles[i - 1].label.text;
-                                   //str += "1";
+                              } else {
+                                   if (i - 2 >= 0) {
+                                        str += this[s_scrollbar].handles[i - 2].label.text;
+                                   } else {
+                                        str += "1";
+                                        //str += "1";
+                                   }
                               }
                          }
                          frame.labels.push("[" + str + "]");
