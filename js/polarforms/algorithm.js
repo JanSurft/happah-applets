@@ -124,7 +124,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     frame.points = new THREE.Object3D();
 
                     //frame.points = pointMatrix[i];
-                    for (var k in pointMatrix[i]) {
+                    for (var k = 0; k < pointMatrix[i].length; k++) {
                          var imp = template.clone();
                          imp.position.copy(pointMatrix[i][k]);
                          imp.material.uniforms.diffuse.value.set(color);
@@ -142,20 +142,64 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          //}
                          //}
 
-                         for (var m = 0; m < pointMatrix[1].length; m++) {
-                              if (m < pointMatrix[i].length - k - 1) {
-                                   str += "0";
-                              } else if (m == pointMatrix[i].length - k - 1) {
-                                   str += this[s_scrollbar].handles[i - 1].label.text;
-                              } else {
-                                   if (i - 2 >= 0) {
-                                        str += this[s_scrollbar].handles[i - 2].label.text;
-                                   } else {
-                                        str += "1";
-                                        //str += "1";
-                                   }
-                              }
+                         //  k------->
+                         // i .
+                         // |   .              |
+                         // |   (pointMatrix)  |
+                         // |       .          |
+                         // v         .
+
+                         // Length of finished label
+                         var length = pointMatrix.length - 1;
+
+                         // Length of current label
+                         var m = 0;
+
+                         // Push zeros for following iterations
+                         //         [000....]
+                         for (; m < pointMatrix[i].length - k - 1; m++) {
+                              str += "0";
                          }
+
+                         // Push current intervall handle's label
+                         //            [000Z...]
+                         str += this[s_scrollbar].handles[i - 1].label.text;
+                         m++;
+
+                         // Push previous handle's labels
+                         //            [000ZYX.]
+                         for (var l = 0; m < length; m++) {
+                              if (i - 2 - l >= 0) {
+                                   str += this[s_scrollbar].handles[i - 2 - l].label.text;
+                              } else {
+                                   // Fill with ones if no handles left
+                                   //  [000ZYX1]
+                                   str += "1";
+                              }
+                              l++;
+                         }
+
+                         //for (var m = 0; m < pointMatrix[1].length; m++) {
+                         //if (m < pointMatrix[i].length - k - 1) {
+                         //// Fill with zeros for number of iterations
+                         //// [0000000YX]
+                         //str += "0";
+                         //} else if (m == pointMatrix[i].length - k - 1) {
+                         //// Take label of ratio's handle:
+                         //// [000000ZYX]
+                         //str += this[s_scrollbar].handles[i - 1].label.text;
+                         //} else {
+                         //// Add labels of previous iterations
+                         //// -> Z, Z-1, Z-2 ...
+                         //if (i - 2 >= 0) {
+                         //str += this[s_scrollbar].handles[i - 2].label.text;
+                         //} elsei {
+                         //// In case there is no previous
+                         //// iteration, fill with '1'
+                         //str += "1";
+                         //}
+                         //}
+                         //}
                          frame.labels.push("[" + str + "]");
                     }
 
