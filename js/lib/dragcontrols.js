@@ -15,6 +15,8 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
      var s_arrow = Symbol('arrow');
      var s_selectionPlane = Symbol('selectionplane');
      var s_previousPoint = Symbol('previouspoint');
+     var s_highlight = Symbol('highlight');
+     var s_highlightColor = Symbol('highlightcolor');
 
      class DragControls {
           /**
@@ -109,9 +111,27 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                var vector2 = UTIL.Util.getPositionOnCanvas(event);
                var mouseVector = new THREE.Vector3(vector2.x, vector2.y, 0);
 
+               // TODO:
+               // highlight object if we hover mouse over it
+
                // Get 3D vector from 3D mouse position using
                // 'unproject' function
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
+
+               var intersects = this[s_raycaster].intersectObjects(this[s_objects]);
+               if (intersects.length > 0) {
+                    if (this[s_highlight] != intersects[0]) {
+                         // Change color to highlight object
+                         this[s_highlight] = intersects[0];
+                         this[s_highlightColor] = this[s_highlight].material.uniforms.diffuse.value.getHex();
+
+                         this[s_highlight].material.uniforms.diffuse.value.set(0x00FF00);
+                    }
+               } else if (this[s_highlight]) {
+                    // Reset color to old value
+                    this[s_highlight].material.uniforms.diffuse.value.set(this[s_highlightColor]);
+                    this[s_highlight] = null;
+               }
 
                if (this.selectedObject) {
                     // Check the position where the plane is intersected
