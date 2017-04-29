@@ -174,10 +174,10 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                          this.selectedObject = false;
                     }
                     // Inform the viewport to disable controls
-                    //$.event.trigger({
-                    //type: "draggingStarted",
-                    //message: "scrollbar dragging has started!"
-                    //});
+                    $.event.trigger({
+                         type: "draggingStarted",
+                         message: "scrollbar dragging has started!"
+                    });
                }
 
                /** Called whenever a mouse button is moved */
@@ -222,7 +222,7 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                          // New value means new storyboard also disable other
                          // controls e.g. movement
                          $.event.trigger({
-                              type: "draggingStarted",
+                              type: "dragging",
                               message: "scrollbar dragging!"
                          });
                     }
