@@ -27,8 +27,6 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                          COLORS.Colors.COLOR2
                     ]);
 
-                    this.labelManager = new LABEL.LabelManager(viewport);
-
                     // TODO: remove reference to camera
                     // we assume this is only used in an overlay so the
                     // direction is always straight down
@@ -109,9 +107,16 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                          rightVec);
 
                     // Labels
+                    //var leftBox = new THREE.Object3D();
+                    //var rightBox = leftBox.clone();
+                    //leftBox.position.set(leftVec.setX(leftVec.x + 5));
+                    //rightBox.position.set(rightVec.setX(rightVec.x + 5));
+
                     this.labelManager = new LABEL.LabelManager(viewport);
-                    this.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "overlay", true);
-                    this.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "overlay", true);
+                    //this.labelManager.addLabel("0", leftBox, "overlay", true);
+                    //this.labelManager.addLabel("1", rightBox, "overlay", true);
+                    this.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "delimiterLeft", true);
+                    this.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "delimiterRight", true);
                }
                getIintervalColors() {
                     return this.intervalColors;
@@ -239,11 +244,11 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                     this.selectedObject = false;
                }
 
-               createHandle(position, color, text = null) {
+               createHandle(position, color) {
                     var handle = new Handle(position, color);
-                    if (text) {
-                         handle.label = this.labelManager.addLabel(text, handle, "handle" + handle.id, true);
-                    }
+                    //if (text) {
+                    //handle.label = this.labelManager.addLabel(text, handle, "handle" + handle.id, true);
+                    //}
                     return handle;
                }
 
@@ -252,7 +257,7 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
      var s_label = Symbol('label');
 
      class Handle extends THREE.Mesh {
-               constructor(position, color) {
+               constructor(pos, color) {
                     var geo = new THREE.BoxGeometry(4, 8, 8);
                     var mat = new THREE.MeshBasicMaterial({
                          color: color
@@ -260,8 +265,8 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                     super(geo, mat);
 
                     // Apply the position
-                    this.position.setX((position / 150) + 0.5);
                     this.position.setY(6);
+                    this.value = pos;
                }
 
                get label() {
