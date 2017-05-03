@@ -17,17 +17,17 @@ define(['jquery', 'three', '../lib/happah', '../lib/util', '../lib/labelmanager-
                }
 
                addHandle(value = 0.5, color, text) {
-                    var handle = this.createHandle(value, color, text);
+                    var handle = this.createHandle(value, color);
 
 
-                    handle.value = value;
                     this[s_handles].push(handle);
-
-                    // Fix position offset from scrollbar
-                    //handle.position.setZ(this.position.z);
 
                     // Add to scene
                     this.add(handle);
+
+                    if (text) {
+                         handle.label = this.labelManager.addLabel(text, handle, "handle" + handle.id, true);
+                    }
 
                     return handle;
                }
