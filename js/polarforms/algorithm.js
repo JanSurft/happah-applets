@@ -114,7 +114,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                // that way we won't need viewport to handle it.
                this[s_labelmanager].removeLabelsByTag("pts");
 
-               for (var k = 0; k < this[s_controlPoints].length; k++) {
+               for (let k = 0; k < this[s_controlPoints].length; k++) {
                     var str = "";
 
                     for (var m = 0; m < this[s_controlPoints].length - k - 1; m++) {
@@ -122,11 +122,11 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     }
 
                     // Push current intervall handle's label
-                    str += "1";
-                    m++;
+                    //str += "1";
+                    //m++;
 
                     // Push previous handle's labels
-                    for (var l = 0; m < this[s_controlPoints].length - 1; m++) {
+                    for (let l = 0; m < this[s_controlPoints].length - 1 && k != 0; m++) {
                          str += "1";
                          l++;
                     }
@@ -141,7 +141,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                     frame.points = new THREE.Object3D();
 
-                    for (var k = 0; k < pointMatrix[i].length; k++) {
+                    for (let k = 0; k < pointMatrix[i].length; k++) {
 
                          var length = pointMatrix[i].length;
                          var str = "";
