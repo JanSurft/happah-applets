@@ -5,7 +5,7 @@
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['jquery', 'three', './util'], function($, THREE, UTIL) {
+define(['jquery', 'three', './util', './colors'], function($, THREE, UTIL, COLORS) {
      var s_camera = Symbol('camera');
      var s_objects = Symbol('objects');
 
@@ -111,9 +111,6 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                var vector2 = UTIL.Util.getPositionOnCanvas(event);
                var mouseVector = new THREE.Vector3(vector2.x, vector2.y, 0);
 
-               // TODO:
-               // highlight object if we hover mouse over it
-
                // Get 3D vector from 3D mouse position using
                // 'unproject' function
                this[s_raycaster].setFromCamera(mouseVector, this[s_camera]);
@@ -125,7 +122,7 @@ define(['jquery', 'three', './util'], function($, THREE, UTIL) {
                          this[s_highlight] = intersects[0];
                          this[s_highlightColor] = this[s_highlight].material.uniforms.diffuse.value.getHex();
 
-                         this[s_highlight].material.uniforms.diffuse.value.set(0x00FF00);
+                         this[s_highlight].material.uniforms.diffuse.value.set(COLORS.Colors.HIGHLIGHT);
                     }
                } else if (this[s_highlight]) {
                     // Reset color to old value
