@@ -11,6 +11,7 @@
       var s_head = Symbol('head');
       var s_tail = Symbol('tail');
       var s_viewport = Symbol('viewport');
+      var s_counter = Symbol('counter');
 
       // TODO: add sentinel object to prevent assertions
       class LabelManager {
@@ -21,6 +22,7 @@
 
                 $(document).on("dragging", this.updatePositions);
 
+                this[s_counter] = 0;
                 this.sceneCamera = viewport.camera;
                 this.overlayCamera = viewport.overlayCam;
                 this[s_viewport] = viewport;
@@ -38,13 +40,14 @@
            addLabel(text, parent, tag = "", overlay = false) {
                 var label = null;
                 if (!this[s_head]) {
-                     this[s_head] = new Label(text, parent, tag, overlay, null, this[s_viewport]);
+                     this[s_head] = new Label(text, parent, tag, overlay, null, this[s_viewport], this[s_counter]);
                      this[s_tail] = this[s_head];
                 } else {
-                     label = new Label(text, parent, tag, overlay, null, this[s_viewport]);
+                     label = new Label(text, parent, tag, overlay, null, this[s_viewport], this[s_counter]);
                      this[s_tail].next = label
                      this[s_tail] = label;
                 }
+                this[s_counter]++;
                 return label;
            }
 
@@ -57,18 +60,20 @@
                 if (!iterator) {
                      return flag;
                 }
-                if (iterator.tag == tag) {
-                     this.removeLabel(iterator);
-                     return true;
-                }
+                // TODO: fucks up here, not iterating
+                // only removing first occurance and the nreturning...
+                //if (iterator.tag == tag) {
+                //this.removeLabel(iterator);
+                //return true;
+                //}
                 var i = 0;
                 while (iterator.next) {
                      // Head has already been checked
-                     iterator = iterator.next;
                      if (iterator.tag == tag) {
                           this.removeLabel(iterator);
                           flag = true;
                      }
+                     iterator = iterator.next;
                 }
                 return flag;
            }
@@ -133,7 +138,7 @@
 
       class Label {
 
-           constructor(text, parent, tag = "", overlay = false, next, viewport) {
+           constructor(text, parent, tag = "", overlay = false, next, viewport, number) {
                 this[s_text] = text;
                 this[s_parent] = parent;
                 this[s_next] = next;
@@ -144,10 +149,11 @@
                 this.viewport = viewport;
 
                 // Create a new container
-                $("#hph-canvas-wrapper").append("<div class=" + "label" + tag + "></div>");
+                //$("#hph-canvas-wrapper").append("<div class=" + tag + tag + "></div>");
+                $("#hph-canvas-wrapper").append("<div class=" + tag + number + "></div>");
 
                 // Get a "pointer" to our new label
-                this[s_htmlObject] = $(".label" + tag);
+                this[s_htmlObject] = $("." + tag + number);
 
                 // CSS settings
                 this[s_htmlObject].css("position", "absolute");
@@ -163,11 +169,12 @@
                 this[s_htmlObject].css("-ms-user-select", "none");
                 this[s_htmlObject].css("user-select", "none");
 
+                //this[s_htmlObject].addClass(tag);
                 if (overlay) {
-                     this[s_htmlObject].addClass('overlay');
+                     this[s_htmlObject].addClass("overlay");
                 }
-                this.updatePosition();
                 this[s_htmlObject].append(text);
+                this.updatePosition();
            }
 
            updatePosition() {
