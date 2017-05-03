@@ -6,8 +6,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', './dragcontrols',
-     './spherical-impostor', './defaults', './labelmanager'
-], function(ALGORITHM, $, THREE, dragcontrols, TrackBallControls, sphericalimpostor, defaults, LABEL) {
+     './defaults', './labelmanager'
+], function(ALGORITHM, $, THREE, dragcontrols, TrackBallControls, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
