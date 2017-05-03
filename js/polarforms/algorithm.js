@@ -39,15 +39,10 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                }
                // Add handles if necessary
                while (this[s_scrollbar].handles.length < this[s_controlPoints].length - 1) {
-                    var handle = this[s_scrollbar].addHandle(0.5, COLORS.Colors.COLOR1, String.fromCharCode(this[s_handleChar]++));
-                    // TODO make scrollbar manage it's own labelmanager, so we
-                    // can simply call handle.setLabel("<text>"); maybe with
-                    // color or something...
-                    //handle.label = this[s_labelmanager].addLabel(String.fromCharCode(this[s_handleChar]++), handle, "handle" + handle.id, true);
+                    this[s_scrollbar].addHandle(this[s_scrollbar].handles.length * 0.25 + 0.25, COLORS.Colors.COLOR1, String.fromCharCode(this[s_handleChar]++));
                }
                while (this[s_scrollbar].handles.length > this[s_controlPoints].length - 1) {
-                    var handle = this[s_scrollbar].popHandle();
-                    //this[s_labelmanager].removeLabelsByTag("handle" + handle.id);
+                    this[s_scrollbar].popHandle();
                     this[s_handleChar]--;
                }
           }
@@ -113,34 +108,44 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                frame0.points = new THREE.Object3D();
 
+               // TODO: undefined has no properties error cause here.
+               // need to add controlpoints to the frame, so labels have a
+               // parent... OR simply add labels to own labelmanager
+               // that way we won't need viewport to handle it.
+               this[s_labelmanager].removeLabelsByTag("pts");
+
+               for (var k = 0; k < this[s_controlPoints].length; k++) {
+                    var str = "";
+
+                    for (var m = 0; m < this[s_controlPoints].length - k - 1; m++) {
+                         str += "0";
+                    }
+
+                    // Push current intervall handle's label
+                    str += "1";
+                    m++;
+
+                    // Push previous handle's labels
+                    for (var l = 0; m < this[s_controlPoints].length - 1; m++) {
+                         str += "1";
+                         l++;
+                    }
+                    this[s_labelmanager].addLabel("[" + str + "]", this[s_controlPoints][k], "pts", false);
+               }
                // Impostor template
                var template = new IMPOSTOR.SphericalImpostor(radius);
 
-               // Skip the control polygon
                for (var i = 1; i < pointMatrix.length; i++) {
                     var frame = new HAPPAH.Storyboard.Frame();
                     frame.title = "Step " + i;
 
                     frame.points = new THREE.Object3D();
 
-                    //frame.points = pointMatrix[i];
                     for (var k = 0; k < pointMatrix[i].length; k++) {
-                         var imp = template.clone();
-                         imp.position.copy(pointMatrix[i][k]);
-                         imp.material.uniforms.diffuse.value.set(color);
-                         frame.points.add(imp);
 
                          var length = pointMatrix[i].length;
                          var str = "";
                          var j = 0;
-
-                         //for (var m = 0; m < length; m++) {
-                         //if (m < length - k - 1) {
-                         //str += "0";
-                         //} else {
-                         //str += this[s_scrollbar].handles[i - 1 - m].label.text;
-                         //}
-                         //}
 
                          //  k------->
                          // i .
@@ -163,7 +168,11 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                          // Push current intervall handle's label
                          //            [000Z...]
-                         str += this[s_scrollbar].handles[i - 1].label.text;
+                         if (i == 0) {
+                              str += "1";
+                         } else {
+                              str += this[s_scrollbar].handles[i - 1].label.text;
+                         }
                          m++;
 
                          // Push previous handle's labels
@@ -207,6 +216,11 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                     // The previous iteration has one point more.
                     for (var k in pointMatrix[i]) {
+                         var imp = template.clone();
+                         imp.position.copy(pointMatrix[i][k]);
+                         imp.material.uniforms.diffuse.value.set(color);
+                         frame.points.add(imp);
+
                          // Push first one from last iteration
                          pointStack.push(pointMatrix[i - 1][k]);
 
