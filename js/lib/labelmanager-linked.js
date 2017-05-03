@@ -60,20 +60,27 @@
                 if (!iterator) {
                      return flag;
                 }
-                // TODO: fucks up here, not iterating
-                // only removing first occurance and the nreturning...
-                //if (iterator.tag == tag) {
+                // FIXME this removes the first occurence and returns
+                // immediately
+                //if (iterator.tag === tag) {
+                //var buffer = iterator.next;
                 //this.removeLabel(iterator);
-                //return true;
+                //iterator = buffer;
                 //}
-                var i = 0;
+
                 while (iterator.next) {
                      // Head has already been checked
-                     if (iterator.tag == tag) {
-                          this.removeLabel(iterator);
+                     if (iterator.tag === tag) {
+                          var previous = iterator;
+                          iterator = iterator.next;
+                          this.removeLabel(previous);
                           flag = true;
+                     } else {
+                          iterator = iterator.next;
                      }
-                     iterator = iterator.next;
+                }
+                if (iterator.tag == tag) {
+                     this.removeLabel(iterator);
                 }
                 return flag;
            }
