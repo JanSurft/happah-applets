@@ -237,7 +237,13 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                this[s_camera].updateProjectionMatrix();
 
                // Label positions need to be adjusted
-               this[s_labelmanager].updatePositions();
+               //this[s_labelmanager].updatePositions();
+               //FIXME: this causes a lot of work since the storyboard is
+               //rebuilt...
+               $.event.trigger({
+                    type: "dragging",
+                    message: "actually zooming"
+               });
           }
 
           /**

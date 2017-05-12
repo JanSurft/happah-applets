@@ -143,6 +143,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                               l++;
                          }
 
+                         // TODO: add to own labelmanager?
                          frame.labels.push("[" + str + "]");
                     }
 
