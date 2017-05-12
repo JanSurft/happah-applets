@@ -175,14 +175,15 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                          // Enable drag-mode
                          this.selectedObject = true;
 
+                         // Inform the viewport to disable controls
+                         $.event.trigger({
+                              type: "draggingStarted",
+                              message: "scrollbar dragging has started!"
+                         });
+
                     } else {
                          this.selectedObject = false;
                     }
-                    // Inform the viewport to disable controls
-                    $.event.trigger({
-                         type: "draggingStarted",
-                         message: "scrollbar dragging has started!"
-                    });
                }
 
                /** Called whenever a mouse button is moved */

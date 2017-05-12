@@ -134,13 +134,14 @@ define(['jquery', 'three', '../lib/happah', '../lib/util', '../lib/labelmanager-
                          }
                          // Enable drag-mode
                          this.selectedObject = intersects[0].object;
+
+                         $.event.trigger({
+                              type: "draggingStarted",
+                              message: "scrollbar dragging has started!"
+                         });
                     } else {
                          this.selectedObject = false;
                     }
-                    $.event.trigger({
-                         type: "draggingStarted",
-                         message: "scrollbar dragging has started!"
-                    });
                }
 
                /** Called whenever a mouse button is moved */
