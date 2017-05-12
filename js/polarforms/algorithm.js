@@ -2,24 +2,24 @@
 //
 // @author Tarek Wilkening (tarek_wilkening@web.de)
 //
+// De Casteljau's algorithm with polar form labels, showing the ratios for the
+// current point.
+//
 //////////////////////////////////////////////////////////////////////////////
 define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/scrollbar', '../lib/util', '../lib/colors'], function($, THREE, HAPPAH, IMPOSTOR, SCROLLBAR, UTIL, COLORS) {
 
      var s_controlPoints = Symbol('controlpoints');
      var s_scrollbar = Symbol('scrollbar');
      var s_labelmanager = Symbol('labelmanager');
-     var s_handleChar = Symbol('handlechar');
 
-     class Algorithm {
+     class Algorithm extends HAPPAH.DeCasteljauAlgorithm {
 
           constructor(controlPoints, scrollbar) {
+               super(controlPoints, scrollbar);
                this.storyboard = this.storyboard.bind(this);
-               this.adjustLabels = this.adjustLabels.bind(this);
 
                this[s_scrollbar] = scrollbar;
                this[s_controlPoints] = controlPoints;
-               // Base character is latin alpha
-               this[s_handleChar] = 0x03B1;
           }
 
           set labelmanager(labelmanager) {
@@ -28,50 +28,9 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
-               this[s_scrollbar].value = 0.3;
-               this[s_scrollbar].popHandle();
-               this.adjustLabels();
-          }
-
-          adjustLabels() {
-               if (this[s_controlPoints].length == 0) {
-                    return;
-               }
-               // Add handles if necessary
-               while (this[s_scrollbar].handles.length < this[s_controlPoints].length - 1) {
-                    this[s_scrollbar].addHandle(this[s_scrollbar].handles.length * 0.25 + 0.25, COLORS.Colors.COLOR1, String.fromCharCode(this[s_handleChar]++));
-               }
-               while (this[s_scrollbar].handles.length > this[s_controlPoints].length - 1) {
-                    this[s_scrollbar].popHandle();
-                    this[s_handleChar]--;
-               }
-          }
-
-          evaluate(callback = null) {
-               var segmentLength = this[s_controlPoints].length;
-               var points = new Array(segmentLength);
-               points[0] = new Array(segmentLength);
-               for (var i in this[s_controlPoints]) {
-                    points[0][i] = this[s_controlPoints][i];
-               }
-               // Until only 1 point remains
-               for (var i = 0; i < segmentLength - 1; i++) {
-                    points[i + 1] = new Array(segmentLength - i - 1);
-                    // Calc next level points
-                    for (var j = 0; j < points[i].length - 1; j++) {
-                         var newPoint = points[i][j].clone();
-                         // Not sure if value(i) or (i-1)
-                         newPoint.multiplyScalar(1 - this[s_scrollbar].valueOf(i));
-                         var tmpPoint = points[i][j + 1].clone();
-                         tmpPoint.multiplyScalar(this[s_scrollbar].valueOf(i));
-                         newPoint.add(tmpPoint);
-                         points[i + 1][j] = newPoint;
-                    }
-                    callback(points[i + 1]);
-               }
-               // return points[points.length -1][0];
-               return points;
-
+               let handle = this[s_scrollbar].getHandle();
+               handle.geometry.scale(0.75, 1, 1);
+               this[s_labelmanager].addLabel("C", handle, "interval", true);
           }
 
           storyboard() {
@@ -79,7 +38,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                if (this[s_scrollbar] == null) {
                     ratio = 0.5;
                } else {
-                    ratio = this[s_scrollbar].valueOf(0);
+                    ratio = this[s_scrollbar].value;
                }
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
@@ -95,12 +54,14 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     return storyboard;
                }
 
-               this.adjustLabels();
-
                // matrix of points for every iteration
                var pointMatrix = new Array();
 
-               pointMatrix = this.evaluate(function() {});
+               //pointMatrix = this.evaluate(function() {});
+               pointMatrix.push(this[s_controlPoints]);
+               this.evaluate(ratio, function add(points) {
+                    pointMatrix.push(points);
+               });
 
                // Helper points radius
                var radius = 3;
@@ -108,10 +69,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
 
                frame0.points = new THREE.Object3D();
 
-               // TODO: undefined has no properties error cause here.
-               // need to add controlpoints to the frame, so labels have a
-               // parent... OR simply add labels to own labelmanager
-               // that way we won't need viewport to handle it.
                this[s_labelmanager].removeLabelsByTag("pts");
 
                for (let k = 0; k < this[s_controlPoints].length; k++) {
@@ -120,10 +77,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     for (var m = 0; m < this[s_controlPoints].length - k - 1; m++) {
                          str += "0";
                     }
-
-                    // Push current intervall handle's label
-                    //str += "1";
-                    //m++;
 
                     // Push previous handle's labels
                     for (let l = 0; m < this[s_controlPoints].length - 1 && k != 0; m++) {
@@ -171,7 +124,8 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          if (i == 0) {
                               str += "1";
                          } else {
-                              str += this[s_scrollbar].handles[i - 1].label.text;
+                              //str += this[s_scrollbar].handles[i - 1].label.text;
+                              str += "C";
                          }
                          m++;
 
@@ -179,7 +133,8 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          //            [000ZYX.]
                          for (var l = 0; m < length; m++) {
                               if (i - 2 - l >= 0) {
-                                   str += this[s_scrollbar].handles[i - 2 - l].label.text;
+                                   //str += this[s_scrollbar].handles[i - 2 - l].label.text;
+                                   str += "C";
                               } else {
                                    // Fill with ones if no handles left
                                    //  [000ZYX1]
@@ -188,27 +143,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                               l++;
                          }
 
-                         //for (var m = 0; m < pointMatrix[1].length; m++) {
-                         //if (m < pointMatrix[i].length - k - 1) {
-                         //// Fill with zeros for number of iterations
-                         //// [0000000YX]
-                         //str += "0";
-                         //} else if (m == pointMatrix[i].length - k - 1) {
-                         //// Take label of ratio's handle:
-                         //// [000000ZYX]
-                         //str += this[s_scrollbar].handles[i - 1].label.text;
-                         //} else {
-                         //// Add labels of previous iterations
-                         //// -> Z, Z-1, Z-2 ...
-                         //if (i - 2 >= 0) {
-                         //str += this[s_scrollbar].handles[i - 2].label.text;
-                         //} elsei {
-                         //// In case there is no previous
-                         //// iteration, fill with '1'
-                         //str += "1";
-                         //}
-                         //}
-                         //}
                          frame.labels.push("[" + str + "]");
                     }
 
