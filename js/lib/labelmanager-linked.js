@@ -155,9 +155,6 @@
                 this.canvas = viewport.canvas;
                 this.viewport = viewport;
 
-                // To get the correct world position of parent object.
-                viewport.overlay.updateMatrixWorld();
-
                 // Create a new container
                 //$("#hph-canvas-wrapper").append("<div class=" + tag + tag + "></div>");
                 $("#hph-canvas-wrapper").append("<div class=" + tag + number + "></div>");
@@ -197,7 +194,7 @@
                 }
 
                 pos.x = Math.round((pos.x + 1) * this.canvas.width / 2);
-                pos.y = Math.round((-pos.y + 1) * this.canvas.height / 2);
+                pos.y = Math.round((-pos.y + 1) * this.canvas.height / 2) + 10;
 
                 // Limit to canvas frame
                 pos.x = (pos.x > this.canvas.width - 20) ? this.canvas.width - 20 : pos.x;
