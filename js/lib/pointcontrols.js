@@ -48,10 +48,14 @@ define(['jquery', 'three', './spherical-impostor', './util'], function($, THREE,
 
           /** Adds a control point to the scene */
           addControlPoints(points, head = false, color = new THREE.Color(0x888888)) {
+               var template = new happah.SphericalImpostor(3);
+               template.material.uniforms.diffuse.value.set(color);
+
                for (var i in points) {
-                    var sphere = new happah.SphericalImpostor(3);
+                    var sphere = template.clone();
                     sphere.material.uniforms.diffuse.value.set(color);
                     sphere.position.copy(points[i]);
+                    sphere.updateMatrixWorld();
 
                     // Add the point to head/tail of the array
                     if (head) {
