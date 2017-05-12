@@ -155,6 +155,9 @@
                 this.canvas = viewport.canvas;
                 this.viewport = viewport;
 
+                // To get the correct world position of parent object.
+                viewport.overlay.updateMatrixWorld();
+
                 // Create a new container
                 //$("#hph-canvas-wrapper").append("<div class=" + tag + tag + "></div>");
                 $("#hph-canvas-wrapper").append("<div class=" + tag + number + "></div>");
@@ -186,7 +189,6 @@
 
            updatePosition() {
                 var pos = this[s_parent].isVector3 ? this[s_parent].clone() : this[s_parent].getWorldPosition();
-                //var pos = this[s_parent].position.clone();
 
                 if (this[s_htmlObject].hasClass("overlay")) {
                      pos.project(this[s_overlayCamera]);
