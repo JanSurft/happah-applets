@@ -38,6 +38,7 @@ require(['../lib/happah', '../lib/defaults', '../lib/pointcontrols', './algorith
      viewport.camera.position.set(0, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 4;
+     viewport.camera.updateMatrixWorld();
      viewport.camera.updateProjectionMatrix();
 
      // Create a frame
