@@ -42,7 +42,6 @@ define(['jquery', 'three', '../lib/storyboard', '../lib/spherical-impostor', '..
 
           /**
            * Calculate from 0 to 1
-           * TODO: continue curves
            */
           evaluate(i, n, min, max) {
                var points = [];
