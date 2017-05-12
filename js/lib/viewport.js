@@ -5,9 +5,9 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', './dragcontrols',
+define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
      './defaults', './labelmanager'
-], function(ALGORITHM, $, THREE, dragcontrols, TrackBallControls, defaults, LABEL) {
+], function(ALGORITHM, $, THREE, CONTROLS, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -17,7 +17,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
      var s_trackballControls = Symbol('trackballControls');
      var s_counter = Symbol('counter');
      var s_currentFrame = Symbol('currentframe');
-     var s_dragControls = Symbol('dragControls');
+     //var s_dragControls = Symbol('dragControls');
      var s_drawPoly = Symbol('drawpoly');
      var s_grid = Symbol('grid');
      var s_overlay = Symbol('overlay');
@@ -119,8 +119,9 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', 
                // add event listeners for user interactions
                this[s_renderer].domElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
                this[s_renderer].domElement.addEventListener('wheel', this.mouseWheel, false);
+
+
                // This is only for trackballcontrols
-               // TODO: remove
                this.update();
                $.event.trigger({
                     type: "rebuildStoryboard"
