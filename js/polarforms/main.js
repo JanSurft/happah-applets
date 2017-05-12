@@ -28,41 +28,46 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './algorithm', '../lib/multihandlescrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, LABEL, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './algorithm', '../lib/scrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, LABEL, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
      // Canvas element
-     var canvas = $('.hph-canvas')[0];
-     var scene = new happah.Scene();
+     let canvas = $('.hph-canvas')[0];
+     let scene = new happah.Scene();
 
      // Points & impostors
-     var points = [];
-     var impostors = new THREE.Object3D();
+     let points = [];
+     let impostors = new THREE.Object3D();
 
      scene.add(impostors);
 
      // Canvas coordinates relative to middle of canvas element
-     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+     let pos = new THREE.Vector3(0, -(1 / 1.2), 0);
 
-     var algorithm = new ALGORITHM.Algorithm(points, null);
-     var viewport = new happah.Viewport(canvas, scene, algorithm);
+     let algorithm = new ALGORITHM.Algorithm(points, null);
+     let viewport = new happah.Viewport(canvas, scene, algorithm);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
+
+     // This one fixes the position of labels when unproject is used.
+     viewport.camera.updateMatrixWorld();
      viewport.camera.updateProjectionMatrix();
      viewport.algorithm = algorithm;
 
-     algorithm.labelmanager = new LABEL.LabelManager(viewport);
+     let labelManager = new LABEL.LabelManager(viewport);
+     algorithm.labelmanager = labelManager;
 
-     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.5);
+     //let scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.5);
+     let scrollbar = new SCROLLBAR.Scrollbar(pos, viewport, 0.5);
      algorithm.scrollbar = scrollbar;
 
-     var dragControls = new happah.DragControls(impostors.children, viewport.camera);
+     let dragControls = new happah.DragControls(impostors.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      //algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
 
-     var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
+     let pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
      pointControls.listenTo(viewport.renderer.domElement);
 
      // Initialize some points
@@ -71,7 +76,8 @@ require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './al
           new THREE.Vector3(-50, 0, -40), new THREE.Vector3(50, 0, -60)
      ]);
 
-     var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
-     var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+     let toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
+     let menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+
      console.log("happah initialized.");
 });

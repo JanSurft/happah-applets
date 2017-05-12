@@ -106,11 +106,9 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                     this.selectionLine = new THREE.Line3(leftVec,
                          rightVec);
 
-                    // Labels
-                    //var leftBox = new THREE.Object3D();
-                    //var rightBox = leftBox.clone();
-                    //leftBox.position.set(leftVec.setX(leftVec.x + 5));
-                    //rightBox.position.set(rightVec.setX(rightVec.x + 5));
+                    // Labels update offsets for handles to get correct world
+                    // position when used as parent for labels...
+                    this.updateMatrixWorld();
 
                     this.labelManager = new LABEL.LabelManager(viewport);
                     //this.labelManager.addLabel("0", leftBox, "overlay", true);
@@ -132,8 +130,13 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                     //this[s_enabled] = false;
                     this.enabled = false;
                }
+
+               // TBD: replace all occurences with get handle() from below!
                get value() {
                     return this.handle.value;
+               }
+               getHandle() {
+                    return this.handle;
                }
 
                //set handle(handle2) {
