@@ -276,8 +276,8 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                     //this[s_labelmanager].updatePositions();
 
                     // Create new labels for intermediate points
-                    for (var i = 0; i < currentFrame.labels.length; i++) {
-                         this[s_labelmanager].addLabel(currentFrame.labels[i], points.children[i], "points", false);
+                    for (var i in currentFrame.labels) {
+                         this[s_labelmanager].addLabel(i, points.children[i].position, "points", false);
                     }
 
                     // THIS PART WAS MOVED HERE FROM SCENE
