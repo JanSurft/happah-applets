@@ -15,7 +15,7 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
 
      class Scrollbar extends THREE.Object3D {
 
-               constructor(position, viewport, initialValue = 0.5) {
+               constructor(position, viewport, initialValue = 0.5, delLeft = "0", delRight = "1") {
                     super();
 
                     this.mouseDown = this.mouseDown.bind(this);
@@ -113,8 +113,8 @@ define(['jquery', 'three', './util', './defaults', './colors', './labelmanager-l
                     this.labelManager = new LABEL.LabelManager(viewport);
                     //this.labelManager.addLabel("0", leftBox, "overlay", true);
                     //this.labelManager.addLabel("1", rightBox, "overlay", true);
-                    this.labelManager.addLabel("0", leftVec.setX(leftVec.x + 5), "delimiterLeft", true);
-                    this.labelManager.addLabel("1", rightVec.setX(rightVec.x + 5), "delimiterRight", true);
+                    this.labelManager.addLabel(delLeft, leftVec.setX(leftVec.x + 5), "delimiterLeft", true);
+                    this.labelManager.addLabel(delRight, rightVec.setX(rightVec.x + 5), "delimiterRight", true);
                }
                getIintervalColors() {
                     return this.intervalColors;
