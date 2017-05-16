@@ -30,7 +30,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                this[s_scrollbar] = scrollbar;
                let handle = this[s_scrollbar].getHandle();
                handle.geometry.scale(0.75, 1, 1);
-               this[s_labelmanager].addLabel("C", handle, "interval", true);
+               this[s_labelmanager].addLabel("c", handle, "interval", true);
           }
 
           storyboard() {
@@ -75,12 +75,12 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     var str = "";
 
                     for (var m = 0; m < this[s_controlPoints].length - k - 1; m++) {
-                         str += "0";
+                         str += "a";
                     }
 
                     // Push previous handle's labels
                     for (let l = 0; m < this[s_controlPoints].length - 1 && k != 0; m++) {
-                         str += "1";
+                         str += "b";
                          l++;
                     }
                     this[s_labelmanager].addLabel("[" + str + "]", this[s_controlPoints][k], "pts", false);
@@ -116,16 +116,16 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          // Push zeros for following iterations
                          //         [000....]
                          for (; m < pointMatrix[i].length - k - 1; m++) {
-                              str += "0";
+                              str += "a";
                          }
 
                          // Push current intervall handle's label
                          //            [000Z...]
                          if (i == 0) {
-                              str += "1";
+                              str += "b";
                          } else {
                               //str += this[s_scrollbar].handles[i - 1].label.text;
-                              str += "C";
+                              str += "c";
                          }
                          m++;
 
@@ -134,11 +134,11 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          for (var l = 0; m < length; m++) {
                               if (i - 2 - l >= 0) {
                                    //str += this[s_scrollbar].handles[i - 2 - l].label.text;
-                                   str += "C";
+                                   str += "c";
                               } else {
                                    // Fill with ones if no handles left
                                    //  [000ZYX1]
-                                   str += "1";
+                                   str += "b";
                               }
                               l++;
                          }
@@ -180,6 +180,8 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     // Merge with the previous frame's lines
                     if (i != 1) {
                          frame.lines = frame.lines.concat(storyboard.frame(storyboard.size() - 1).lines);
+                         frame.labels = frame.labels.concat(storyboard.frame(storyboard.size() - 1).labels);
+                         frame.points.children = frame.points.children.concat(storyboard.frame(storyboard.size() - 1).points.children);
 
                          // Remove the last mesh from the previous iteration
                          // to prevent overlapping lines
@@ -187,7 +189,6 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     }
                     // Also add the newly generated polygon
                     frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], COLORS.Colors.RED));
-                    frame.points.children = frame.points.children.concat(storyboard.frame(storyboard.size() - 1).points);
 
                     storyboard.append(frame);
                }

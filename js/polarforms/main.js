@@ -57,7 +57,7 @@ require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './al
      algorithm.labelmanager = labelManager;
 
      //let scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.5);
-     let scrollbar = new SCROLLBAR.Scrollbar(pos, viewport, 0.5);
+     let scrollbar = new SCROLLBAR.Scrollbar(pos, viewport, 0.5, "a", "b");
      algorithm.scrollbar = scrollbar;
 
      let dragControls = new happah.DragControls(impostors.children, viewport.camera);
