@@ -6,7 +6,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
-     './defaults', './labelmanager'
+     './defaults', './labelmanager-linked'
 ], function(ALGORITHM, $, THREE, CONTROLS, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
@@ -75,7 +75,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                this[s_sequence] = false;
                this[s_storyboard] = algorithm.storyboard();
                this[s_storyboardNeedsUpdate] = false;
-               this[s_labelmanager] = new LABEL.LabelManager(this[s_camera], this[s_cameraOverlay]);
+               this[s_labelmanager] = new LABEL.LabelManager(this);
 
                this[s_scene] = scene;
                this[s_scene].add(defaults.Defaults.basicLights());
@@ -266,6 +266,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                     this[s_storyboard].index = storyboard_index;
                     this[s_storyboardNeedsUpdate] = false;
                     this[s_sceneNeedsUpdate] = true;
+                    this[s_labelmanager].updatePositions();
                }
 
                // Paint the scene if necessary
@@ -276,14 +277,17 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                     var points = currentFrame.points;
 
                     // Remove old labels before adding new ones
-                    this[s_labelmanager].removeLabels("points");
+                    this[s_labelmanager].removeLabelsByTag("points");
 
                     // Also update remaining labels
                     //this[s_labelmanager].updatePositions();
 
+                    // TODO: only reset labels when the storyboard updates.
+                    // when the scene needs update, simply call update on every
+                    // label!
                     // Create new labels for intermediate points
-                    for (var i in currentFrame.labels) {
-                         this[s_labelmanager].addLabel(i, points.children[i].position, "points", false);
+                    for (var i = 0; i < points.children.length; i++) {
+                         this[s_labelmanager].addLabel(currentFrame.labels[i], points.children[i].position, "points", false);
                     }
 
                     // THIS PART WAS MOVED HERE FROM SCENE
