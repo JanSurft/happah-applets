@@ -73,7 +73,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                this[s_renderer].setClearColor(background_color);
                this[s_renderer].setSize($(canvas).width(), $(canvas).height());
                this[s_sequence] = false;
-               this[s_storyboard] = algorithm.storyboard();
+               this[s_storyboard] = this[s_algorithm].storyboard();
                this[s_storyboardNeedsUpdate] = false;
                this[s_labelmanager] = new LABEL.LabelManager(this);
 
