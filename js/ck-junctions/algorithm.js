@@ -206,6 +206,20 @@ class Algorithm {
                     frame.points.add(cp_imp);
                }
 
+               // Add additional constructional points and lines
+               let constrPointImpTmpl = new HAPPAH.SphericalImpostor(3);
+               constrPointImpTmpl.material.uniforms.diffuse.value.set(
+                    HAPPAH.Colors.COLOR3);
+               for (let constrPoint of characteristicPoints[frameCounter]) {
+                    let newPoint = constrPointImpTmpl.clone();
+                    newPoint.position.copy(constrPoint);
+                    frame.points.add(newPoint);
+               }
+               let constrPointLine = HAPPAH.Util.insertDashedLine(
+                    characteristicPoints[frameCounter],
+                    HAPPAH.Colors.GREY)
+               frame.lines.push(constrPointLine);
+
                // Add left and right curve control polygons
                frame.lines.push(HAPPAH.Util.insertSegmentStrip(
                     leftPoints, HAPPAH.Colors.COLOR1));
