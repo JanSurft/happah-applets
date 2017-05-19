@@ -46,7 +46,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                this.update = this.update.bind(this);
 
                this[s_points] = new THREE.Object3D();
-               this[s_lines] = [new THREE.Object3D()];
+               this[s_lines] = new THREE.Object3D();
                if (algorithm != null) {
                     this[s_algorithm] = algorithm;
                } else {
@@ -286,24 +286,32 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                     // when the scene needs update, simply call update on every
                     // label!
                     // Create new labels for intermediate points
-                    for (var i = 0; i < points.children.length; i++) {
+                    for (let i = 0; i < points.children.length; i++) {
                          this[s_labelmanager].addLabel(currentFrame.labels[i], points.children[i].position, "points", false);
                     }
 
-                    // THIS PART WAS MOVED HERE FROM SCENE
+                    // fixes memory leak caused by multiplied shader code saved
+                    // as strings
+                    for (let line of this[s_lines].children) {
+                         line.geometry.dispose();
+                         line.material.dispose();
+                    }
+                    this[s_scene].remove(this[s_lines])
+                    for (let point of this[s_points].children) {
+                         point.geometry.dispose();
+                         point.material.dispose();
+                    }
                     this[s_scene].remove(this[s_points]);
+
                     this[s_points] = points;
                     this[s_scene].add(points);
 
-                    // THIS PART WAS MOVED HERE FROM SCENE
-                    this[s_scene].remove(this[s_lines])
                     this[s_lines] = new THREE.Object3D()
-                    for (var i in lines) {
+                    for (let i in lines) {
                          this[s_lines].add(lines[i])
                     }
                     this[s_scene].add(this[s_lines])
 
-                    //this[s_scene].paint();
                     this[s_sceneNeedsUpdate] = false;
                }
 
