@@ -171,12 +171,7 @@
                 // Make it non-selectable
                 this[s_htmlObject].css("-webkit-touch-callout", "none");
                 this[s_htmlObject].css("-webkit-user-select", "none");
-                this[s_htmlObject].css("-khtml-user-select", "none");
-                this[s_htmlObject].css("-moz-user-select", "none");
-                this[s_htmlObject].css("-ms-user-select", "none");
-                this[s_htmlObject].css("user-select", "none");
 
-                //this[s_htmlObject].addClass(tag);
                 if (overlay) {
                      this[s_htmlObject].addClass("overlay");
                 }
