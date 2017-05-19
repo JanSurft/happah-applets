@@ -29,6 +29,7 @@ module.exports = {
                test: /\.js$/,
                exclude: /node_modules/,
                loader: 'babel-loader',
+               query: { presets: ['es2017'] }
           }, {
                test: /\.yaml$/,
                exclude: /node_modules/,
