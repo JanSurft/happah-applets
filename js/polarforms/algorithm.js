@@ -83,7 +83,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          str += "b";
                          l++;
                     }
-                    this[s_labelmanager].addLabel("[" + str + "]", this[s_controlPoints][k], "pts", false);
+                    this[s_labelmanager].addLabel(str, this[s_controlPoints][k], "pts", false);
                }
                // Impostor template
                var template = new IMPOSTOR.SphericalImpostor(radius);
@@ -144,7 +144,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                          }
 
                          // TODO: add to own labelmanager?
-                         frame.labels.push("[" + str + "]");
+                         frame.labels.push(str);
                     }
 
                     var pointStack = new Array();
