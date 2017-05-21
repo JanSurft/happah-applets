@@ -7,7 +7,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/util'], function($, THREE, HAPPAH, IMPOSTOR, UTIL) {
+define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib/util', '../lib/colors'], function($, THREE, HAPPAH, IMPOSTOR, UTIL, COLORS) {
      var s_controlPoints = Symbol('controlPoints');
      var s_ratio = Symbol('ratio');
      var s_scrollbar = Symbol('scrollbar');
@@ -25,7 +25,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                this[s_ratio] = (scrollbar == null) ? 0.5 : scrollbar.value;
                this[s_scrollbar] = scrollbar;
                this[s_camera] = camera;
-               this[s_color] = 0xE50A00;
+               this[s_color] = COLORS.Colors.COLOR1;
                this[s_handles] = [];
 
                // Initial color
@@ -37,6 +37,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
            */
           set scrollbar(scrollbar) {
                this[s_scrollbar] = scrollbar;
+               this[s_handles] = [this[s_scrollbar].handle];
           }
 
           evaluate(callback = null) {
@@ -74,7 +75,7 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                // Create the first frame by hand
                var storyboard = new HAPPAH.Storyboard(this);
                var frame0 = new HAPPAH.Storyboard.Frame();
-               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0xff0000);
+               frame0.lines[0] = UTIL.Util.insertSegmentStrip(this[s_controlPoints], 0x3d3d3d);
                frame0.title = "Controlpolygon";
                storyboard.append(frame0);
 
@@ -85,21 +86,23 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                }
 
                // Update handles
-               for (var i = 0; i < this[s_controlPoints].length - 2; i++) {
+               for (var i = 0; i < this[s_controlPoints].length - 1; i++) {
                     if (this[s_handles][i] != null) {
                          //this[s_handles][i].position.x = (0.5 / 150) + 0.5;
                     } else {
-                         this[s_color] += 0x0E5034;
                          this[s_handles].push(this[s_scrollbar].addHandle(0.5, this[s_color]));
+                         this[s_color] += 0x0E5034;
+                         this[s_colors].push(this[s_color]);
                     }
                }
 
                var pointMatrix = this.evaluate(function() {});
 
                // Helper points settings here
-               var color = 0x54334f;
+               var color = COLORS.Colors.COLOR2;
                var radius = 3;
                var template = new IMPOSTOR.SphericalImpostor(radius);
+               template.material.uniforms.diffuse.value.set(color);
 
                // Iterate over scrollbar and add polygon each iteration
                for (var i = 1; i < pointMatrix.length; i++) {
@@ -109,17 +112,17 @@ define(['jquery', 'three', '../lib/happah', '../lib/spherical-impostor', '../lib
                     for (var k in pointMatrix[i]) {
                          var imp = template.clone();
                          imp.position.copy(pointMatrix[i][k]);
-                         imp.material.uniforms.diffuse.value.set(color);
+                         //imp.material.uniforms.diffuse.value.set(color);
                          frame.points.add(imp);
                     }
 
                     if (pointMatrix[i].length > 1) {
-                         frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], this[s_handles][i - 1].material.color));
+                         frame.lines.push(UTIL.Util.insertSegmentStrip(pointMatrix[i], this[s_colors][i - 1]));
                     }
 
                     // Include lines and points from previous iterations
                     frame.lines = frame.lines.concat(storyboard.lastFrame().lines);
-                    //frame.points = frame.points.concat(storyboard.lastFrame().points);
+                    frame.points.children = frame.points.children.concat(storyboard.lastFrame().points.children);
                     storyboard.append(frame);
                }
 
