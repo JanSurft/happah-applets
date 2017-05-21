@@ -64,8 +64,8 @@ require(['../lib/happah', '../lib/defaults', '../lib/multihandlescrollbar', '../
 
      // Initialize some points
      addControls.addControlPoints([
-          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
-          new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
+          new THREE.Vector3(50, 0, 60), new THREE.Vector3(-50, 0, 40),
+          new THREE.Vector3(-50, 0, -40), new THREE.Vector3(50, 0, -60)
      ]);
 
      // Menu & toolbar
