@@ -3,9 +3,8 @@
  // @author: Tarek Wilkening (tarek_wilkening@web.de)
  //
  //////////////////////////////////////////////////////////////////////////////
- define(['jquery', 'three'], function($, THREE) {
+ define(['jquery', 'three', './colors'], function($, THREE, COLORS) {
       //const label_offset_y = 10;
-      const label_color = "black";
       const label_font_size = "14pt";
 
       var s_head = Symbol('head');
@@ -165,7 +164,7 @@
                 // CSS settings
                 this[s_htmlObject].css("position", "absolute");
                 this[s_htmlObject].css("z-index", "100");
-                this[s_htmlObject].css("color", label_color);
+                this[s_htmlObject].css("color", COLORS.Colors.BLACK);
                 this[s_htmlObject].css("font-size", label_font_size);
                 this[s_htmlObject].css("background-color", "#ffffff");
 
