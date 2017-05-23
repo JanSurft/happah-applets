@@ -28,53 +28,50 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './algorithm', '../lib/scrollbar', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, LABEL, ALGORITHM, SCROLLBAR, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './algorithm', '../lib/scrollbar', '../lib/controlpolygon', 'three', 'jquery'], function(happah, DEFAULTS, LABEL, ALGORITHM, SCROLLBAR, POLY, THREE, $) {
      // Canvas element
      let canvas = $('.hph-canvas')[0];
-     let scene = new happah.Scene();
-
-     // Points & impostors
-     let points = [];
-     let impostors = new THREE.Object3D();
-
-     scene.add(impostors);
+     let scene = new THREE.Scene();
 
      // Canvas coordinates relative to middle of canvas element
      let pos = new THREE.Vector3(0, -(1 / 1.2), 0);
 
-     let algorithm = new ALGORITHM.Algorithm(points, null);
-     let viewport = new happah.Viewport(canvas, scene, algorithm);
+     let viewport = new happah.Viewport(canvas, scene, null);
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
+
+     // TBD:
+     // Breaks when scene.clear is called.
+     // also test with multiple control polygons
+     let controlPolygon = new POLY.ControlPolygon(scene, viewport.camera, 0);
+     controlPolygon.listenTo(viewport.renderer.domElement);
+     controlPolygon.addControlPoints([
+          new THREE.Vector3(50 + 100, 0, 60), new THREE.Vector3(-50 + 100, 0, 40),
+          new THREE.Vector3(-50 + 100, 0, -40), new THREE.Vector3(50 + 100, 0, -60)
+     ]);
+     let algorithm = new ALGORITHM.Algorithm(controlPolygon.vectors, null);
+     let labelManager = new LABEL.LabelManager(viewport);
+     algorithm.labelmanager = labelManager;
+
+     viewport.algorithm = algorithm;
 
      // This one fixes the position of labels when unproject is used.
      viewport.camera.updateMatrixWorld();
      viewport.camera.updateProjectionMatrix();
      viewport.algorithm = algorithm;
 
-     let labelManager = new LABEL.LabelManager(viewport);
-     algorithm.labelmanager = labelManager;
 
      //let scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport, 0.5);
      let scrollbar = new SCROLLBAR.Scrollbar(pos, viewport, 0.5, "a", "b");
      algorithm.scrollbar = scrollbar;
 
-     let dragControls = new happah.DragControls(impostors.children, viewport.camera);
+     let dragControls = new happah.DragControls(controlPolygon.points.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      //algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
-
-     let pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
-     pointControls.listenTo(viewport.renderer.domElement);
-
-     // Initialize some points
-     pointControls.addControlPoints([
-          new THREE.Vector3(50, 0, 60), new THREE.Vector3(-50, 0, 40),
-          new THREE.Vector3(-50, 0, -40), new THREE.Vector3(50, 0, -60)
-     ]);
 
      let toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
      let menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
