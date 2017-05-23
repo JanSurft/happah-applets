@@ -167,6 +167,7 @@
                 this[s_htmlObject].css("z-index", "100");
                 this[s_htmlObject].css("color", label_color);
                 this[s_htmlObject].css("font-size", label_font_size);
+                this[s_htmlObject].css("background-color", "#ffffff");
 
                 // Make it non-selectable
                 this[s_htmlObject].css("-webkit-touch-callout", "none");
