@@ -166,7 +166,9 @@
                 this[s_htmlObject].css("z-index", "100");
                 this[s_htmlObject].css("color", COLORS.Colors.BLACK);
                 this[s_htmlObject].css("font-size", label_font_size);
-                this[s_htmlObject].css("background-color", "#ffffff");
+                // TODO add COLORS.Colors.GREY here -> will not be recognized
+                // as string, but as number
+                this[s_htmlObject].css("background-color", "#" + "ffffff");
 
                 // Make it non-selectable
                 this[s_htmlObject].css("-webkit-touch-callout", "none");
