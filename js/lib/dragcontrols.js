@@ -117,7 +117,7 @@ define(['jquery', 'three', './util', './colors'], function($, THREE, UTIL, COLOR
 
                var intersects = this[s_raycaster].intersectObjects(this[s_objects]);
                if (intersects.length > 0) {
-                    if (this[s_highlight] != intersects[0]) {
+                    if (!this[s_highlight] && this[s_highlight] != intersects[0]) {
                          // Change color to highlight object
                          this[s_highlight] = intersects[0];
                          this[s_highlightColor] = this[s_highlight].material.uniforms.diffuse.value.getHex();
