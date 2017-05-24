@@ -5,9 +5,9 @@
 // @author Stephan Engelmann (stephan-enelmann@gmx.de)
 //
 //////////////////////////////////////////////////////////////////////////////
-define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
+define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols', './trackballcontrols',
      './defaults', './labelmanager-linked'
-], function(ALGORITHM, $, THREE, CONTROLS, defaults, LABEL) {
+], function(ALGORITHM, $, THREE, CONTROLS, TRACK, defaults, LABEL) {
      const background_color = 0xFFFFFF;
      const helper_points_color = 0x404040;
      const helper_points_radius = 3;
@@ -86,9 +86,11 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                     _this.update();
                });
 
-               this[s_trackballControls] = new TrackballControls(this[s_camera], this[s_renderer].domElement);
-               this[s_trackballControls].noZoom = true;
+               //this[s_trackballControls] = new TrackballControls(this[s_camera], this[s_renderer].domElement);
+               //this[s_trackballControls].noZoom = true;
                //this[s_trackballControls] = new CONTROLS.TrackballControls(this[s_camera], this[s_scene]);
+               this[s_trackballControls] = new TRACK.TrackballControls(this[s_camera], scene);
+               this[s_trackballControls].listenTo(this[s_renderer].domElement);
 
                /**
                 * Change event can be fired anywhere via jQuery.
@@ -327,7 +329,7 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
 
                // TODO: trackballControls should fire an event when
                // it has changed the scene
-               this[s_trackballControls].update();
+               //this[s_trackballControls].update();
 
                // FIXME: use time for animation speed
                this[s_counter] = this[s_counter]++ % 101;

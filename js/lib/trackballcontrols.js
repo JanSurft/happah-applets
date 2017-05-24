@@ -1,4 +1,4 @@
-define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
+define(['jquery', 'three', './util'], function($, THREE, UTIL) {
      var s_camera = Symbol('camera');
      var s_oldMouse = Symbol('old');
      var s_enabled = Symbol('enabled');
@@ -108,6 +108,8 @@ define(['jquery', 'three', 'lib/util'], function($, THREE, UTIL) {
                //this[s_camera].setRotationFromAxisAngle(axis, angle);
                var previousAngle = this[s_camera].quaternion.w;
                //this[s_camera].setRotationFromAxisAngle(axis, previousAngle);
+               this[s_camera].position.applyAxisAngle(axis, angle);
+               this[s_camera].lookAt(this[s_scene].position);
                //this[s_camera].quaternion.w += 1;
 
                this[s_oldMouse] = newMouse;
