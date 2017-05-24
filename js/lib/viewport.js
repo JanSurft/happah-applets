@@ -301,8 +301,11 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                     }
                     this[s_scene].remove(this[s_lines])
                     for (let point of this[s_points].children) {
-                         point.geometry.dispose();
-                         point.material.dispose();
+                         if (point.geometry)
+                              point.geometry.dispose();
+
+                         if (point.material)
+                              point.material.dispose();
                     }
                     this[s_scene].remove(this[s_points]);
 
