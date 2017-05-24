@@ -293,8 +293,11 @@ define(['./decasteljaualgorithm', 'jquery', 'three', 'three-trackballcontrols',
                     // fixes memory leak caused by multiplied shader code saved
                     // as strings
                     for (let line of this[s_lines].children) {
-                         line.geometry.dispose();
-                         line.material.dispose();
+                         if (line.geometry)
+                              line.geometry.dispose();
+
+                         if (line.material)
+                              line.material.dispose();
                     }
                     this[s_scene].remove(this[s_lines])
                     for (let point of this[s_points].children) {
