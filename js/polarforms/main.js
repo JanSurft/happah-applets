@@ -47,9 +47,10 @@ require(['../lib/happah', '../lib/defaults', '../lib/labelmanager-linked', './al
      let controlPolygon = new POLY.ControlPolygon(scene, viewport.camera, 0);
      controlPolygon.listenTo(viewport.renderer.domElement);
      controlPolygon.addControlPoints([
-          new THREE.Vector3(50 + 100, 0, 60), new THREE.Vector3(-50 + 100, 0, 40),
-          new THREE.Vector3(-50 + 100, 0, -40), new THREE.Vector3(50 + 100, 0, -60)
+          new THREE.Vector3(50, 0, 60), new THREE.Vector3(-50, 0, 40),
+          new THREE.Vector3(-50, 0, -40), new THREE.Vector3(50, 0, -60)
      ]);
+
      let algorithm = new ALGORITHM.Algorithm(controlPolygon.vectors, null);
      let labelManager = new LABEL.LabelManager(viewport);
      algorithm.labelmanager = labelManager;
