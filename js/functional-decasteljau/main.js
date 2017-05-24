@@ -28,29 +28,35 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/pointcontrols', '../lib/labelmanager', './linedragcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, POINTCONTROLS, LABEL, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/controlpolygon', './linedragcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, POLY, CONTROLS, THREE, $) {
 
      // Canvas element
-     var canvas = $('.hph-canvas')[0];
-     var scene = new happah.Scene();
+     let canvas = $('.hph-canvas')[0];
+     let scene = new THREE.Scene();
 
-     var points = [];
-     var impostors = new THREE.Object3D();
+     let viewport = new happah.Viewport(canvas, scene, null);
+     let controlPolygon = new POLY.ControlPolygon(scene, viewport.camera, 0);
+     controlPolygon.listenTo(viewport.renderer.domElement);
 
-     scene.add(impostors);
+     // Initialize some points
+     controlPolygon.addControlPoints([
+          new THREE.Vector3(-80, 0, 50),
+          new THREE.Vector3(-40, 0, -30),
+          new THREE.Vector3(0, 0, -50),
+          new THREE.Vector3(40, 0, -100),
+          new THREE.Vector3(80, 0, -70)
+     ]);
+     let algorithm = new ALGORITHM.Algorithm(controlPolygon.vectors);
+     viewport.algorithm = algorithm;
+
+     let dragControls = new CONTROLS.LineDragControls(controlPolygon.points.children, viewport.camera);
+     dragControls.listenTo(viewport.renderer.domElement);
 
      // Canvas coordinates relative to middle of canvas element
-     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-
-     var algorithm = new ALGORITHM.Algorithm(points);
-
-     var viewport = new happah.Viewport(canvas, scene, algorithm);
-
-     var scrollbar = new happah.Scrollbar(pos, viewport);
+     let pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+     let scrollbar = new happah.Scrollbar(pos, viewport);
      algorithm.scrollbar = scrollbar;
      algorithm.camera = viewport.camera;
-     var dragControls = new CONTROLS.LineDragControls(impostors.children, viewport.controls, viewport.camera);
-     dragControls.listenTo(viewport.renderer.domElement);
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
      viewport.camera.position.set(0, 1000, 0);
@@ -58,36 +64,23 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/pointcontrol
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var pointControls = new POINTCONTROLS.PointControls(impostors, points, viewport.camera, 5);
-     pointControls.listenTo(viewport.renderer.domElement);
-
      // X-Axis
-     var geometry = new THREE.CylinderGeometry(1, 1, 190, 32);
-     var coneGeo = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
+     let geometry = new THREE.CylinderGeometry(1, 1, 190, 32);
+     let coneGeo = new THREE.CylinderGeometry(0, 3, 8, 5, 1);
      coneGeo.rotateZ(-Math.PI / 2);
      coneGeo.translate(95, 0, 0);
      geometry.rotateZ(Math.PI / 2);
      geometry.merge(coneGeo);
-     var material = new THREE.MeshBasicMaterial({
+     let material = new THREE.MeshBasicMaterial({
           color: 0x4d4d4d
      });
      axis = new THREE.Mesh(geometry, material);
      axis.position.set(0, 0, 60);
      scene.add(axis);
 
-     // Initialize some points
-     var points = [
-          new THREE.Vector3(-80, 0, 50),
-          new THREE.Vector3(-40, 0, -30),
-          new THREE.Vector3(0, 0, -50),
-          new THREE.Vector3(40, 0, -100),
-          new THREE.Vector3(80, 0, -70)
-     ];
-     pointControls.addControlPoints(points);
-
      // Menu & toolbar
-     var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
-     var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+     let toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
+     let menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
 
      console.log("happah initialized.");
 

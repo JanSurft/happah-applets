@@ -28,22 +28,28 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, CONTROLS, THREE, $) {
-     var scene = new happah.Scene();
+require(['../lib/happah', '../lib/defaults', '../lib/controlpolygon', 'three', 'jquery'], function(happah, DEFAULTS, POLY, THREE, $) {
+     let scene = new THREE.Scene();
 
-     var points = [];
-     var impostors = new THREE.Object3D();
-     scene.add(impostors);
+     let viewport = new happah.Viewport($('.hph-canvas')[0], scene, null);
 
-     var algorithm = new happah.DeCasteljauAlgorithm(points);
-     var viewport = new happah.Viewport($('.hph-canvas')[0], scene, algorithm);
+     let controlPolygon = new POLY.ControlPolygon(scene, viewport.camera, 0);
+
+     // Initialize some points
+     controlPolygon.addControlPoints([
+          new THREE.Vector3(0, 0, 66),
+          new THREE.Vector3(0, 0, -66)
+     ]);
+
+     let algorithm = new happah.DeCasteljauAlgorithm(controlPolygon.vectors);
+     viewport.algorithm = algorithm;
 
      // Canvas coordinates relative to middle of canvas element
-     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var scrollbar = new happah.Scrollbar(pos, viewport);
+     let pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+     let scrollbar = new happah.Scrollbar(pos, viewport);
 
      algorithm.scrollbar = scrollbar;
-     var dragControls = new happah.DragControls(impostors.children, viewport.controls, viewport.camera);
+     let dragControls = new happah.DragControls(controlPolygon.points.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
@@ -52,18 +58,9 @@ require(['../lib/happah', '../lib/defaults', '../lib/pointcontrols', 'three', 'j
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var addControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 2);
-     addControls.listenTo(viewport.renderer.domElement);
-
-     // Initialize some points
-     addControls.addControlPoints([
-          new THREE.Vector3(0, 0, 66),
-          new THREE.Vector3(0, 0, -66)
-     ]);
-
      // Menu & toolbar
-     var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
-     var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+     let toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
+     let menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
 
      console.log("happah initialized.");
 

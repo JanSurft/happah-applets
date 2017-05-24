@@ -28,33 +28,35 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', '../lib/multihandlescrollbar', '../lib/pointcontrols', './algorithm', 'three', 'jquery'], function(happah, DEFAULTS, SCROLLBAR, CONTROLS, ALGORITHM, THREE, $) {
+require(['../lib/happah', '../lib/defaults', '../lib/multihandlescrollbar', '../lib/controlpolygon', './algorithm', 'three', 'jquery'], function(happah, DEFAULTS, SCROLLBAR, POLY, ALGORITHM, THREE, $) {
      // Canvas element
-     var canvas = $('.hph-canvas')[0];
-     var scene = new THREE.Scene();
+     let canvas = $('.hph-canvas')[0];
+     let scene = new THREE.Scene();
 
-     var points = [];
-     var impostors = new THREE.Group();
-     scene.add(impostors);
+     let viewport = new happah.Viewport(canvas, scene, algorithm);
 
-     var algorithm = new ALGORITHM.Algorithm(points);
-     var viewport = new happah.Viewport(canvas, scene, algorithm);
+     let controlPolygon = new POLY.ControlPolygon(scene, viewport.camera, 0);
+     controlPolygon.listenTo(viewport.renderer.domElement);
+
+     // Initialize some points
+     addControls.addControlPoints([
+          new THREE.Vector3(50, 0, 60), new THREE.Vector3(-50, 0, 40),
+          new THREE.Vector3(-50, 0, -40), new THREE.Vector3(50, 0, -60)
+     ]);
+     let algorithm = new ALGORITHM.Algorithm(controlPolygon.vectors);
+     viewport.algorithm = algorithm;
 
      // Canvas coordinates relative to middle of canvas element
-     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+     let pos = new THREE.Vector3(0, -(1 / 1.2), 0);
 
      // Scrollbars
-     var scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport);
+     let scrollbar = new SCROLLBAR.MultiHandleScrollbar(pos, viewport);
 
-     var dragControls = new happah.DragControls(impostors.children, viewport.camera);
+     let dragControls = new happah.DragControls(controlPolygon.points.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
-     //scrollbar.addHandle();
-
-     var addControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
-     addControls.listenTo(viewport.renderer.domElement);
 
      viewport.overlay.add(scrollbar);
      viewport.camera.position.set(1000, 1000, 0);
@@ -62,15 +64,10 @@ require(['../lib/happah', '../lib/defaults', '../lib/multihandlescrollbar', '../
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     // Initialize some points
-     addControls.addControlPoints([
-          new THREE.Vector3(50, 0, 60), new THREE.Vector3(-50, 0, 40),
-          new THREE.Vector3(-50, 0, -40), new THREE.Vector3(50, 0, -60)
-     ]);
 
      // Menu & toolbar
-     var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
-     var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+     let toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
+     let menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
 
      console.log("happah initialized.");
 

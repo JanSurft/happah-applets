@@ -28,7 +28,7 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/controlpolygon', 'three', 'jquery'], function(happah, DEFAULTS, ALGORITHM, POLY, THREE, $) {
      // Canvas element
      var canvas = $('.hph-canvas')[0];
      var scene = new happah.Scene();
@@ -43,30 +43,26 @@ require(['../lib/happah', '../lib/defaults', './algorithm', '../lib/pointcontrol
      var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
 
      var viewport = new happah.Viewport(canvas, scene);
-     var algorithm = new ALGORITHM.Algorithm(points, viewport, null);
-     viewport.algorithm = algorithm;
 
-     //var scrollbar = new SCROLLBAR.TwoHandleScrollbar(pos, viewport, 0.2);
+     var controlPolygon = new POLY.ControlPolygon(scene, viewport.camera, 0);
+     controlPolygon.listenTo(viewport.renderer.domElement);
 
-     var dragControls = new happah.DragControls(impostors.children, viewport.camera);
+     // Initialize some points
+     controlPolygon.addControlPoints([
+          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, 0),
+          new THREE.Vector3(50, 0, 60)
+     ]);
+
+     var dragControls = new happah.DragControls(controlPolygon.points.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
-     //algorithm.scrollbar = scrollbar;
-     //scrollbar.listenTo(viewport.renderer.domElement);
-     //viewport.overlay.add(scrollbar);
+     var algorithm = new ALGORITHM.Algorithm(controlPolygon.vectors, viewport, null);
+     viewport.algorithm = algorithm;
+
      viewport.camera.position.set(1000, 1000, 0);
      viewport.camera.lookAt(scene.position);
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
-
-     var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
-     pointControls.listenTo(viewport.renderer.domElement);
-
-     // Initialize some points
-     pointControls.addControlPoints([
-          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, 0),
-          new THREE.Vector3(50, 0, 60)
-     ]);
 
      var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
      var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");

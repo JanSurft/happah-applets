@@ -28,21 +28,27 @@ require.config({
      }
 });
 
-require(['../lib/happah', '../lib/defaults', '../lib/pointcontrols', 'three', 'jquery'], function(happah, DEFAULTS, CONTROLS, THREE, $) {
+require(['../lib/happah', '../lib/defaults', '../lib/controlpolygon', 'three', 'jquery'], function(happah, DEFAULTS, POLY, THREE, $) {
      // Canvas element
-     var canvas = $('.hph-canvas')[0];
-     var scene = new happah.Scene();
+     let canvas = $('.hph-canvas')[0];
+     let scene = new THREE.Scene();
 
-     var points = [];
-     var impostors = new THREE.Object3D();
+     let viewport = new happah.Viewport(canvas, scene, null);
+     let controlPolygon = new POLY.ControlPolygon(scene, viewport.camera, 0);
+     controlPolygon.listenTo(viewport.renderer.domElement);
 
-     scene.add(impostors);
+     // Initialize some points
+     controlPolygon.addControlPoints([
+          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
+          new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
+     ]);
+
+     let algorithm = new happah.DeCasteljauAlgorithm(controlPolygon.vectors);
+     viewport.algorithm = algorithm;
 
      // Canvas coordinates relative to middle of canvas element
-     var pos = new THREE.Vector3(0, -(1 / 1.2), 0);
-     var algorithm = new happah.DeCasteljauAlgorithm(points);
-     var viewport = new happah.Viewport(canvas, scene, algorithm);
-     var scrollbar = new happah.Scrollbar(pos, viewport);
+     let pos = new THREE.Vector3(0, -(1 / 1.2), 0);
+     let scrollbar = new happah.Scrollbar(pos, viewport);
      algorithm.scrollbar = scrollbar;
      scrollbar.listenTo(viewport.renderer.domElement);
      viewport.overlay.add(scrollbar);
@@ -51,28 +57,18 @@ require(['../lib/happah', '../lib/defaults', '../lib/pointcontrols', 'three', 'j
      viewport.camera.zoom = 2.5;
      viewport.camera.updateProjectionMatrix();
 
-     var dragControls = new happah.DragControls(impostors.children, viewport.camera);
+     let dragControls = new happah.DragControls(controlPolygon.points.children, viewport.camera);
      dragControls.listenTo(viewport.renderer.domElement);
 
-     var pointControls = new CONTROLS.PointControls(impostors, points, viewport.camera, 0);
-     pointControls.listenTo(viewport.renderer.domElement);
-
-     // Initialize some points
-     pointControls.addControlPoints([
-          new THREE.Vector3(50, 0, -60), new THREE.Vector3(-50, 0, -40),
-          new THREE.Vector3(-50, 0, 40), new THREE.Vector3(50, 0, 60)
-     ]);
-
      // Menu & toolbar
-     var toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
-     var menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
+     let toolbar = DEFAULTS.Defaults.toolbarMenu(".tool-bar-top");
+     let menu = DEFAULTS.Defaults.playerMenu("#hph-controls");
      console.log("happah initialized.");
 
 });
 
 //TODO: simplify vertex shaders
 //TODO: move shaders into module
-//TODO: move camera from position 0 to position 1 (use quaternion)
 //TODO: check spherical impostor implementation; one billboard for all impostors; use drawarrayinstances from webgl2
 //TODO: shader preprocessor
 //TODO: trackballcontrols: reimplement removing dep on camera
